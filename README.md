@@ -6,6 +6,7 @@
 $ pip install -r requirements.txt
 ```
 
+
 ## Get get robot urdf from onshape
 ```bash
 $ onshape-to-robot robots/bd1/
@@ -79,6 +80,3 @@ Or
 $ cd mujoco
 $ python visu.py -p <path_to_xml>
 ```
-## TODO  
-
-- [] fix zeros in onshape
