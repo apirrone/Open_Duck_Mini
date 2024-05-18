@@ -1,5 +1,14 @@
-# mini_BDX
+# mini_BD1
 
-- 3dofs head
-- 5dofs per leg
-- 
+## Install 
+    
+```bash
+pip install -r requirements.txt
+```
+
+## get get robot urdf from onshape
+
+
+## TODO  
+
+- [] fix zeros in onshape
