@@ -80,3 +80,19 @@ Or
 $ cd mujoco
 $ python visu.py -p <path_to_xml>
 ```
+
+## RL stuff
+
+there is a known bug with mujoco when trying to render the environment,
+
+https://github.com/Farama-Foundation/Gymnasium/issues/749
+
+To fix
+
+in `<venv_path>gymnasium/envs/mujoco/mujoco_rendering.py` line 592 change solver_iter to solver_niter
+
+## TODO
+- Try a simpler task first, like juste balancing
+- Work on reward
+- Look at examples envs
+- find out why tensorboard is not working with train_bd1.py

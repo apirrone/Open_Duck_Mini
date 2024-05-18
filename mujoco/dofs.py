@@ -15,8 +15,6 @@ args = parser.parse_args()
 model = mujoco.MjModel.from_xml_path(args.path)
 data = mujoco.MjData(model)
 
-model.opt.gravity[:] = [0, 0, 0]
-
 
 # create the viewer object
 viewer = mujoco_viewer.MujocoViewer(model, data)
@@ -60,14 +58,26 @@ def goto_init():
         data.qpos[dofs[key]] = value
 
 
+target = [0.5, 0.5, 0.1]
+# model.opt.gravity[:] = [0, 0, 0]
 # simulate and render
 while True:
     if viewer.is_alive:
         # print(model.nq)
         # data.qpos[0] = 0.2 * np.sin(0.5 * np.pi * time.time())
-        # data.qpos[15] = 0.2 * np.sin(0.5 * np.pi * time.time())
-        # data.ctrl[:] = 10
-        goto_init()
+        # data.qpos[-7:-4] = 0.2 * np.sin(0.5 * np.pi * time.time())
+        # data.get_body_com("base")
+        print(data.body("base").xpos[2])
+        # box_x = data.qpos[-7]
+        # box_y = data.qpos[-6]
+        # box_z = data.qpos[-5]
+        # data.qepos[-7:-4] = data.body("base").xpos
+        # data.qpos[-7:-4] = target
+        # print(data.body("goal").xpos)
+
+        # print(len(data.qpos[-7:-4]))
+        # print(len(data.qpos))
+        # goto_init()
         # data.qpos[7:] = 0
         mujoco.mj_step(model, data)
         viewer.render()
