@@ -1,6 +1,6 @@
 <mujoco model="bd1 scene">
+	<!-- <statistic center="0 0 0.55" extent="1.1" /> -->
 	<include file="robot.xml" />
-	<statistic center="0 0 0.55" extent="1.1" />
 	<visual>
 		<headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0" />
 		<rgba haze="0.15 0.25 0.35 1" />
@@ -13,6 +13,12 @@
 	</asset>
 	<worldbody>
 		<light pos="0 0 3" dir="0 0 -1" directional="false" />
-		<geom name="floor" size="0 0 .125" type="plane" material="groundplane" conaffinity="15" condim="3" />
+		<geom pos="0 0 -0.5" name="floor" size="0 0 .125" type="plane" material="groundplane" conaffinity="1" contype="1" />
+		<!--
+		<body name="object" pos="0 0 0.15">
+		<freejoint />
+		<geom type="box" size="0.015 0.015 0.015" rgba=".5 .7 .5 1" conaffinity="1" contype="1" />
+		</body>
+		-->
 	</worldbody>
 </mujoco>

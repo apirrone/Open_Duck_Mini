@@ -51,10 +51,29 @@ encapsulate the body in a freejoint
 	</body>
 </worldbody>
 ```
+
+### Setup collision groups
+Put that inside the <mujoco> bracket
+```xml
+<mujoco>
+	<default>
+		<geom contype="1" conaffinity="1" />
+	</default>
+	...
+	...
+</mujoco>
+```
+
 still need to add : 
 - change frames to sites
 
 ## Visualize 
+
+```bash
+$ python3 -m mujoco.viewer --mjcf=<path>/scene.xml
+```
+
+Or 
 
 ```bash
 $ cd mujoco

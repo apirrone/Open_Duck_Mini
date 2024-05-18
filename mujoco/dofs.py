@@ -14,9 +14,8 @@ args = parser.parse_args()
 
 model = mujoco.MjModel.from_xml_path(args.path)
 data = mujoco.MjData(model)
-# options = mujoco.MjOption()
-# options.gravity = [0, 0, 0]
-# options.wind = [0, 0, 0]
+
+model.opt.gravity[:] = [0, 0, 0]
 
 
 # create the viewer object
@@ -42,12 +41,33 @@ dofs = {
     "left_ankle_pitch": 16,
 }
 
+init = {
+    "right_hip_yaw": 0,
+    "right_hip_roll": 0,
+    "right_hip_pitch": np.deg2rad(50),
+    "right_knee_pitch": np.deg2rad(-90),
+    "right_ankle_pitch": np.deg2rad(40),
+    "left_hip_yaw": 0,
+    "left_hip_roll": 0,
+    "left_hip_pitch": np.deg2rad(50),
+    "left_knee_pitch": np.deg2rad(-90),
+    "left_ankle_pitch": np.deg2rad(40),
+}
+
+
+def goto_init():
+    for key, value in init.items():
+        data.qpos[dofs[key]] = value
+
+
 # simulate and render
 while True:
     if viewer.is_alive:
         # print(model.nq)
         # data.qpos[0] = 0.2 * np.sin(0.5 * np.pi * time.time())
-        # data.qpos[8] = 0.01 * np.sin(0.5 * np.pi * time.time())
+        # data.qpos[15] = 0.2 * np.sin(0.5 * np.pi * time.time())
+        # data.ctrl[:] = 10
+        goto_init()
         # data.qpos[7:] = 0
         mujoco.mj_step(model, data)
         viewer.render()

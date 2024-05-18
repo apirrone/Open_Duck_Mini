@@ -1,0 +1,162 @@
+<mujoco model="bd1">
+	<compiler angle="radian" />
+	<asset>
+		<mesh name="cage" file="cage.stl" />
+		<mesh name="body_part" file="body_part.stl" />
+		<mesh name="dc15_a01_case_f_dummy" file="dc15_a01_case_f_dummy.stl" />
+		<mesh name="dc15_a01_case_m_dummy" file="dc15_a01_case_m_dummy.stl" />
+		<mesh name="dc15_a01_case_b_dummy" file="dc15_a01_case_b_dummy.stl" />
+		<mesh name="dc15_a01_horn_dummy" file="dc15_a01_horn_dummy.stl" />
+		<mesh name="double_u" file="double_u.stl" />
+		<mesh name="dc15_a01_horn_idle2_dummy" file="dc15_a01_horn_idle2_dummy.stl" />
+		<mesh name="hip_right_roll_to_pitch" file="hip_right_roll_to_pitch.stl" />
+		<mesh name="block_to_axis" file="block_to_axis.stl" />
+		<mesh name="renfort" file="renfort.stl" />
+		<mesh name="foot" file="foot.stl" />
+		<mesh name="hip_left_roll_to_pitch" file="hip_left_roll_to_pitch.stl" />
+	</asset>
+	<default>
+		<geom contype="1" conaffinity="1" />
+	</default>
+	<worldbody>
+		<body>
+			<freejoint />
+			<geom pos="-0.108287 0.0840205 0.0350789" quat="1 0 0 0" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage" />
+			<geom pos="-0.000748114 0.0340205 0.0230789" quat="1 0 0 0" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="body_part" />
+			<geom pos="-0.000748114 0.0340205 -0.00492108" quat="1 0 0 0" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="body_part" />
+			<geom pos="-0.0257481 0.0340205 0.0195789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="dc15_a01_case_f_dummy" />
+			<geom pos="-0.0257481 0.0340205 0.0195789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="dc15_a01_case_m_dummy" />
+			<geom pos="-0.0257481 0.0340205 7.8923e-05" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.980392 0.713726 0.00392157 1" mesh="dc15_a01_case_b_dummy" />
+			<geom pos="0.0242519 0.0340205 0.0195789" quat="0.707107 0 0 -0.707107" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="dc15_a01_case_f_dummy" />
+			<geom pos="0.0242519 0.0340205 0.0195789" quat="0.707107 0 0 -0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="dc15_a01_case_m_dummy" />
+			<geom pos="0.0242519 0.0340205 7.8923e-05" quat="0.707107 0 0 -0.707107" type="mesh" rgba="0.980392 0.713726 0.00392157 1" mesh="dc15_a01_case_b_dummy" />
+			<body name="double_u_module" pos="-0.0257481 0.0340205 0.0230789" quat="0 -1 0 0">
+				<inertial pos="-0.017 -9.73831e-05 0.0115977" quat="0.262978 0.63443 0.278372 0.671454" mass="0.0166733" diaginertia="4.08774e-06 4.08583e-06 3.39689e-06" />
+				<joint name="right_hip_yaw" pos="0 0 0" axis="0 0 1" range="-0.698132 0.698132" actuatorfrcrange="-1 1" />
+				<geom pos="0 0 0.023" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy" />
+				<geom pos="-0.146088 0 0.028" quat="0 0 -0.707107 -0.707107" type="mesh" rgba="0.972549 0.529412 0.00392157 1" mesh="double_u" />
+				<geom pos="-0.034 -0.0115002 0.0115" quat="0 1 0 0" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy" />
+				<geom quat="0 -1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy" />
+				<geom pos="-0.034 0.0115 0.0115" quat="0.707107 -0.707107 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy" />
+				<body name="right_hip_pitch_roll_module" pos="-0.034 0.0115 0.0115" quat="0.5 -0.5 -0.5 -0.5">
+					<inertial pos="0.0119001 -0.0118787 -0.00623459" quat="0.66281 0.361087 0.33216 0.565658" mass="0.0519584" diaginertia="1.63986e-05 1.54312e-05 8.94567e-06" />
+					<joint name="right_hip_roll" pos="0 0 0" axis="0 0 1" range="-1.5708 0.349066" actuatorfrcrange="-1 1" />
+					<geom pos="-0.0670531 -0.0245 0.009" quat="1 0 0 0" type="mesh" rgba="0.768627 0.886275 0.952941 1" mesh="hip_right_roll_to_pitch" />
+					<geom pos="0 0 -0.0035" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="dc15_a01_case_f_dummy" />
+					<geom pos="0 0 -0.0035" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="dc15_a01_case_m_dummy" />
+					<geom pos="0 0 -0.023" type="mesh" rgba="0.980392 0.713726 0.00392157 1" mesh="dc15_a01_case_b_dummy" />
+					<geom pos="0.025 -0.021 -0.0135" quat="0 0 0.707107 -0.707107" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="dc15_a01_case_f_dummy" />
+					<geom pos="0.025 -0.021 -0.0135" quat="0 0 0.707107 -0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="dc15_a01_case_m_dummy" />
+					<geom pos="0.025 -0.0015 -0.0135" quat="0 0 0.707107 -0.707107" type="mesh" rgba="0.980392 0.713726 0.00392157 1" mesh="dc15_a01_case_b_dummy" />
+					<body name="leg_module" pos="0.025 -0.0245 -0.0135" quat="0 0 0.707107 0.707107">
+						<inertial pos="-0.0495681 -7.25665e-06 0.0114074" quat="0.502158 0.497747 0.497923 0.502154" mass="0.0366944" diaginertia="3.03135e-05 2.73917e-05 5.24206e-06" />
+						<joint name="right_hip_pitch" pos="0 0 0" axis="0 0 1" range="-0.523599 1.5708" actuatorfrcrange="-1 1" />
+						<geom pos="-0.0575 -0.0471308 0.023" quat="0.5 -0.5 0.5 -0.5" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="block_to_axis" />
+						<geom pos="-0.0575 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="block_to_axis" />
+						<geom pos="-0.0575 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.917647 0.917647 0.917647 1" mesh="renfort" />
+						<geom quat="0 -1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy" />
+						<geom pos="0 0 0.023" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy" />
+						<geom pos="-0.08 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="dc15_a01_case_f_dummy" />
+						<geom pos="-0.08 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="dc15_a01_case_m_dummy" />
+						<geom pos="-0.08 0 0.023" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.980392 0.713726 0.00392157 1" mesh="dc15_a01_case_b_dummy" />
+						<body name="leg_module_2" pos="-0.08 0 0" quat="1 0 0 0">
+							<inertial pos="-0.0495681 -7.25665e-06 0.0114074" quat="0.502158 0.497747 0.497923 0.502154" mass="0.0366944" diaginertia="3.03135e-05 2.73917e-05 5.24206e-06" />
+							<joint name="right_knee" pos="0 0 0" axis="0 0 1" range="-2.0944 2.0944" actuatorfrcrange="-1 1" />
+							<geom pos="-0.0575 -0.0471308 0.023" quat="0.5 -0.5 0.5 -0.5" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="block_to_axis" />
+							<geom pos="-0.0575 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="block_to_axis" />
+							<geom pos="-0.0575 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.917647 0.917647 0.917647 1" mesh="renfort" />
+							<geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy" />
+							<geom pos="0 0 0.023" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy" />
+							<geom pos="-0.08 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="dc15_a01_case_f_dummy" />
+							<geom pos="-0.08 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="dc15_a01_case_m_dummy" />
+							<geom pos="-0.08 0 0.023" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.980392 0.713726 0.00392157 1" mesh="dc15_a01_case_b_dummy" />
+							<body name="foot_module" pos="-0.08 0 0" quat="1 0 0 0">
+								<inertial pos="-0.0144661 0 0.011607" quat="0.705911 0.705911 0.0411083 -0.0411083" mass="0.0151935" diaginertia="3.78496e-06 3.58119e-06 2.59253e-06" />
+								<joint name="right_ankle" pos="0 0 0" axis="0 0 1" range="-1.5708 1.5708" actuatorfrcrange="-1 1" />
+								<geom quat="0 -1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy" />
+								<geom pos="0 0 -0.0052" quat="0 0.707107 0 0.707107" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="foot" />
+								<geom pos="0 0 0.023" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy" />
+							</body>
+						</body>
+					</body>
+				</body>
+			</body>
+			<body name="double_u_module_2" pos="0.0242519 0.0340205 0.0230789" quat="0 -1 0 0">
+				<inertial pos="0.017 9.76811e-05 0.0115974" quat="-0.277951 0.671628 -0.262656 0.634563" mass="0.0166733" diaginertia="4.08774e-06 4.08583e-06 3.39689e-06" />
+				<joint name="left_hip_yaw" pos="0 0 0" axis="0 0 1" range="-0.698132 0.698132" actuatorfrcrange="-1 1" />
+				<geom pos="0.034 0.0115 0.0115" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy" />
+				<geom pos="-0.112088 0.0165 0.0115" quat="0 0 -1 0" type="mesh" rgba="0.972549 0.529412 0.00392157 1" mesh="double_u" />
+				<geom pos="0 0 0.0230002" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy" />
+				<geom pos="0.034 -0.0115 0.0115" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy" />
+				<geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy" />
+				<body name="left_hip_pitch_roll_module" pos="0.034 -0.0115 0.0115" quat="0.5 0.5 -0.5 0.5">
+					<inertial pos="0.0119001 -0.0116852 -0.016572" quat="0.364381 0.640328 0.597167 0.317172" mass="0.0519584" diaginertia="1.64729e-05 1.55514e-05 8.91006e-06" />
+					<joint name="left_hip_roll" pos="0 0 0" axis="0 0 1" range="-1.5708 0.349066" actuatorfrcrange="-1 1" />
+					<geom pos="-0.0670531 -0.0245 -0.032" quat="0 0 -1 0" type="mesh" rgba="0.768627 0.886275 0.952941 1" mesh="hip_left_roll_to_pitch" />
+					<geom pos="0.025 -0.005 -0.0095" quat="0 0 0.707107 0.707107" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="dc15_a01_case_f_dummy" />
+					<geom pos="0.025 -0.005 -0.0095" quat="0 0 0.707107 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="dc15_a01_case_m_dummy" />
+					<geom pos="0.025 -0.0245 -0.0095" quat="0 0 0.707107 0.707107" type="mesh" rgba="0.980392 0.713726 0.00392157 1" mesh="dc15_a01_case_b_dummy" />
+					<geom pos="0 0 -0.0035" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="dc15_a01_case_f_dummy" />
+					<geom pos="0 0 -0.0035" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="dc15_a01_case_m_dummy" />
+					<geom pos="0 0 -0.023" type="mesh" rgba="0.980392 0.713726 0.00392157 1" mesh="dc15_a01_case_b_dummy" />
+					<body name="leg_module_3" pos="0.025 -0.0015 -0.0095" quat="0 0 0.707107 -0.707107">
+						<inertial pos="-0.0495681 -7.25665e-06 0.0114074" quat="0.502158 0.497747 0.497923 0.502154" mass="0.0366944" diaginertia="3.03135e-05 2.73917e-05 5.24206e-06" />
+						<joint name="left_hip_pitch" pos="0 0 0" axis="0 0 1" range="-0.523599 1.5708" actuatorfrcrange="-1 1" />
+						<geom pos="-0.0575 -0.0471308 0.023" quat="0.5 -0.5 0.5 -0.5" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="block_to_axis" />
+						<geom pos="-0.0575 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="block_to_axis" />
+						<geom pos="-0.0575 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.917647 0.917647 0.917647 1" mesh="renfort" />
+						<geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy" />
+						<geom pos="0 0 0.023" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy" />
+						<geom pos="-0.08 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="dc15_a01_case_f_dummy" />
+						<geom pos="-0.08 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="dc15_a01_case_m_dummy" />
+						<geom pos="-0.08 0 0.023" quat="0 -0.707107 0.707107 0" type="mesh" rgba="0.980392 0.713726 0.00392157 1" mesh="dc15_a01_case_b_dummy" />
+						<body name="leg_module_4" pos="-0.08 0 0" quat="1 0 0 0">
+							<inertial pos="-0.0495681 -7.25665e-06 0.0114074" quat="0.502158 0.497747 0.497923 0.502154" mass="0.0366944" diaginertia="3.03135e-05 2.73917e-05 5.24206e-06" />
+							<joint name="left_knee" pos="0 0 0" axis="0 0 1" range="-2.0944 2.0944" actuatorfrcrange="-1 1" />
+							<geom pos="-0.0575 -0.0471308 0.023" quat="0.5 -0.5 0.5 -0.5" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="block_to_axis" />
+							<geom pos="-0.0575 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="block_to_axis" />
+							<geom pos="-0.0575 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.917647 0.917647 0.917647 1" mesh="renfort" />
+							<geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy" />
+							<geom pos="0 0 0.023" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy" />
+							<geom pos="-0.08 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="dc15_a01_case_f_dummy" />
+							<geom pos="-0.08 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="dc15_a01_case_m_dummy" />
+							<geom pos="-0.08 0 0.023" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.980392 0.713726 0.00392157 1" mesh="dc15_a01_case_b_dummy" />
+							<body name="foot_module_2" pos="-0.08 0 0" quat="1 0 0 0">
+								<inertial pos="-0.0144661 0 0.011607" quat="0.705911 0.705911 0.0411083 -0.0411083" mass="0.0151935" diaginertia="3.78496e-06 3.58119e-06 2.59253e-06" />
+								<joint name="left_ankle" pos="0 0 0" axis="0 0 1" range="-1.5708 1.5708" actuatorfrcrange="-1 1" />
+								<geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy" />
+								<geom pos="0 0 -0.0052" quat="0 -0.707107 0 -0.707107" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="foot" />
+								<geom pos="0 0 0.023" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy" />
+							</body>
+						</body>
+					</body>
+				</body>
+			</body>
+		</body>
+	</worldbody>
+	<actuator>
+		<!-- User parameter is the maximum no-load motor RPM -->
+		<motor name="left_hip_yaw" joint="left_hip_yaw" gear="1" ctrlrange="-0.58 0.58" user="103" />
+		<motor name="left_hip_roll" joint="left_hip_roll" gear="1" ctrlrange="-0.58 0.58" user="103" />
+		<motor name="left_hip_pitch" joint="left_hip_pitch" gear="1" ctrlrange="-0.58 0.58" user="103" />
+		<motor name="left_knee" joint="left_knee" gear="1" ctrlrange="-0.58 0.58" user="103" />
+		<motor name="left_ankle" joint="left_ankle" gear="1" ctrlrange="-0.58 0.58" user="103" />
+		<motor name="right_hip_roll" joint="right_hip_roll" gear="1" ctrlrange="-0.58 0.58" user="103" />
+		<motor name="right_hip_yaw" joint="right_hip_yaw" gear="1" ctrlrange="-0.58 0.58" user="103" />
+		<motor name="right_hip_pitch" joint="right_hip_pitch" gear="1" ctrlrange="-0.58 0.58" user="103" />
+		<motor name="right_knee" joint="right_knee" gear="1" ctrlrange="-0.58 0.58" user="103" />
+		<motor name="right_ankle" joint="right_ankle" gear="1" ctrlrange="-0.58 0.58" user="103" />
+		<!--
+		<position name="left_hip_yaw" joint="left_hip_yaw" gear="1" ctrlrange="-0.698132 0.698132" user="103" />
+		<position name="left_hip_roll" joint="left_hip_roll" gear="1" ctrlrange="-1.5708 0.349066" user="103" />
+		<position name="left_hip_pitch" joint="left_hip_pitch" gear="1" ctrlrange="-0.523599 1.5708" user="103" />
+		<position name="left_knee" joint="left_knee" gear="1" ctrlrange="-2.0944 2.0944" user="103" />
+		<position name="left_ankle" joint="left_ankle" gear="1" ctrlrange="-1.5708 1.5708" user="103" />
+		<position name="right_hip_roll" joint="right_hip_roll" gear="1" ctrlrange="-1.5708 0.349066" user="103" />
+		<position name="right_hip_yaw" joint="right_hip_yaw" gear="1" ctrlrange="-0.698132 0.698132" user="103" />
+		<position name="right_hip_pitch" joint="right_hip_pitch" gear="1" ctrlrange="-0.523599 1.5708" user="103" />
+		<position name="right_knee" joint="right_knee" gear="1" ctrlrange="-2.0944 2.0944" user="103" />
+		<position name="right_ankle" joint="right_ankle" gear="1" ctrlrange="-1.5708 1.5708" user="103" />
+		-->
+	</actuator>
+</mujoco>
