@@ -93,6 +93,8 @@ in `<venv_path>gymnasium/envs/mujoco/mujoco_rendering.py` line 592 change solver
 
 ## TODO
 - Try a simpler task first, like juste balancing
+  - Or try with a static goal
+  - Or try with distance walked as reward
 - Work on reward
 - Look at examples envs
 - find out why tensorboard is not working with train_bd1.py

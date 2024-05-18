@@ -47,10 +47,6 @@ class BD1Env(MujocoEnv, utils.EzPickle):
     | x17 | pitch angle of the base                                  | -Inf | Inf |                                  |          | angle (rad)              |
     | x18 | yaw angle of the base                                    | -Inf | Inf |                                  |          | angle (rad)              |
 
-    target : # `data.qpos[-7:-4]` is slicing the `qpos` array to extract the elements at indices -7,
-    # -6, and -5. This means it is retrieving a subset of elements from the end of the array
-    # `qpos`. In the context of the code provided, `data.qpos[-7:-4]` is used to extract the
-    # target position data from the `qpos` array.
     data.qpos[-7:-4]
 
     """
