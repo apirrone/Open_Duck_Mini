@@ -26,6 +26,12 @@ still need to add :
 - change frames to sites
 - add a floating base
 
+## Visualize 
+
+```bash
+$ cd mujoco
+$ python visu.py -p <path_to_xml>
+```
 ## TODO  
 
 - [] fix zeros in onshape
