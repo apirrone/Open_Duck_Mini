@@ -1,4 +1,1 @@
-*.part
-*.xml
-*.stl
-*.urdf
+robots/*

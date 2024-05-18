@@ -12,7 +12,19 @@ $ onshape-to-robot robots/bd1/
 ```
 
 ## Convert urdf to Mujoco
-TODO
+
+Download mujoco binaries somewhere https://github.com/google-deepmind/mujoco/releases
+
+unpack and run
+
+```bash
+$ compile input.urdf output.xml
+```
+
+still need to add : 
+- actuators
+- change frames to sites
+- add a floating base
 
 ## TODO  
 
