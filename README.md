@@ -3,11 +3,16 @@
 ## Install 
     
 ```bash
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
-## get get robot urdf from onshape
+## Get get robot urdf from onshape
+```bash
+$ onshape-to-robot robots/bd1/
+```
 
+## Convert urdf to Mujoco
+TODO
 
 ## TODO  
 
