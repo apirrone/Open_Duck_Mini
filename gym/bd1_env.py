@@ -125,8 +125,9 @@ class BD1Env(MujocoEnv, utils.EzPickle):
         rot = np.array(self.data.body("base").xmat).reshape(3, 3)
         Z_vec = rot[:, 2]
         upright = np.array([0, 0, 1])
-        return np.dot(upright, Z_vec) <= 0  # base has more than 90 degrees of tilt
-        # self.has_reached_goal()
+        return (
+            self.has_reached_goal() or np.dot(upright, Z_vec) <= 0
+        )  # base has more than 90 degrees of tilt
 
     def has_reached_goal(self) -> bool:
         return bool(
@@ -137,9 +138,6 @@ class BD1Env(MujocoEnv, utils.EzPickle):
                 < 0.15
             )
         )
-
-    def get_reached_goal_reward(self):
-        return self.has_reached_goal() * self._reached_goal_reward
 
     def step(self, a):
 
@@ -161,6 +159,8 @@ class BD1Env(MujocoEnv, utils.EzPickle):
 
         angle_to_target_reward = -self.get_angle_to_target()
 
+        goal_reward = self.has_reached_goal() * 1000
+
         # TODO try to add reward for being close to manually set init position ?
         reward = (
             walking_height_reward * 2
@@ -169,18 +169,9 @@ class BD1Env(MujocoEnv, utils.EzPickle):
             + dist_reward * 2
             + self.data.body("base").cvel[3:][1]  # y velocity
             + angle_to_target_reward
+            + goal_reward
             + 0.05  # time reward
         )
-
-        # print("walking_height_reward *2 :", walking_height_reward * 2)
-        # print("upright_reward :", upright_reward)
-        # # print("ctrl_reward :", ctrl_reward)
-        # print("dist_reward :", dist_reward)
-        # print("y velocity :", self.data.body("base").cvel[3:][1])
-        # print("angle_to_target_reward :", angle_to_target_reward)
-        # print("time reward :", 0.05)
-        # print("total reward :", reward)
-        # print("---")
 
         self.do_simulation(a, self.frame_skip)
         if self.render_mode == "human":
@@ -189,7 +180,10 @@ class BD1Env(MujocoEnv, utils.EzPickle):
         ob = self._get_obs()
 
         if self.is_terminated():
-            print("Terminated because too much tilt")
+            print(
+                "Terminated because",
+                "has reached goal" if self.has_reached_goal() else "too much tilt",
+            )
             # self.reset()  # not needed because autoreset is True in register
 
         return (
@@ -198,10 +192,13 @@ class BD1Env(MujocoEnv, utils.EzPickle):
             self.is_terminated(),  # terminated
             False,  # truncated
             dict(
-                dist_reward=dist_reward,
-                ctrl_reward=ctrl_reward,
+                walking_height_reward=walking_height_reward,
                 upright_reward=upright_reward,
-                reached_goal_reward=self.get_reached_goal_reward(),
+                ctrl_reward=ctrl_reward,
+                dist_reward=dist_reward,
+                angle_to_target_reward=angle_to_target_reward,
+                goal_reward=goal_reward,
+                time_reward=0.05,
             ),
         )
 
