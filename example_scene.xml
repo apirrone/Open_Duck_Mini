@@ -13,12 +13,10 @@
 	</asset>
 	<worldbody>
 		<light pos="0 0 3" dir="0 0 -1" directional="false" />
-		<geom pos="0 0 -0.5" name="floor" size="0 0 .125" type="plane" material="groundplane" conaffinity="1" contype="1" />
-		<!--
-		<body name="object" pos="0 0 0.15">
-		<freejoint />
-		<geom type="box" size="0.015 0.015 0.015" rgba=".5 .7 .5 1" conaffinity="1" contype="1" />
+		<geom pos="0 0 0" name="floor" size="0 0 .125" type="plane" material="groundplane" conaffinity="1" contype="1" />
+		<body name="goal" pos="0 0 0.01">
+			<freejoint />
+			<geom type="box" size="0.015 0.015 0.015" rgba=".5 .7 .5 1" conaffinity="1" contype="1" />
 		</body>
-		-->
 	</worldbody>
 </mujoco>

@@ -19,7 +19,7 @@
 		<geom contype="1" conaffinity="1" />
 	</default>
 	<worldbody>
-		<body>
+		<body name="base" pos="0 0 0.22">
 			<freejoint />
 			<geom pos="-0.108287 0.0840205 0.0350789" quat="1 0 0 0" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage" />
 			<geom pos="-0.000748114 0.0340205 0.0230789" quat="1 0 0 0" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="body_part" />
