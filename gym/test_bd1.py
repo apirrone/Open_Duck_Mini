@@ -7,9 +7,7 @@ from sb3_contrib import TQC
 from stable_baselines3 import A2C, SAC, TD3
 
 register(
-    id="BD1_env",
-    entry_point="bd1_env:BD1Env",
-    autoreset=True,
+    id="BD1_env", entry_point="bd1_env:BD1Env", autoreset=True, max_episode_steps=200
 )
 
 

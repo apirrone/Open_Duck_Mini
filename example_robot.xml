@@ -136,7 +136,7 @@
 	</worldbody>
 	<actuator>
 		<!-- User parameter is the maximum no-load motor RPM -->
-		<motor name="left_hip_yaw" joint="left_hip_yaw" gear="1" ctrlrange="-0.58 0.58" user="103" />
+		<!-- <motor name="left_hip_yaw" joint="left_hip_yaw" gear="1" ctrlrange="-0.58 0.58" user="103" />
 		<motor name="left_hip_roll" joint="left_hip_roll" gear="1" ctrlrange="-0.58 0.58" user="103" />
 		<motor name="left_hip_pitch" joint="left_hip_pitch" gear="1" ctrlrange="-0.58 0.58" user="103" />
 		<motor name="left_knee" joint="left_knee" gear="1" ctrlrange="-0.58 0.58" user="103" />
@@ -145,18 +145,18 @@
 		<motor name="right_hip_yaw" joint="right_hip_yaw" gear="1" ctrlrange="-0.58 0.58" user="103" />
 		<motor name="right_hip_pitch" joint="right_hip_pitch" gear="1" ctrlrange="-0.58 0.58" user="103" />
 		<motor name="right_knee" joint="right_knee" gear="1" ctrlrange="-0.58 0.58" user="103" />
-		<motor name="right_ankle" joint="right_ankle" gear="1" ctrlrange="-0.58 0.58" user="103" />
-		<!--
-		<position name="left_hip_yaw" joint="left_hip_yaw" gear="1" ctrlrange="-0.698132 0.698132" user="103" />
-		<position name="left_hip_roll" joint="left_hip_roll" gear="1" ctrlrange="-1.5708 0.349066" user="103" />
-		<position name="left_hip_pitch" joint="left_hip_pitch" gear="1" ctrlrange="-0.523599 1.5708" user="103" />
-		<position name="left_knee" joint="left_knee" gear="1" ctrlrange="-2.0944 2.0944" user="103" />
-		<position name="left_ankle" joint="left_ankle" gear="1" ctrlrange="-1.5708 1.5708" user="103" />
-		<position name="right_hip_roll" joint="right_hip_roll" gear="1" ctrlrange="-1.5708 0.349066" user="103" />
-		<position name="right_hip_yaw" joint="right_hip_yaw" gear="1" ctrlrange="-0.698132 0.698132" user="103" />
-		<position name="right_hip_pitch" joint="right_hip_pitch" gear="1" ctrlrange="-0.523599 1.5708" user="103" />
-		<position name="right_knee" joint="right_knee" gear="1" ctrlrange="-2.0944 2.0944" user="103" />
-		<position name="right_ankle" joint="right_ankle" gear="1" ctrlrange="-1.5708 1.5708" user="103" />
-		-->
+		<motor name="right_ankle" joint="right_ankle" gear="1" ctrlrange="-0.58 0.58" user="103" /> -->
+		
+		<position name="left_hip_yaw" joint="left_hip_yaw" gear="1" ctrlrange="-0.698132 0.698132" user="103"     forcerange="-0.58 0.58" kp="0.5" kv="0.001" />
+		<position name="left_hip_roll" joint="left_hip_roll" gear="1" ctrlrange="-1.5708 0.349066" user="103"     forcerange="-0.58 0.58" kp="0.5" kv="0.001" />
+		<position name="left_hip_pitch" joint="left_hip_pitch" gear="1" ctrlrange="-0.523599 1.5708" user="103"   forcerange="-0.58 0.58" kp="0.5" kv="0.001" />
+		<position name="left_knee" joint="left_knee" gear="1" ctrlrange="-2.0944 2.0944" user="103"               forcerange="-0.58 0.58" kp="0.5" kv="0.001" />
+		<position name="left_ankle" joint="left_ankle" gear="1" ctrlrange="-1.5708 1.5708" user="103"             forcerange="-0.58 0.58" kp="0.5" kv="0.001" />
+		<position name="right_hip_roll" joint="right_hip_roll" gear="1" ctrlrange="-1.5708 0.349066" user="103"   forcerange="-0.58 0.58" kp="0.5" kv="0.001" />
+		<position name="right_hip_yaw" joint="right_hip_yaw" gear="1" ctrlrange="-0.698132 0.698132" user="103"   forcerange="-0.58 0.58" kp="0.5" kv="0.001" />
+		<position name="right_hip_pitch" joint="right_hip_pitch" gear="1" ctrlrange="-0.523599 1.5708" user="103" forcerange="-0.58 0.58" kp="0.5" kv="0.001" />
+		<position name="right_knee" joint="right_knee" gear="1" ctrlrange="-2.0944 2.0944" user="103"             forcerange="-0.58 0.58" kp="0.5" kv="0.001" />
+		<position name="right_ankle" joint="right_ankle" gear="1" ctrlrange="-1.5708 1.5708" user="103"           forcerange="-0.58 0.58" kp="0.5" kv="0.001" />
+		
 	</actuator>
 </mujoco>

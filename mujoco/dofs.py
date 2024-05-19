@@ -19,7 +19,9 @@ data = mujoco.MjData(model)
 
 
 # create the viewer object
-viewer = mujoco_viewer.MujocoViewer(model, data, mode="window", width=800, height=600)
+viewer = mujoco_viewer.MujocoViewer(
+    model, data, mode="window", width=1280, height=800, hide_menus=True
+)
 # fv = Viewer()
 # fv.start()
 dofs = {
@@ -61,21 +63,50 @@ def goto_init():
         data.qpos[dofs[key]] = value
 
 
+def check_contact(body1_name, body2_name):
+    # Get the body IDs
+    body1_id = data.body(body1_name)
+    body2_id = data.body(body2_name)
+
+    # Iterate through the contacts
+    for i in range(data.ncon):
+        contact = data.contact[i]
+
+        # Check if the contact is between the two bodies
+        if (contact.geom1 == body1_id and contact.geom2 == body2_id) or (
+            contact.geom1 == body2_id and contact.geom2 == body1_id
+        ):
+            return True
+
+    return False
+
+
 target = [0.5, 0.5, 0.1]
-# model.opt.gravity[:] = [0, 0, 0]
+model.opt.gravity[:] = [0, 0, 0]
 # simulate and render
+
+target = [0, 1, 0.1]
+
 while True:
     if viewer.is_alive:
         # print(model.nq)
         # data.qpos[2] = 0.22 + 0.2 * np.sin(0.5 * np.pi * time.time())
-
-        print(data.qvel[8 : 8 + 10])
+        # print(np.square(data.body("base").xpos[2] - 0.12) * 100)
+        # print(data.qvel[8 : 8 + 10])
+        # print(data.body("foot_module"))
+        # print(check_contact("base", "floor"))
+        print(data.body("base").cvel[3:])
 
         # rot = np.array(data.body("base").xmat).reshape(3, 3)
         # Z_vec = rot[:, 2]
         # T = np.eye(4)
         # T[:3, :3] = rot
         # fv.pushFrame(T, "aze")
+
+        # print(len(data.ctrl), data.ctrl)
+        # data.ctrl[4] = (np.pi / 4) * (np.sin(2 * np.pi * 5 * data.time) + 1) - np.pi / 4
+        # data.ctrl[4] = np.pi / 2
+
         mujoco.mj_step(model, data)
         viewer.render()
     else:

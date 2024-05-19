@@ -118,3 +118,10 @@ $ python test_bd1.py -a <algo> -p <path_to_model>
 - Work on reward
   - Stop the episode when the robot falls
 - Look at examples envs
+- reorient robot in onshape to have x in front
+  - Reexport urdf + modifications
+
+## TO read
+- https://arxiv.org/pdf/2304.13653
+- https://arxiv.org/pdf/2401.16889
+- https://arxiv.org/pdf/1801.01290
