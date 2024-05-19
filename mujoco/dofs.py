@@ -3,6 +3,8 @@ import time
 
 import mujoco_viewer
 import numpy as np
+from FramesViewer.viewer import Viewer
+from scipy.spatial.transform import Rotation as R
 
 import mujoco
 
@@ -17,8 +19,9 @@ data = mujoco.MjData(model)
 
 
 # create the viewer object
-viewer = mujoco_viewer.MujocoViewer(model, data)
-
+viewer = mujoco_viewer.MujocoViewer(model, data, mode="window", width=800, height=600)
+# fv = Viewer()
+# fv.start()
 dofs = {
     "base_x": 0,
     "base_y": 1,
@@ -64,21 +67,15 @@ target = [0.5, 0.5, 0.1]
 while True:
     if viewer.is_alive:
         # print(model.nq)
-        # data.qpos[0] = 0.2 * np.sin(0.5 * np.pi * time.time())
-        # data.qpos[-7:-4] = 0.2 * np.sin(0.5 * np.pi * time.time())
-        # data.get_body_com("base")
-        print(data.body("base").xpos[2])
-        # box_x = data.qpos[-7]
-        # box_y = data.qpos[-6]
-        # box_z = data.qpos[-5]
-        # data.qepos[-7:-4] = data.body("base").xpos
-        # data.qpos[-7:-4] = target
-        # print(data.body("goal").xpos)
+        # data.qpos[2] = 0.22 + 0.2 * np.sin(0.5 * np.pi * time.time())
 
-        # print(len(data.qpos[-7:-4]))
-        # print(len(data.qpos))
-        # goto_init()
-        # data.qpos[7:] = 0
+        print(data.qvel[8 : 8 + 10])
+
+        # rot = np.array(data.body("base").xmat).reshape(3, 3)
+        # Z_vec = rot[:, 2]
+        # T = np.eye(4)
+        # T[:3, :3] = rot
+        # fv.pushFrame(T, "aze")
         mujoco.mj_step(model, data)
         viewer.render()
     else:

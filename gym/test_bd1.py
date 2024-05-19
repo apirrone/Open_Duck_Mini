@@ -3,11 +3,13 @@ import os
 
 import gymnasium as gym
 from gymnasium.envs.registration import register
+from sb3_contrib import TQC
 from stable_baselines3 import A2C, SAC, TD3
 
 register(
     id="BD1_env",
     entry_point="bd1_env:BD1Env",
+    autoreset=True,
 )
 
 
@@ -20,6 +22,9 @@ def test(env, sb3_algo, path_to_model):
             model = TD3.load(path_to_model, env=env)
         case "A2C":
             model = A2C.load(path_to_model, env=env)
+        case "TQC":
+            model = TQC.load(path_to_model, env=env)
+
         case _:
             print("Algorithm not found")
             return
@@ -40,9 +45,10 @@ def test(env, sb3_algo, path_to_model):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description="Train or test model.")
+    parser = argparse.ArgumentParser(description="Test model.")
     parser.add_argument("-p", "--path", metavar="path_to_model")
+    parser.add_argument("-a", "--algo", default="SAC")
     args = parser.parse_args()
 
     gymenv = gym.make("BD1_env", render_mode="human")
-    test(gymenv, "SAC", path_to_model=args.path)
+    test(gymenv, args.algo, path_to_model=args.path)

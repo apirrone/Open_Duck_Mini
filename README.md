@@ -91,10 +91,30 @@ To fix
 
 in `<venv_path>gymnasium/envs/mujoco/mujoco_rendering.py` line 592 change solver_iter to solver_niter
 
+### Train 
+
+```bash
+$ cd gym
+$ python train_bd1.py -a <algo> -p <[optional]path_to_pretrained_model>
+```
+
+#### To Monitor during training
+
+```bash
+$ tensorboard --logdir=logs
+```
+
+### Infer
+
+```bash
+$ cd gym
+$ python test_bd1.py -a <algo> -p <path_to_model>
+```
+
 ## TODO
 - Try a simpler task first, like juste balancing
   - Or try with a static goal
   - Or try with distance walked as reward
 - Work on reward
+  - Stop the episode when the robot falls
 - Look at examples envs
-- find out why tensorboard is not working with train_bd1.py

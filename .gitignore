@@ -1,2 +1,4 @@
 robots/*
 __pycache__/
+gym/logs/*
+gym/models/*
