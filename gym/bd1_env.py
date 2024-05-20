@@ -184,7 +184,7 @@ class BD1Env(MujocoEnv, utils.EzPickle):
             +upright_reward
             + ctrl_reward
             # + dist_reward * 2
-            + self.data.body("base").cvel[3:][1]  # y velocity
+            + -self.data.body("base").cvel[3:][1]  # y velocity
             # + angle_to_target_reward
             # + goal_reward
             + front_reward
