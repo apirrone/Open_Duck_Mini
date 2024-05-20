@@ -178,13 +178,15 @@ class BD1Env(MujocoEnv, utils.EzPickle):
             self.data.body("base").xpos[1]
         )  # penalize going too much to the left or right
 
+        y_velocity_reward = -self.data.body("base").cvel[3:][1]
+
         # TODO try to add reward for being close to manually set init position ?
         reward = (
             # walking_height_reward
             +upright_reward
             + ctrl_reward
             # + dist_reward * 2
-            + -self.data.body("base").cvel[3:][1]  # y velocity
+            + y_velocity_reward
             # + angle_to_target_reward
             # + goal_reward
             + front_reward
