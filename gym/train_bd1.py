@@ -17,24 +17,24 @@ os.makedirs(model_dir, exist_ok=True)
 os.makedirs(log_dir, exist_ok=True)
 
 
-def train(env, sb3_algo, pretrained=None):
+def train(env, sb3_algo, pretrained=None, device="cuda"):
     if pretrained is None:
         match sb3_algo:
             case "SAC":
                 model = SAC(
-                    "MlpPolicy", env, verbose=1, device="cuda", tensorboard_log=log_dir
+                    "MlpPolicy", env, verbose=1, device=device, tensorboard_log=log_dir
                 )
             case "TD3":
                 model = TD3(
-                    "MlpPolicy", env, verbose=1, device="cuda", tensorboard_log=log_dir
+                    "MlpPolicy", env, verbose=1, device=device, tensorboard_log=log_dir
                 )
             case "A2C":
                 model = A2C(
-                    "MlpPolicy", env, verbose=1, device="cuda", tensorboard_log=log_dir
+                    "MlpPolicy", env, verbose=1, device=device, tensorboard_log=log_dir
                 )
             case "TQC":
                 model = TQC(
-                    "MlpPolicy", env, verbose=1, device="cuda", tensorboard_log=log_dir
+                    "MlpPolicy", env, verbose=1, device=device, tensorboard_log=log_dir
                 )
             case _:
                 print("Algorithm not found")

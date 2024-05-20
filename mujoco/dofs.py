@@ -1,6 +1,7 @@
 import argparse
 import time
 
+import cv2
 import mujoco_viewer
 import numpy as np
 from FramesViewer.viewer import Viewer
@@ -47,14 +48,14 @@ dofs = {
 init = {
     "right_hip_yaw": 0,
     "right_hip_roll": 0,
-    "right_hip_pitch": np.deg2rad(50),
+    "right_hip_pitch": np.deg2rad(45),
     "right_knee_pitch": np.deg2rad(-90),
-    "right_ankle_pitch": np.deg2rad(40),
+    "right_ankle_pitch": np.deg2rad(45),
     "left_hip_yaw": 0,
     "left_hip_roll": 0,
-    "left_hip_pitch": np.deg2rad(50),
+    "left_hip_pitch": np.deg2rad(45),
     "left_knee_pitch": np.deg2rad(-90),
-    "left_ankle_pitch": np.deg2rad(40),
+    "left_ankle_pitch": np.deg2rad(45),
 }
 
 
@@ -83,19 +84,29 @@ def check_contact(body1_name, body2_name):
     return False
 
 
-print(data.geom("floor"))
-exit()
-
 target = [0.5, 0.5, 0.1]
 # model.opt.gravity[:] = [0, 0, 0]
-
+# data.qpos[6] = np.deg2rad(90)
 target = [0, 1, 0.1]
 goto_init()
+
+
+im = np.zeros((800, 800, 3), dtype=np.uint8)
 while True:
     if viewer.is_alive:
+        # cv2.imshow("image", im)
+        # key = cv2.waitKey(1)
+        # if key == 13:
+        #     data.xfrc_applied[data.body("goal").id][:3] = [20, 0, 0]  # absolute
+        #     print("Force applied")
+        # else:
+        #     data.xfrc_applied[data.body("goal").id][:3] = [0, 0, 0]  # absolute
+
         # goto_init()
         # print(model.nq)
-        # data.qpos[2] = 0.22 + 0.2 * np.sin(0.5 * np.pi * time.time())
+        # data.qpos[1] = 0.22 + 0.2 * np.sin(0.5 * np.pi * time.time())
+        # print(np.around(data.body("base").cvel[3:], 2))  # absolute
+
         # print(np.square(data.body("base").xpos[2] - 0.12) * 100)
         # print(data.qvel[8 : 8 + 10])
         # print(data.body("foot_module"))
@@ -111,7 +122,6 @@ while True:
         # print(len(data.ctrl), data.ctrl)
         # data.ctrl[4] = (np.pi / 4) * (np.sin(2 * np.pi * 5 * data.time) + 1) - np.pi / 4
         # data.ctrl[4] = np.pi / 2
-        print(data.body("base").xpos[2])
 
         mujoco.mj_step(model, data)
         viewer.render()

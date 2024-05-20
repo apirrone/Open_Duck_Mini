@@ -6,41 +6,15 @@ from gymnasium.spaces import Box
 init_pos = {
     "right_hip_yaw": 0,
     "right_hip_roll": 0,
-    "right_hip_pitch": np.deg2rad(50),
+    "right_hip_pitch": np.deg2rad(45),
     "right_knee_pitch": np.deg2rad(-90),
-    "right_ankle_pitch": np.deg2rad(40),
+    "right_ankle_pitch": np.deg2rad(45),
     "left_hip_yaw": 0,
     "left_hip_roll": 0,
-    "left_hip_pitch": np.deg2rad(50),
+    "left_hip_pitch": np.deg2rad(45),
     "left_knee_pitch": np.deg2rad(-90),
-    "left_ankle_pitch": np.deg2rad(40),
+    "left_ankle_pitch": np.deg2rad(45),
 }
-
-
-def calculate_signed_angle_xy(pose, target):
-    """
-    Calculate the signed angle between the y component of the rotation matrix and the vector from the origin to the target
-    Args:
-        pose: 4x4 rotation matrix
-        target: 3D vector
-    """
-    y_component = pose[:3, 1]
-    y_component_2d = np.array([y_component[0], y_component[1]])
-
-    origin_to_target = np.array(target) - pose[:3, 3]
-    origin_to_target_2d = np.array([origin_to_target[0], origin_to_target[1]])
-
-    y_component_2d_normalized = y_component_2d / np.linalg.norm(y_component_2d)
-    origin_to_target_2d_normalized = origin_to_target_2d / np.linalg.norm(
-        origin_to_target_2d
-    )
-    angle_radians = np.arctan2(
-        y_component_2d_normalized[0] * origin_to_target_2d_normalized[1]
-        - y_component_2d_normalized[1] * origin_to_target_2d_normalized[0],
-        np.dot(y_component_2d_normalized, origin_to_target_2d_normalized),
-    )
-
-    return angle_radians
 
 
 class BD1Env(MujocoEnv, utils.EzPickle):
@@ -59,16 +33,6 @@ class BD1Env(MujocoEnv, utils.EzPickle):
     | 7    | Set position of left_hip_pitch                                    | -0.58TODO   | 0.58TODO    | left_hip_pitch                   | cylinder | pos (rad)    |
     | 8    | Set position of left_knee_pitch                                   | -0.58TODO   | 0.58TODO    | left_knee_pitch                  | cylinder | pos (rad)    |
     | 9    | Set position of left_ankle_pitch                                  | -0.58TODO   | 0.58TODO    | left_ankle_pitch                 | cylinder | pos (rad)    |
-    ### | 0    | Apply torque on right_hip_yaw                                     | -0.58       | 0.58        | right_hip_yaw                    | cylinder | torque (N m) |
-    ### | 1    | Apply torque on right_hip_roll                                    | -0.58       | 0.58        | right_hip_roll                   | cylinder | torque (N m) |
-    ### | 2    | Apply torque on right_hip_pitch                                   | -0.58       | 0.58        | right_hip_pitch                  | cylinder | torque (N m) |
-    ### | 3    | Apply torque on right_knee_pitch                                  | -0.58       | 0.58        | right_knee_pitch                 | cylinder | torque (N m) |
-    ### | 4    | Apply torque on right_ankle_pitch                                 | -0.58       | 0.58        | right_ankle_pitch                | cylinder | torque (N m) |
-    ### | 5    | Apply torque on left_hip_yaw                                      | -0.58       | 0.58        | left_hip_yaw                     | cylinder | torque (N m) |
-    ### | 6    | Apply torque on left_hip_roll                                     | -0.58       | 0.58        | left_hip_roll                    | cylinder | torque (N m) |
-    ### | 7    | Apply torque on left_hip_pitch                                    | -0.58       | 0.58        | left_hip_pitch                   | cylinder | torque (N m) |
-    ### | 8    | Apply torque on left_knee_pitch                                   | -0.58       | 0.58        | left_knee_pitch                  | cylinder | torque (N m) |
-    ### | 9    | Apply torque on left_ankle_pitch                                  | -0.58       | 0.58        | left_ankle_pitch                 | cylinder | torque (N m) |
 
     ## Observation space
 
@@ -94,22 +58,15 @@ class BD1Env(MujocoEnv, utils.EzPickle):
     | 17  | velocity of left_hip_pitch                               | -Inf | Inf | left_hip_pitch                   | cylinder | speed (rad/s)            |
     | 18  | velocity of left_knee_pitch                              | -Inf | Inf | left_knee_pitch                  | cylinder | speed (rad/s)            |
     | 19  | velocity of left_ankle_pitch                             | -Inf | Inf | left_ankle_pitch                 | cylinder | speed (rad/s)            |
-    | 20  | x component of up vector                                 | -Inf | Inf |                                  |          | vec                      |
-    | 21  | y component of up vector                                 | -Inf | Inf |                                  |          | vec                      |
-    | 22  | z component of up vector                                 | -Inf | Inf |                                  |          | vec                      |
-    | 23  | angle around z from base to target                       | -Inf | Inf |                                  |          | angle (rad)              |
-
-    # | 23  | x component of 2D vector to the target                   | -Inf | Inf |                                  |          | position (m)             |
-    # | 24  | y component of 2D vector to the target                   | -Inf | Inf |                                  |          | position (m)             |
-
-    # TODO give angle around z axis to target
-    # below for later
-    | x13 | x position of the center of mass                         | -Inf | Inf |                                  |          | position (m)             |
-    | x14 | y position of the center of mass                         | -Inf | Inf |                                  |          | position (m)             |
-    | x15 | z position of the center of mass                         | -Inf | Inf |                                  |          | position (m)             |
-    | x16 | roll angle of the base                                   | -Inf | Inf |                                  |          | angle (rad)              |
-    | x17 | pitch angle of the base                                  | -Inf | Inf |                                  |          | angle (rad)              |
-    | x18 | yaw angle of the base                                    | -Inf | Inf |                                  |          | angle (rad)              |
+    | 20  | x component of up vector                                 | -Inf | Inf |                                  |          |                          |
+    | 21  | y component of up vector                                 | -Inf | Inf |                                  |          |                          |
+    | 22  | z component of up vector                                 | -Inf | Inf |                                  |          |                          |
+    | 23  | current x linear velocity                                | -Inf | Inf |                                  |          |                          |
+    | 24  | current y linear velocity                                | -Inf | Inf |                                  |          |                          |
+    | 25  | current yaw angular velocity                             | -Inf | Inf |                                  |          |                          |
+    | 26  | current x target linear velocity                         | -Inf | Inf |                                  |          |                          |
+    | 27  | current y target linear velocity                         | -Inf | Inf |                                  |          |                          |
+    | 28  | current yaw target angular velocity                      | -Inf | Inf |                                  |          |                          |
     """
 
     metadata = {
@@ -121,11 +78,10 @@ class BD1Env(MujocoEnv, utils.EzPickle):
         "render_fps": 100,
     }
 
-    def __init__(self, reached_goal_reward=20.0, **kwargs):
-        utils.EzPickle.__init__(self, reached_goal_reward, **kwargs)
-        observation_space = Box(low=-np.inf, high=np.inf, shape=(24,), dtype=np.float64)
-        self.goal_pos = np.asarray([0, 0, 0])
-        self._reached_goal_reward = reached_goal_reward
+    def __init__(self, **kwargs):
+        utils.EzPickle.__init__(self, **kwargs)
+        observation_space = Box(low=-np.inf, high=np.inf, shape=(29,), dtype=np.float64)
+        self.target_velocity = np.asarray([1, 0, 0])  # x, y, yaw
         MujocoEnv.__init__(
             self,
             "/home/antoine/MISC/mini_BD1/robots/bd1/scene.xml",
@@ -138,60 +94,48 @@ class BD1Env(MujocoEnv, utils.EzPickle):
         rot = np.array(self.data.body("base").xmat).reshape(3, 3)
         Z_vec = rot[:, 2]
         upright = np.array([0, 0, 1])
-        return (
-            self.has_reached_goal() or np.dot(upright, Z_vec) <= 0
-        )  # base has more than 90 degrees of tilt
-
-    def has_reached_goal(self) -> bool:
-        return bool(
-            (
-                np.linalg.norm(
-                    self.get_body_com("base")[:2] - self.get_body_com("goal")[:2]
-                )
-                < 0.15
-            )
-        )
+        return np.dot(upright, Z_vec) <= 0  # base has more than 90 degrees of tilt
 
     def step(self, a):
+        # https://www.nature.com/articles/s41598-023-38259-7.pdf
+        # ctrl_reward = -0.1 * np.square(a).sum()
 
-        ctrl_reward = -0.1 * np.square(a).sum()
-
-        dist_reward = -np.linalg.norm(
-            self.get_body_com("base")[:2] - self.get_body_com("goal")[:2]
-        )
-
-        # introduce angular distance to upright position in reward
-        rot = np.array(self.data.body("base").xmat).reshape(3, 3)
-        Z_vec = rot[:, 2]
-        upright = np.array([0, 0, 1])
-        upright_reward = np.square(np.dot(upright, Z_vec))
+        # angular distance to upright position in reward
+        Z_vec = np.array(self.data.body("base").xmat).reshape(3, 3)[:, 2]
+        upright_reward = np.square(np.dot(np.array([0, 0, 1]), Z_vec))
 
         walking_height_reward = (
-            -np.square((self.get_body_com("base")[2] - 0.2)) * 100
+            -np.square((self.get_body_com("base")[2] - 0.12)) * 100
         )  # "normal" walking height is about 0.12m
 
-        angle_to_target_reward = -self.get_angle_to_target()
+        current_ctrl = self.data.ctrl
+        init_ctrl = np.array(list(init_pos.values()))
+        joint_angle_deviation_reward = -np.square(current_ctrl - init_ctrl).sum()
 
-        goal_reward = self.has_reached_goal() * 1000
-
-        front_reward = -2 * np.square(
-            self.data.body("base").xpos[1]
-        )  # penalize going too much to the left or right
-
-        y_velocity_reward = -self.data.body("base").cvel[3:][1]
+        base_velocity = list(self.data.body("base").cvel[3:][:2]) + [
+            self.data.body("base").cvel[:3][2]
+        ]
+        base_velocity = np.asarray(base_velocity)
+        velocity_tracking_reward = np.exp(
+            -np.square(base_velocity - self.target_velocity).sum()
+        )
 
         # TODO try to add reward for being close to manually set init position ?
         reward = (
-            # walking_height_reward
-            +upright_reward
-            + ctrl_reward
-            # + dist_reward * 2
-            + y_velocity_reward
-            # + angle_to_target_reward
-            # + goal_reward
-            + front_reward
-            + 0.05  # time reward
+            0.05  # time reward
+            + 1 * walking_height_reward
+            + 1 * upright_reward
+            + 5 * velocity_tracking_reward
+            + 1 * joint_angle_deviation_reward
         )
+
+        # print("walking_height_reward", walking_height_reward)
+        # print("upright_reward", upright_reward)
+        # print("velocity_tracking_reward", velocity_tracking_reward)
+        # print("joint_angle_deviation_reward", joint_angle_deviation_reward)
+        # print("time_reward", 0.05)
+        # print("reward", reward)
+        # print("---")
 
         self.do_simulation(a, self.frame_skip)
         if self.render_mode == "human":
@@ -201,9 +145,9 @@ class BD1Env(MujocoEnv, utils.EzPickle):
 
         if self.is_terminated():
             print(
-                "Terminated because",
-                "has reached goal" if self.has_reached_goal() else "too much tilt",
+                "Terminated because too much tilt",
             )
+            reward -= 100
             # self.reset()  # not needed because autoreset is True in register
 
         return (
@@ -214,39 +158,21 @@ class BD1Env(MujocoEnv, utils.EzPickle):
             dict(
                 walking_height_reward=walking_height_reward,
                 upright_reward=upright_reward,
-                ctrl_reward=ctrl_reward,
-                dist_reward=dist_reward,
-                angle_to_target_reward=angle_to_target_reward,
-                goal_reward=goal_reward,
+                velocity_tracking_reward=velocity_tracking_reward,
+                joint_angle_deviation_reward=joint_angle_deviation_reward,
                 time_reward=0.05,
             ),
         )
 
     def reset_model(self):
-        # qpos = self.init_qpos
         self.goto_init()
         qpos = self.data.qpos
+        self.init_qpos = qpos.copy().flatten()
 
-        # goal pos is a random point a circle of radius 1 around the origin
-        # angle = np.random.uniform(0, 2 * np.pi)
-        # radius = 1  # m
-        # x = radius * np.cos(angle)
-        # y = radius * np.sin(angle)
-
-        # self.goal_pos = np.asarray(
-        #     [
-        #         x,
-        #         y,
-        #         0.01,
-        #     ]
-        # )
-
-        # Try with a fixed goal position first
-        self.goal_pos = [0, -1, 0.01]
-        qpos[-7:-4] = self.goal_pos
+        # Randomize later
+        self.target_velocity = np.asarray([1, 0, 0])  # x, y, yaw
 
         self.set_state(qpos, self.init_qvel)
-
         return self._get_obs()
 
     def goto_init(self):
@@ -254,22 +180,25 @@ class BD1Env(MujocoEnv, utils.EzPickle):
         for i, value in enumerate(init_pos.values()):
             self.data.qpos[i + 7] = value
 
-    def get_angle_to_target(self):
-        base_pose = np.eye(4)
-        base_pose[:3, :3] = np.array(self.data.body("base").xmat).reshape(3, 3)
-        base_pose[:3, 3] = self.get_body_com("base")
-        angle_to_target = calculate_signed_angle_xy(base_pose, self.goal_pos)
-        return angle_to_target
-
     def _get_obs(self):
-        # target_vec = self.get_body_com("goal")[:2] - self.get_body_com("base")[:2]
 
-        rotations = self.data.qpos[8 : 8 + 10]
-        velocities = self.data.qvel[8 : 8 + 10]
+        joints_rotations = self.data.qpos[7 : 7 + 10]
+        joints_velocities = self.data.qvel[6 : 6 + 10]
 
         # TODO This is the IMU, add noise to it when trying to go real
-        rot = np.array(self.data.body("base").xmat).reshape(3, 3)
-        Z_vec = rot[:, 2]
+        Z_vec = np.array(self.data.body("base").xmat).reshape(3, 3)[:, 2]
+
+        base_velocity = list(self.data.body("base").cvel[3:][:2]) + [
+            self.data.body("base").cvel[:3][2]
+        ]
+        base_velocity = np.asarray(base_velocity)
+
         return np.concatenate(
-            [rotations, velocities, Z_vec, [self.get_angle_to_target()]]
+            [
+                joints_rotations,
+                joints_velocities,
+                Z_vec,
+                base_velocity,
+                self.target_velocity,
+            ]
         )

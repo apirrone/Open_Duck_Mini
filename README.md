@@ -6,8 +6,12 @@
 $ pip install -r requirements.txt
 ```
 
+## Make sure to design you robot according to onshape-to-robot constraints
+https://onshape-to-robot.readthedocs.io/en/latest/design.html
 
 ## Get get robot urdf from onshape
+
+
 ```bash
 $ onshape-to-robot robots/bd1/
 ```
@@ -113,16 +117,10 @@ $ python test_bd1.py -a <algo> -p <path_to_model>
 ```
 
 ## TODO
-- Try a simpler task first, like juste balancing
-  - Or try with a static goal
-  - Or try with distance walked as reward
-- Work on reward
-  - Stop the episode when the robot falls
-- Look at examples envs
-- reorient robot in onshape to have x in front
-  - Reexport urdf + modifications
+- try flat feet with additional ankle roll joint ?
 
 ## TO read
+- https://www.nature.com/articles/s41598-023-38259-7.pdf
 - https://arxiv.org/pdf/2304.13653
 - https://arxiv.org/pdf/2401.16889
 - https://arxiv.org/pdf/1801.01290
