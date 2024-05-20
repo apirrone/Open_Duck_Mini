@@ -118,6 +118,14 @@ $ python test_bd1.py -a <algo> -p <path_to_model>
 
 ## TODO
 - try flat feet with additional ankle roll joint ?
+- lower COM and shorten legs ? to look more like a BDX
+- make foot look more like a BDX (rubber contact)
+  - Can I specify a contact material in mujoco ?
+- add head
+
+## Long term TODO
+- Make it look cool like a BD-X or a BD-1
+- nice close up video https://www.youtube.com/watch?v=QuWaaNN-1hs
 
 ## TO read
 - https://www.nature.com/articles/s41598-023-38259-7.pdf
