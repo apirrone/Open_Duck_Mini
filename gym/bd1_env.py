@@ -3,6 +3,19 @@ from gymnasium import utils
 from gymnasium.envs.mujoco import MujocoEnv
 from gymnasium.spaces import Box
 
+init_pos = {
+    "right_hip_yaw": 0,
+    "right_hip_roll": 0,
+    "right_hip_pitch": np.deg2rad(50),
+    "right_knee_pitch": np.deg2rad(-90),
+    "right_ankle_pitch": np.deg2rad(40),
+    "left_hip_yaw": 0,
+    "left_hip_roll": 0,
+    "left_hip_pitch": np.deg2rad(50),
+    "left_knee_pitch": np.deg2rad(-90),
+    "left_ankle_pitch": np.deg2rad(40),
+}
+
 
 def calculate_signed_angle_xy(pose, target):
     """
@@ -141,7 +154,7 @@ class BD1Env(MujocoEnv, utils.EzPickle):
 
     def step(self, a):
 
-        ctrl_reward = -np.square(a).sum()
+        ctrl_reward = -0.1 * np.square(a).sum()
 
         dist_reward = -np.linalg.norm(
             self.get_body_com("base")[:2] - self.get_body_com("goal")[:2]
@@ -154,22 +167,27 @@ class BD1Env(MujocoEnv, utils.EzPickle):
         upright_reward = np.square(np.dot(upright, Z_vec))
 
         walking_height_reward = (
-            -np.square((self.get_body_com("base")[2] - 0.14)) * 100
-        )  # "normal" walking height is about 0.14m
+            -np.square((self.get_body_com("base")[2] - 0.2)) * 100
+        )  # "normal" walking height is about 0.12m
 
         angle_to_target_reward = -self.get_angle_to_target()
 
         goal_reward = self.has_reached_goal() * 1000
 
+        front_reward = -2 * np.square(
+            self.data.body("base").xpos[1]
+        )  # penalize going too much to the left or right
+
         # TODO try to add reward for being close to manually set init position ?
         reward = (
-            walking_height_reward * 2
-            + upright_reward
-            # + ctrl_reward
-            + dist_reward * 2
+            # walking_height_reward
+            +upright_reward
+            + ctrl_reward
+            # + dist_reward * 2
             + self.data.body("base").cvel[3:][1]  # y velocity
-            + angle_to_target_reward
-            + goal_reward
+            # + angle_to_target_reward
+            # + goal_reward
+            + front_reward
             + 0.05  # time reward
         )
 
@@ -203,8 +221,9 @@ class BD1Env(MujocoEnv, utils.EzPickle):
         )
 
     def reset_model(self):
-        # TODO maybe try to set the robot to a good starting position, knees bent etc
-        qpos = self.init_qpos
+        # qpos = self.init_qpos
+        self.goto_init()
+        qpos = self.data.qpos
 
         # goal pos is a random point a circle of radius 1 around the origin
         # angle = np.random.uniform(0, 2 * np.pi)
@@ -222,11 +241,16 @@ class BD1Env(MujocoEnv, utils.EzPickle):
 
         # Try with a fixed goal position first
         self.goal_pos = [0, -1, 0.01]
-
         qpos[-7:-4] = self.goal_pos
 
         self.set_state(qpos, self.init_qvel)
+
         return self._get_obs()
+
+    def goto_init(self):
+        self.data.qpos[:] = self.init_qpos[:]
+        for i, value in enumerate(init_pos.values()):
+            self.data.qpos[i + 7] = value
 
     def get_angle_to_target(self):
         base_pose = np.eye(4)

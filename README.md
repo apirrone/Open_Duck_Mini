@@ -53,12 +53,13 @@ encapsulate the body in a freejoint
 </worldbody>
 ```
 
-### Setup collision groups
+### Setup collision groups, damping and friction
 Put that inside the <mujoco> bracket
 ```xml
 <mujoco>
 	<default>
 		<geom contype="1" conaffinity="1" />
+		<joint  damping="0.01" frictionloss="0.1"/>
 	</default>
 	...
 	...

@@ -59,8 +59,10 @@ init = {
 
 
 def goto_init():
+    i = 0
     for key, value in init.items():
-        data.qpos[dofs[key]] = value
+        data.ctrl[i] = value
+        i += 1
 
 
 def check_contact(body1_name, body2_name):
@@ -81,21 +83,24 @@ def check_contact(body1_name, body2_name):
     return False
 
 
+print(data.geom("floor"))
+exit()
+
 target = [0.5, 0.5, 0.1]
-model.opt.gravity[:] = [0, 0, 0]
-# simulate and render
+# model.opt.gravity[:] = [0, 0, 0]
 
 target = [0, 1, 0.1]
-
+goto_init()
 while True:
     if viewer.is_alive:
+        # goto_init()
         # print(model.nq)
         # data.qpos[2] = 0.22 + 0.2 * np.sin(0.5 * np.pi * time.time())
         # print(np.square(data.body("base").xpos[2] - 0.12) * 100)
         # print(data.qvel[8 : 8 + 10])
         # print(data.body("foot_module"))
         # print(check_contact("base", "floor"))
-        print(data.body("base").cvel[3:])
+        # print(data.body("base").cvel[3:])
 
         # rot = np.array(data.body("base").xmat).reshape(3, 3)
         # Z_vec = rot[:, 2]
@@ -106,6 +111,7 @@ while True:
         # print(len(data.ctrl), data.ctrl)
         # data.ctrl[4] = (np.pi / 4) * (np.sin(2 * np.pi * 5 * data.time) + 1) - np.pi / 4
         # data.ctrl[4] = np.pi / 2
+        print(data.body("base").xpos[2])
 
         mujoco.mj_step(model, data)
         viewer.render()
