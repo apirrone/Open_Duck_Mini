@@ -85,7 +85,7 @@ def check_contact(body1_name, body2_name):
 
 
 target = [0.5, 0.5, 0.1]
-# model.opt.gravity[:] = [0, 0, 0]
+model.opt.gravity[:] = [0, 0, 0]
 # data.qpos[6] = np.deg2rad(90)
 target = [0, 1, 0.1]
 goto_init()
@@ -94,13 +94,13 @@ goto_init()
 im = np.zeros((800, 800, 3), dtype=np.uint8)
 while True:
     if viewer.is_alive:
-        # cv2.imshow("image", im)
-        # key = cv2.waitKey(1)
-        # if key == 13:
-        #     data.xfrc_applied[data.body("goal").id][:3] = [20, 0, 0]  # absolute
-        #     print("Force applied")
-        # else:
-        #     data.xfrc_applied[data.body("goal").id][:3] = [0, 0, 0]  # absolute
+        cv2.imshow("image", im)
+        key = cv2.waitKey(1)
+        if key == 13:
+            data.xfrc_applied[data.body("base").id][:3] = [1000, 0, 0]  # absolute
+            print("Force applied")
+        else:
+            data.xfrc_applied[data.body("base").id][:3] = [0, 0, 0]  # absolute
 
         # goto_init()
         # print(model.nq)
@@ -120,7 +120,7 @@ while True:
         # fv.pushFrame(T, "aze")
 
         # print(len(data.ctrl), data.ctrl)
-        # data.ctrl[4] = (np.pi / 4) * (np.sin(2 * np.pi * 5 * data.time) + 1) - np.pi / 4
+        # data.ctrl[4] = (np.pi / 4) * (np.sin(2 * np.pi * 1 * data.time) + 1) - np.pi / 4
         # data.ctrl[4] = np.pi / 2
 
         mujoco.mj_step(model, data)

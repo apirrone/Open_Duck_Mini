@@ -1,9 +1,10 @@
 <mujoco model="bd1 scene">
 	<!-- <statistic center="0 0 0.55" extent="1.1" /> -->
 	<include file="robot.xml" />
-	<!-- <default>
-		<geom friction="0.8 0.1 0.01"/>
-	</default> -->
+	<default>
+		<!-- TODO tried doubling sliding friction -->
+		<geom friction="2.0 0.005 0.0001"/>
+	</default>
 	<visual>
 		<headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0" />
 		<rgba haze="0.15 0.25 0.35 1" />
@@ -19,9 +20,9 @@
 		<body name="floor">
 			<geom pos="0 0 0" name="floor" size="0 0 .125" type="plane" material="groundplane" conaffinity="1" contype="1" />
 		</body>
-		<body name="goal" pos="0 0 0.01">
+		<!-- <body name="goal" pos="0.5 0.5 0.1">
 			<freejoint />
 			<geom type="box" size="0.015 0.015 0.015" rgba=".5 .7 .5 1" conaffinity="1" contype="1" />
-		</body>
+		</body> -->
 	</worldbody>
 </mujoco>

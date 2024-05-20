@@ -1,5 +1,6 @@
 import argparse
 import os
+from glob import glob
 
 import gymnasium as gym
 from gymnasium.envs.registration import register
@@ -12,6 +13,24 @@ register(
 
 
 def test(env, sb3_algo, path_to_model):
+
+    if not path_to_model.endswith(".zip"):
+        models_paths = glob(path_to_model + "/*.zip")
+        latest_model_id = 0
+        latest_model_path = None
+        for model_path in models_paths:
+            model_id = model_path.split("/")[-1][: -len(".zip")].split("_")[-1]
+            if int(model_id) > latest_model_id:
+                latest_model_id = int(model_id)
+                latest_model_path = model_path
+
+        if latest_model_path is None:
+            print("No models found in directory: ", path_to_model)
+            return
+
+        print("Using latest model: ", latest_model_path)
+
+        path_to_model = latest_model_path
 
     match sb3_algo:
         case "SAC":
@@ -44,7 +63,12 @@ def test(env, sb3_algo, path_to_model):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Test model.")
-    parser.add_argument("-p", "--path", metavar="path_to_model")
+    parser.add_argument(
+        "-p",
+        "--path",
+        metavar="path_to_model",
+        help="Path to the model. If directory, will use the latest model.",
+    )
     parser.add_argument("-a", "--algo", default="SAC")
     args = parser.parse_args()
 

@@ -67,6 +67,41 @@ class BD1Env(MujocoEnv, utils.EzPickle):
     | 26  | current x target linear velocity                         | -Inf | Inf |                                  |          |                          |
     | 27  | current y target linear velocity                         | -Inf | Inf |                                  |          |                          |
     | 28  | current yaw target angular velocity                      | -Inf | Inf |                                  |          |                          |
+
+    | 29  | t-1 right_hip_yaw rotation error                         | -Inf | Inf |                                  |          |                          |
+    | 30  | t-1 right_hip_roll rotation error                        | -Inf | Inf |                                  |          |                          |
+    | 31  | t-1 right_hip_pitch rotation error                       | -Inf | Inf |                                  |          |                          |
+    | 32  | t-1 right_knee_pitch rotation error                      | -Inf | Inf |                                  |          |                          |
+    | 33  | t-1 right_ankle_pitch rotation error                     | -Inf | Inf |                                  |          |                          |
+    | 34  | t-1 left_hip_yaw rotation error                          | -Inf | Inf |                                  |          |                          |
+    | 35  | t-1 left_hip_roll rotation error                         | -Inf | Inf |                                  |          |                          |
+    | 36  | t-1 left_hip_pitch rotation error                        | -Inf | Inf |                                  |          |                          |
+    | 37  | t-1 left_knee_pitch rotation error                       | -Inf | Inf |                                  |          |                          |
+    | 38  | t-1 left_ankle_pitch rotation error                      | -Inf | Inf |                                  |          |                          |
+    | 39  | t-2 right_hip_yaw rotation error                         | -Inf | Inf |                                  |          |                          |
+    | 40  | t-2 right_hip_roll rotation error                        | -Inf | Inf |                                  |          |                          |
+    | 41  | t-2 right_hip_pitch rotation error                       | -Inf | Inf |                                  |          |                          |
+    | 42  | t-2 right_knee_pitch rotation error                      | -Inf | Inf |                                  |          |                          |
+    | 43  | t-2 right_ankle_pitch rotation error                     | -Inf | Inf |                                  |          |                          |
+    | 44  | t-2 left_hip_yaw rotation error                          | -Inf | Inf |                                  |          |                          |
+    | 45  | t-2 left_hip_roll rotation error                         | -Inf | Inf |                                  |          |                          |
+    | 46  | t-2 left_hip_pitch rotation error                        | -Inf | Inf |                                  |          |                          |
+    | 47  | t-2 left_knee_pitch rotation error                       | -Inf | Inf |                                  |          |                          |
+    | 48  | t-2 left_ankle_pitch rotation error                      | -Inf | Inf |                                  |          |                          |
+    | 49  | t-3 right_hip_yaw rotation error                         | -Inf | Inf |                                  |          |                          |
+    | 50  | t-3 right_hip_roll rotation error                        | -Inf | Inf |                                  |          |                          |
+    | 51  | t-3 right_hip_pitch rotation error                       | -Inf | Inf |                                  |          |                          |
+    | 52  | t-3 right_knee_pitch rotation error                      | -Inf | Inf |                                  |          |                          |
+    | 53  | t-3 right_ankle_pitch rotation error                     | -Inf | Inf |                                  |          |                          |
+    | 54  | t-3 left_hip_yaw rotation error                          | -Inf | Inf |                                  |          |                          |
+    | 55  | t-3 left_hip_roll rotation error                         | -Inf | Inf |                                  |          |                          |
+    | 56  | t-3 left_hip_pitch rotation error                        | -Inf | Inf |                                  |          |                          |
+    | 57  | t-3 left_knee_pitch rotation error                       | -Inf | Inf |                                  |          |                          |
+    | 58  | t-3 left_ankle_pitch rotation error                      | -Inf | Inf |                                  |          |                          |
+
+    # TODO add 1hz sinus ? to help learn the gait
+
+
     """
 
     metadata = {
@@ -80,8 +115,11 @@ class BD1Env(MujocoEnv, utils.EzPickle):
 
     def __init__(self, **kwargs):
         utils.EzPickle.__init__(self, **kwargs)
-        observation_space = Box(low=-np.inf, high=np.inf, shape=(29,), dtype=np.float64)
+        observation_space = Box(low=-np.inf, high=np.inf, shape=(59,), dtype=np.float64)
         self.target_velocity = np.asarray([1, 0, 0])  # x, y, yaw
+        self.joint_history_length = 3
+        self.joint_error_history = self.joint_history_length * [10 * [0]]
+        self.joint_ctrl_history = self.joint_history_length * [10 * [0]]
         MujocoEnv.__init__(
             self,
             "/home/antoine/MISC/mini_BD1/robots/bd1/scene.xml",
@@ -90,15 +128,30 @@ class BD1Env(MujocoEnv, utils.EzPickle):
             **kwargs,
         )
 
+    def compute_smoothness_reward(self):
+        # Warning, this function only works if the history is 3 :)
+        smooth = 0
+        t0 = self.joint_ctrl_history[0]
+        t_minus1 = self.joint_ctrl_history[1]
+        t_minus2 = self.joint_ctrl_history[2]
+
+        for i in range(10):
+            smooth += 2.5 * np.square(t0[i] - t_minus1[i]) + 1.5 * np.square(
+                t0[i] - 2 * t_minus1[i] + t_minus2[i]
+            )
+
+        return -smooth
+
     def is_terminated(self) -> bool:
         rot = np.array(self.data.body("base").xmat).reshape(3, 3)
         Z_vec = rot[:, 2]
         upright = np.array([0, 0, 1])
-        return np.dot(upright, Z_vec) <= 0  # base has more than 90 degrees of tilt
+        return (
+            self.data.body("base").xpos[2] < 0.05 or np.dot(upright, Z_vec) <= 0
+        )  # base has more than 90 degrees of tilt
 
     def step(self, a):
         # https://www.nature.com/articles/s41598-023-38259-7.pdf
-        # ctrl_reward = -0.1 * np.square(a).sum()
 
         # angular distance to upright position in reward
         Z_vec = np.array(self.data.body("base").xmat).reshape(3, 3)[:, 2]
@@ -120,13 +173,15 @@ class BD1Env(MujocoEnv, utils.EzPickle):
             -np.square(base_velocity - self.target_velocity).sum()
         )
 
-        # TODO try to add reward for being close to manually set init position ?
+        smoothness_reward = self.compute_smoothness_reward()
+
         reward = (
             0.05  # time reward
-            + 1 * walking_height_reward
+            # + 0.2 * walking_height_reward
             + 1 * upright_reward
-            + 5 * velocity_tracking_reward
-            + 1 * joint_angle_deviation_reward
+            + 7 * velocity_tracking_reward
+            # + 0.5 * joint_angle_deviation_reward
+            + 0.1 * smoothness_reward
         )
 
         # print("walking_height_reward", walking_height_reward)
@@ -134,6 +189,7 @@ class BD1Env(MujocoEnv, utils.EzPickle):
         # print("velocity_tracking_reward", velocity_tracking_reward)
         # print("joint_angle_deviation_reward", joint_angle_deviation_reward)
         # print("time_reward", 0.05)
+        # print("smoothness_reward", smoothness_reward)
         # print("reward", reward)
         # print("---")
 
@@ -145,7 +201,7 @@ class BD1Env(MujocoEnv, utils.EzPickle):
 
         if self.is_terminated():
             print(
-                "Terminated because too much tilt",
+                "Terminated because too much tilt or com too low.",
             )
             reward -= 100
             # self.reset()  # not needed because autoreset is True in register
@@ -193,6 +249,15 @@ class BD1Env(MujocoEnv, utils.EzPickle):
         ]
         base_velocity = np.asarray(base_velocity)
 
+        joints_error = self.data.ctrl - self.data.qpos[7 : 7 + 10]
+        self.joint_error_history.append(joints_error)
+        self.joint_error_history = self.joint_error_history[
+            -self.joint_history_length :
+        ]
+
+        self.joint_ctrl_history.append(self.data.ctrl.copy())
+        self.joint_ctrl_history = self.joint_ctrl_history[-self.joint_history_length :]
+
         return np.concatenate(
             [
                 joints_rotations,
@@ -200,5 +265,6 @@ class BD1Env(MujocoEnv, utils.EzPickle):
                 Z_vec,
                 base_velocity,
                 self.target_velocity,
+                np.array(self.joint_error_history).flatten(),
             ]
         )
