@@ -39,6 +39,7 @@ def train(env, sb3_algo, model_dir, log_dir, pretrained=None, device="cuda"):
                     verbose=1,
                     device="cuda",
                     tensorboard_log=log_dir,
+                    ent_coef="auto_0.3",
                 )
             case "TD3":
                 model = TD3.load(

@@ -132,3 +132,15 @@ $ python test_bd1.py -a <algo> -p <path_to_model>
 - https://arxiv.org/pdf/2304.13653
 - https://arxiv.org/pdf/2401.16889
 - https://arxiv.org/pdf/1801.01290
+
+# Ideas
+- First train without gravity to follow a simple oscillating legs pattern, no other reward
+- Add gravity back, remove oscillating pattern reward and add back the other rewards
+
+# References 
+- https://cults3d.com/en/3d-model/gadget/robot-disney-star-wars
+- https://www.disneytouristblog.com/wp-content/uploads/2023/10/bd1-droid-testing-disney-imagineering-2.jpg
+
+# Motors 
+Prendre les M288T
+https://en.robotis.com/shop_en/item.php?it_id=902-0163-000

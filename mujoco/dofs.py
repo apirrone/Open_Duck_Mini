@@ -43,6 +43,9 @@ dofs = {
     "left_hip_pitch": 14,
     "left_knee_pitch": 15,
     "left_ankle_pitch": 16,
+    "head_pitch1": 17,
+    "head_pitch2": 18,
+    "head_yaw": 19,
 }
 
 init = {
@@ -56,6 +59,9 @@ init = {
     "left_hip_pitch": np.deg2rad(45),
     "left_knee_pitch": np.deg2rad(-90),
     "left_ankle_pitch": np.deg2rad(45),
+    "head_pitch1": np.deg2rad(-45),
+    "head_pitch2": np.deg2rad(-45),
+    "head_yaw": 0,
 }
 
 
@@ -85,7 +91,7 @@ def check_contact(body1_name, body2_name):
 
 
 target = [0.5, 0.5, 0.1]
-model.opt.gravity[:] = [0, 0, 0]
+# model.opt.gravity[:] = [0, 0, 0]
 # data.qpos[6] = np.deg2rad(90)
 target = [0, 1, 0.1]
 goto_init()
