@@ -203,7 +203,7 @@ class BD1Env(MujocoEnv, utils.EzPickle):
         upright = np.array([0, 0, 1])
         return (
             self.data.body("base").xpos[2] < 0.08 or np.dot(upright, Z_vec) <= 0
-        )  # base has more than 90 degrees of tilt
+        )  # base z is below 0.08m or base has more than 90 degrees of tilt
 
     def follow_walk_reward(self):
         targets = self.sample_walk()
@@ -217,13 +217,21 @@ class BD1Env(MujocoEnv, utils.EzPickle):
     def step(self, a):
         # https://www.nature.com/articles/s41598-023-38259-7.pdf
 
+        # add random force
+        # if np.random.rand() < 0.05:
+        #     self.data.xfrc_applied[self.data.body("base").id][:3] = [
+        #         np.random.randint(-5, 5),
+        #         np.random.randint(-5, 5),
+        #         np.random.randint(-5, 5),
+        #     ]  # absolute
+
         # angular distance to upright position in reward
         Z_vec = np.array(self.data.body("base").xmat).reshape(3, 3)[:, 2]
         upright_reward = np.square(np.dot(np.array([0, 0, 1]), Z_vec))
 
         walking_height_reward = (
-            -np.square((self.get_body_com("base")[2] - 0.165)) * 100
-        )  # "normal" walking height is about 0.12m
+            -np.square((self.get_body_com("base")[2] - 0.14)) * 100
+        )  # "normal" walking height is about 0.14m
 
         current_ctrl = self.data.ctrl
         init_ctrl = np.array(list(init_pos.values()))
@@ -243,9 +251,9 @@ class BD1Env(MujocoEnv, utils.EzPickle):
             0.5  # time reward
             + 0.1 * walking_height_reward
             + 1 * upright_reward
-            + 2 * velocity_tracking_reward
-            + 0.1 * smoothness_reward
-            + 0.1 * joint_angle_deviation_reward
+            + 5 * velocity_tracking_reward
+            + 0.2 * smoothness_reward
+            + 0.5 * joint_angle_deviation_reward
         )
 
         self.do_simulation(a, self.frame_skip)
@@ -282,7 +290,8 @@ class BD1Env(MujocoEnv, utils.EzPickle):
         self.init_qpos = qpos.copy().flatten()
 
         # Randomize later
-        self.target_velocity = np.asarray([1, 0, 0])  # x, y, yaw
+        # self.target_velocity = np.asarray([1, 0, 0])  # x, y, yaw
+        self.target_velocity = np.asarray([2, 0, 0])  # x, y, yaw
 
         self.set_state(qpos, self.init_qvel)
         return self._get_obs()

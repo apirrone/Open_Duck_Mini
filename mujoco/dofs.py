@@ -108,6 +108,8 @@ while True:
         else:
             data.xfrc_applied[data.body("base").id][:3] = [0, 0, 0]  # absolute
 
+        print(data.body("base"))
+
         # goto_init()
         # print(model.nq)
         # data.qpos[1] = 0.22 + 0.2 * np.sin(0.5 * np.pi * time.time())
