@@ -5,17 +5,20 @@ from placo_utils.visualization import robot_frame_viz, robot_viz
 
 import placo
 
-robot = placo.RobotWrapper("../robots/test_bd1_frames/robot.urdf")
+robot = placo.RobotWrapper("../robots/test_bd1_frames/robot.urdf", placo.Flags.ignore_collisions)
 solver = placo.KinematicsSolver(robot)
 viz = robot_viz(robot)
 
-T_world_leftFootTip = robot.get_T_world_frame("left_foot_tip").copy()
+T_world_leftFootTip = robot.get_T_world_frame("left_foot_tip")
+T_world_rightFootTip = robot.get_T_world_frame("right_foot_tip")
 T_world_trunk = robot.get_T_world_frame("trunk")
 
+trunk_orientation_task = solver.add_orientation_task("trunk", np.eye(3))
+trunk_orientation_task.configure("trunk", "soft")
 
 # solver.mask_fbase(True)
 # Adding a frame task
-right_foot_tip_task = solver.add_frame_task("right_foot_tip", np.eye(4))
+right_foot_tip_task = solver.add_frame_task("right_foot_tip", T_world_rightFootTip)
 right_foot_tip_task.configure("right_foot_tip", "soft")
 
 left_foot_tip_task = solver.add_frame_task("left_foot_tip", T_world_leftFootTip)
@@ -23,7 +26,6 @@ left_foot_tip_task.configure("left_foot_tip", "hard")
 
 # trunk_task = solver.add_frame_task("trunk", T_world_trunk)
 # trunk_task.configure("trunk", "soft")
-
 
 t = 0
 dt = 0.01
@@ -34,8 +36,8 @@ def loop():
     global t
     t += dt
 
-    right_foot_tip_task.T_world_frame = tf.translation_matrix(
-        [1.25, np.sin(10 * t), 1.0]
+    right_foot_tip_task.T_world_frame = T_world_rightFootTip @ tf.translation_matrix(
+        [np.sin(t*3)*0.1, 0.0, 0.05]
     )
 
     # Updating kinematics
@@ -44,6 +46,7 @@ def loop():
 
     # Showing effector frame
     robot_frame_viz(robot, "right_foot_tip")
+    robot_frame_viz(robot, "left_foot_tip")
 
     # Updating the viewer
     viz.display(robot.state.q)
