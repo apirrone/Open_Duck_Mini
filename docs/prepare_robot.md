@@ -1,11 +1,11 @@
 # Preparing a robot for simulation in MuJoCo
 
-# If you designed your robot in OnShape
+## If you designed your robot in OnShape
 
-## Make sure to design you robot according to onshape-to-robot constraints
+### Make sure to design you robot according to onshape-to-robot constraints
 https://onshape-to-robot.readthedocs.io/en/latest/design.html
 
-## Get get robot urdf from onshape
+### Get get robot urdf from onshape
 
 
 ```bash
