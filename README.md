@@ -3,7 +3,7 @@
 ## Install 
     
 ```bash
-$ pip install -r requirements.txt
+$ pip install -e .
 ```
 
 ## Make sure to design you robot according to onshape-to-robot constraints
