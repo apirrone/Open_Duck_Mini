@@ -5,7 +5,9 @@ from placo_utils.visualization import robot_frame_viz, robot_viz
 
 import placo
 
-robot = placo.RobotWrapper("../robots/test_bd1_frames/robot.urdf", placo.Flags.ignore_collisions)
+robot = placo.RobotWrapper(
+    "../robots/test_bd1_frames/robot.urdf", placo.Flags.ignore_collisions
+)
 solver = placo.KinematicsSolver(robot)
 viz = robot_viz(robot)
 
@@ -37,8 +39,12 @@ def loop():
     t += dt
 
     right_foot_tip_task.T_world_frame = T_world_rightFootTip @ tf.translation_matrix(
-        [np.sin(t*3)*0.1, 0.0, 0.05]
+        [np.sin(t * 3) * 0.1, 0.0, 0.05]
     )
+
+    # right_foot_tip_task.T_world_frame = T_world_rightFootTip @ tf.translation_matrix(
+    #     [np.sin(t * 3) * 0.1, -0.1 + np.sin(t * 3) * 0.1, 0.05]
+    # )
 
     # Updating kinematics
     robot.update_kinematics()

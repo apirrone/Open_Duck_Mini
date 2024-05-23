@@ -89,12 +89,13 @@ class BD1Env(MujocoEnv, utils.EzPickle):
     | 24  | Velocity of head_pitch2                                  | -Inf | Inf | head_pitch2                      | cylinder | speed (rad/s)            |
     | 25  | Velocity of head_yaw                                     | -Inf | Inf | head_yaw                         | cylinder | speed (rad/s)            |
 
-    | 26  | x component of up vector                                 | -Inf | Inf |                                  |          |                          |
-    | 27  | y component of up vector                                 | -Inf | Inf |                                  |          |                          |
-    | 28  | z component of up vector                                 | -Inf | Inf |                                  |          |                          |
+
+    | 26  | roll angular velocity                                    | -Inf | Inf |                                  |          |                          |e
+    | 27  | pitch angular velocity                                   | -Inf | Inf |                                  |          |                          |
+    | 28  | yaw angular velocity                                     | -Inf | Inf |                                  |          |                          |
     | 29  | current x linear velocity                                | -Inf | Inf |                                  |          |                          |
     | 30  | current y linear velocity                                | -Inf | Inf |                                  |          |                          |
-    | 31  | current yaw angular velocity                             | -Inf | Inf |                                  |          |                          |
+    | 31  | current z linear velocity                                | -Inf | Inf |                                  |          |                          |
     | 32  | current x target linear velocity                         | -Inf | Inf |                                  |          |                          |
     | 33  | current y target linear velocity                         | -Inf | Inf |                                  |          |                          |
     | 34  | current yaw target angular velocity                      | -Inf | Inf |                                  |          |                          |
@@ -244,16 +245,17 @@ class BD1Env(MujocoEnv, utils.EzPickle):
         velocity_tracking_reward = np.exp(
             -np.square(base_velocity - self.target_velocity).sum()
         )
+        # print(velocity_tracking_reward)
 
         smoothness_reward = self.compute_smoothness_reward()
 
         reward = (
-            0.5  # time reward
+            0.05  # time reward
             + 0.1 * walking_height_reward
-            + 1 * upright_reward
-            + 5 * velocity_tracking_reward
-            + 0.2 * smoothness_reward
-            + 0.5 * joint_angle_deviation_reward
+            # + 0.1 * upright_reward
+            + 2 * velocity_tracking_reward
+            + 0.1 * smoothness_reward
+            # + 0.5 * joint_angle_deviation_reward
         )
 
         self.do_simulation(a, self.frame_skip)
@@ -262,12 +264,11 @@ class BD1Env(MujocoEnv, utils.EzPickle):
 
         ob = self._get_obs()
 
-        if self.is_terminated():
-            print(
-                "Terminated because too much tilt or com too low.",
-            )
-            reward -= 100
-            # self.reset()  # not needed because autoreset is True in register
+        # if self.is_terminated():
+        # print(
+        #     "Terminated because too much tilt or com too low.",
+        # )
+        # self.reset()  # not needed because autoreset is True in register
 
         return (
             ob,
@@ -306,19 +307,16 @@ class BD1Env(MujocoEnv, utils.EzPickle):
         joints_rotations = self.data.qpos[7 : 7 + 13]
         joints_velocities = self.data.qvel[6 : 6 + 13]
 
-        # TODO This is the IMU, add noise to it when trying to go real
-        Z_vec = np.array(self.data.body("base").xmat).reshape(3, 3)[:, 2]
-
-        base_velocity = list(self.data.body("base").cvel[3:][:2]) + [
-            self.data.body("base").cvel[:3][2]
-        ]
-        base_velocity = np.asarray(base_velocity)
-
         joints_error = self.data.ctrl - self.data.qpos[7 : 7 + 13]
         self.joint_error_history.append(joints_error)
         self.joint_error_history = self.joint_error_history[
             -self.joint_history_length :
         ]
+
+        angular_velocity = self.data.body("base").cvel[
+            :3
+        ]  # TODO this is imu, add noise to it later
+        linear_velocity = self.data.body("base").cvel[3:]
 
         self.joint_ctrl_history.append(self.data.ctrl.copy())
         self.joint_ctrl_history = self.joint_ctrl_history[-self.joint_history_length :]
@@ -327,8 +325,8 @@ class BD1Env(MujocoEnv, utils.EzPickle):
             [
                 joints_rotations,
                 joints_velocities,
-                Z_vec,
-                base_velocity,
+                angular_velocity,
+                linear_velocity,
                 self.target_velocity,
                 np.array(self.joint_error_history).flatten(),
                 [np.sin(self.data.time)],

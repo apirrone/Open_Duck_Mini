@@ -3,17 +3,34 @@ import os
 from datetime import datetime
 
 import gymnasium as gym
+import numpy as np
 from gymnasium.envs.registration import register
 from sb3_contrib import TQC
 from stable_baselines3 import A2C, SAC, TD3
+from stable_baselines3.common.noise import NormalActionNoise
 
 
 def train(env, sb3_algo, model_dir, log_dir, pretrained=None, device="cuda"):
+    n_actions = env.action_space.shape[-1]
+    # SAC parameters found here https://github.com/hill-a/stable-baselines/issues/840#issuecomment-623171534
     if pretrained is None:
         match sb3_algo:
             case "SAC":
                 model = SAC(
-                    "MlpPolicy", env, verbose=1, device=device, tensorboard_log=log_dir
+                    "MlpPolicy",
+                    env,
+                    verbose=1,
+                    device=device,
+                    tensorboard_log=log_dir,
+                    action_noise=NormalActionNoise(
+                        mean=np.zeros(n_actions), sigma=0.1 * np.ones(n_actions)
+                    ),
+                    # learning_starts=10000,
+                    # batch_size=100,
+                    # learning_rate=1e-3,
+                    # train_freq=1000,
+                    # gradient_steps=1000,
+                    policy_kwargs=dict(net_arch=[400, 300]),
                 )
             case "TD3":
                 model = TD3(
@@ -39,7 +56,6 @@ def train(env, sb3_algo, model_dir, log_dir, pretrained=None, device="cuda"):
                     verbose=1,
                     device="cuda",
                     tensorboard_log=log_dir,
-                    ent_coef="auto_0.3",
                 )
             case "TD3":
                 model = TD3.load(
