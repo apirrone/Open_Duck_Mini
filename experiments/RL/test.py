@@ -7,9 +7,7 @@ from gymnasium.envs.registration import register
 from sb3_contrib import TQC
 from stable_baselines3 import A2C, SAC, TD3
 
-register(
-    id="BD1_env", entry_point="bd1_env:BD1Env", autoreset=True, max_episode_steps=200
-)
+register(id="BDX_env", entry_point="env:BDXEnv", autoreset=True, max_episode_steps=200)
 
 
 def test(env, sb3_algo, path_to_model):
@@ -62,7 +60,7 @@ def test(env, sb3_algo, path_to_model):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description="Test model.")
+    parser = argparse.ArgumentParser(description="Test model")
     parser.add_argument(
         "-p",
         "--path",
@@ -72,5 +70,5 @@ if __name__ == "__main__":
     parser.add_argument("-a", "--algo", default="SAC")
     args = parser.parse_args()
 
-    gymenv = gym.make("BD1_env", render_mode="human")
+    gymenv = gym.make("BDX_env", render_mode="human")
     test(gymenv, args.algo, path_to_model=args.path)

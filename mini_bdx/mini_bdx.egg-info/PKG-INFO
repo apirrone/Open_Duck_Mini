@@ -1,3 +1,19 @@
+Metadata-Version: 2.1
+Name: mini-bdx
+Version: 0.0.1
+Summary: Making a mini version of the BDX droid
+Home-page: https://github.com/apirrone/mini_BDX
+Author: Antoine Pirrone
+Author-email: antoine.pirrone@gmail.com
+Description-Content-Type: text/markdown
+Requires-Dist: mujoco==3.1.5
+Requires-Dist: mujoco-python-viewer==0.1.4
+Requires-Dist: onshape-to-robot==0.3.25
+Requires-Dist: gymnasium[mujoco]==0.29.1
+Requires-Dist: stable-baselines3[extra]==2.3.2
+Requires-Dist: sb3_contrib==2.3.0
+Requires-Dist: placo==0.5.0
+
 # mini_BD1
 
 ## Install 
@@ -58,15 +74,13 @@ encapsulate the body in a freejoint
 ```
 
 ### Setup collision groups, damping and friction
-remove actuatorfrcrange in joints
 Put that inside the <mujoco> bracket
 ```xml
 <mujoco>
-  <default>
-    <geom contype="1" conaffinity="1" solref=".004 1" />
-    <joint damping="0.09" frictionloss="0.1"/>
-    <position kp="21.1" forcerange="-5.0 5.0"/>
-  </default>
+	<default>
+		<geom contype="1" conaffinity="1" />
+		<joint  damping="0.01" frictionloss="0.1"/>
+	</default>
 	...
 	...
 </mujoco>

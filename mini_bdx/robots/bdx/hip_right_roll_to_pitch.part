@@ -1,0 +1,13 @@
+{
+    "configuration": "default",
+    "documentId": "a18ff8cc622a533762a3a6f5",
+    "documentMicroversion": "ac3ca099e4fea928863b7465",
+    "elementId": "41cb17acd87e9a291dc66083",
+    "fullConfiguration": "default",
+    "id": "MqpX4oSaGt0fcUeEq",
+    "isStandardContent": false,
+    "name": "hip_right_roll_to_pitch <1>",
+    "partId": "JXD",
+    "suppressed": false,
+    "type": "Part"
+}

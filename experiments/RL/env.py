@@ -37,7 +37,7 @@ dofs = {
 }
 
 
-class BD1Env(MujocoEnv, utils.EzPickle):
+class BDXEnv(MujocoEnv, utils.EzPickle):
     """
     ## Action space
 

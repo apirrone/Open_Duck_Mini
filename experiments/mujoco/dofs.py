@@ -2,12 +2,9 @@ import argparse
 import time
 
 import cv2
+import mujoco
 import mujoco_viewer
 import numpy as np
-from FramesViewer.viewer import Viewer
-from scipy.spatial.transform import Rotation as R
-
-import mujoco
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -23,8 +20,6 @@ data = mujoco.MjData(model)
 viewer = mujoco_viewer.MujocoViewer(
     model, data, mode="window", width=1280, height=800, hide_menus=True
 )
-# fv = Viewer()
-# fv.start()
 dofs = {
     "base_x": 0,
     "base_y": 1,
@@ -125,7 +120,6 @@ while True:
         # Z_vec = rot[:, 2]
         # T = np.eye(4)
         # T[:3, :3] = rot
-        # fv.pushFrame(T, "aze")
 
         # print(len(data.ctrl), data.ctrl)
         # data.ctrl[4] = (np.pi / 4) * (np.sin(2 * np.pi * 1 * data.time) + 1) - np.pi / 4

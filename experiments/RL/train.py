@@ -100,7 +100,7 @@ def train(env, sb3_algo, model_dir, log_dir, pretrained=None, device="cuda"):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description="Train bd1")
+    parser = argparse.ArgumentParser(description="Train BDX")
     parser.add_argument(
         "-a", "--algo", type=str, choices=["SAC", "TD3", "A2C", "TQC"], default="SAC"
     )
@@ -117,15 +117,15 @@ if __name__ == "__main__":
     )
 
     register(
-        id="BD1_env",
-        entry_point="bd1_env:BD1Env",
+        id="BDX_env",
+        entry_point="env:BDXEnv",
         max_episode_steps=500,
         autoreset=True,
     )  # TODO play with max_episode_steps
 
     args = parser.parse_args()
 
-    env = gym.make("BD1_env", render_mode=None)
+    env = gym.make("BDX_env", render_mode=None)
     # Create directories to hold models and logs
     model_dir = args.name
     log_dir = "logs/" + args.name

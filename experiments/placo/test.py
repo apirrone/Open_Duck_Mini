@@ -1,12 +1,11 @@
 import numpy as np
+import placo
 from ischedule import run_loop, schedule
 from placo_utils.tf import tf
 from placo_utils.visualization import robot_frame_viz, robot_viz
 
-import placo
-
 robot = placo.RobotWrapper(
-    "../robots/test_bd1_frames/robot.urdf", placo.Flags.ignore_collisions
+    "../../mini_bdx/robots/bdx/robot.urdf", placo.Flags.ignore_collisions
 )
 solver = placo.KinematicsSolver(robot)
 viz = robot_viz(robot)
