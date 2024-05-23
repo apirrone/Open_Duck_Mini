@@ -140,10 +140,10 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
     | 72  | t-3 head_pitch2 rotation error                           | -Inf | Inf |                                  |          |                          |
     | 73  | t-3 head_yaw rotation error                              | -Inf | Inf |                                  |          |                          |
 
-    | 74  | sinus                                                    | -Inf | Inf |                                  |          |                          |
-    | 75  | left foot in contact with the floor                      | -Inf | Inf |                                  |          |                          |
-    | 76  | right foot in contact with the floor                     | -Inf | Inf |                                  |          |                          |
+    | 74  | left foot in contact with the floor                      | -Inf | Inf |                                  |          |                          |
+    | 75  | right foot in contact with the floor                     | -Inf | Inf |                                  |          |                          |
 
+    | x74  | sinus                                                    | -Inf | Inf |                                  |          |                          |
 
     """
 
@@ -158,7 +158,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def __init__(self, **kwargs):
         utils.EzPickle.__init__(self, **kwargs)
-        observation_space = Box(low=-np.inf, high=np.inf, shape=(77,), dtype=np.float64)
+        observation_space = Box(low=-np.inf, high=np.inf, shape=(76,), dtype=np.float64)
         self.target_velocity = np.asarray([1, 0, 0])  # x, y, yaw
         self.joint_history_length = 3
         self.joint_error_history = self.joint_history_length * [13 * [0]]
@@ -254,21 +254,36 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         #         np.random.randint(-5, 5),
         #     ]  # absolute
 
+        # Idea, no reward at all if walking height is not good
+        # TODO Maybe the actions are performed at too high frequency
+
         reward = (
-            0.05  # time reward
+            0.005  # time reward
             # + 0.1 * self.walking_height_reward()
-            + 0.1 * self.upright_reward()
-            # + 1.0 * self.velocity_tracking_reward()
+            + 0.5 * self.upright_reward()
+            + 1.0 * self.velocity_tracking_reward()
             + 0.1 * self.smoothness_reward()
-            + 0.1 * self.feet_contact_reward()
-            + 0.9 * self.joint_angle_deviation_reward()
+            + 0.5 * self.feet_contact_reward()
+            + 0.1 * self.joint_angle_deviation_reward()
         )
+
+        # print("time reward", 0.05)
+        # # print("walking height reward", 0.1 * self.walking_height_reward())
+        # print("upright reward", 1.0 * self.upright_reward())
+        # # print("velocity tracking reward", 1.0 * self.velocity_tracking_reward())
+        # # print("smoothness reward", 0.1 * self.smoothness_reward())
+        # print("feet contact reward", 1 * self.feet_contact_reward())
+        # # print("joint angle derivation", 0.1 * self.joint_angle_deviation_reward())
+        # print("--")
 
         self.do_simulation(a, self.frame_skip)
         if self.render_mode == "human":
             self.render()
 
         ob = self._get_obs()
+
+        if self.is_terminated():
+            reward = -100
 
         return (
             ob,
@@ -293,8 +308,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.init_qpos = qpos.copy().flatten()
 
         # Randomize later
-        # self.target_velocity = np.asarray([1, 0, 0])  # x, y, yaw
-        self.target_velocity = np.asarray([2, 0, 0])  # x, y, yaw
+        self.target_velocity = np.asarray([0, 0, 0])  # x, y, yaw
+        # self.target_velocity = np.asarray([2, 0, 0])  # x, y, yaw
 
         self.set_state(qpos, self.init_qvel)
         return self._get_obs()
@@ -331,7 +346,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
                 linear_velocity,
                 self.target_velocity,
                 np.array(self.joint_error_history).flatten(),
-                [np.sin(self.data.time)],
+                # [np.sin(self.data.time)],
                 [self.left_foot_in_contact, self.right_foot_in_contact],
             ]
         )
