@@ -30,17 +30,19 @@ $ ./compile input.urdf output.xml
 Example : 
 ```xml
 	<actuator>
-		<!-- User parameter is the maximum no-load motor RPM -->
-		<motor name="left_hip_yaw" joint="left_hip_yaw" gear="25" ctrlrange="-0.698132 0.698132" user="2900" />
-		<motor name="left_hip_roll" joint="left_hip_roll" gear="25" ctrlrange="-1.5708 0.349066" user="2900" />
-		<motor name="left_hip_pitch" joint="left_hip_pitch" gear="16" ctrlrange="1.0472 3.14159" user="1300" />
-		<motor name="left_knee" joint="left_knee" gear="16" ctrlrange="-2.0944 2.0944" user="1300" />
-		<motor name="left_ankle" joint="left_ankle" gear="50" ctrlrange="-1.5708 1.5708" user="5500" />
-		<motor name="right_hip_roll" joint="right_hip_roll" gear="25" ctrlrange="-1.5708 0.349066" user="2900" />
-		<motor name="right_hip_yaw" joint="right_hip_yaw" gear="25" ctrlrange="-0.698132 0.698132" user="2900" />
-		<motor name="right_hip_pitch" joint="right_hip_pitch" gear="16" ctrlrange="-0.523599 1.5708" user="1300" />
-		<motor name="right_knee" joint="right_knee" gear="16" ctrlrange="-2.0944 2.0944" user="1300" />
-		<motor name="right_ankle" joint="right_ankle" gear="50" ctrlrange="-1.5708 1.5708" user="5500" />
+		<position name="left_hip_yaw"    joint="left_hip_yaw"    inheritrange="1"/>
+		<position name="left_hip_roll"   joint="left_hip_roll"   inheritrange="1"/>
+		<position name="left_hip_pitch"  joint="left_hip_pitch"  inheritrange="1"/>
+		<position name="left_knee"       joint="left_knee"       inheritrange="1"/>
+		<position name="left_ankle"      joint="left_ankle"      inheritrange="1"/>
+		<position name="right_hip_roll"  joint="right_hip_roll"  inheritrange="1"/>
+		<position name="right_hip_yaw"   joint="right_hip_yaw"   inheritrange="1"/>
+		<position name="right_hip_pitch" joint="right_hip_pitch" inheritrange="1"/>
+		<position name="right_knee"      joint="right_knee"      inheritrange="1"/>
+		<position name="right_ankle"     joint="right_ankle"     inheritrange="1"/>
+		<position name="head_pitch1"     joint="head_pitch1"     inheritrange="1"/>
+		<position name="head_pitch2"     joint="head_pitch2"     inheritrange="1"/>
+		<position name="head_yaw"        joint="head_yaw"        inheritrange="1"/>
 	</actuator>
 ```
 
@@ -58,14 +60,14 @@ encapsulate the body in a freejoint
 ```
 
 ### Setup collision groups, damping and friction
-remove actuatorfrcrange in joints
+/!\ remove actuatorfrcrange in joints
 Put that inside the <mujoco> bracket
 ```xml
 <mujoco>
   <default>
     <geom contype="1" conaffinity="1" solref=".004 1" />
     <joint damping="0.09" frictionloss="0.1"/>
-    <position kp="21.1" forcerange="-5.0 5.0"/>
+    <position kp="10" forcerange="-5.0 5.0"/>
   </default>
 	...
 	...
@@ -102,7 +104,7 @@ in `<venv_path>gymnasium/envs/mujoco/mujoco_rendering.py` line 592 change solver
 
 ```bash
 $ cd gym
-$ python train_bd1.py -a <algo> -p <[optional]path_to_pretrained_model>
+$ python train.py -a <algo> -n <experiment_name> -p <[optional]path_to_pretrained_model>
 ```
 
 #### To Monitor during training
@@ -115,13 +117,11 @@ $ tensorboard --logdir=logs
 
 ```bash
 $ cd gym
-$ python test_bd1.py -a <algo> -p <path_to_model>
+$ python test.py -a <algo> -p <path_to_model>
 ```
 
 ## TODO
 - try flat feet with additional ankle roll joint ?
-- make foot look more like a BDX (rubber contact)
-  - Can I specify a contact material in mujoco ?
 
 ## Long term TODO
 - Make it look cool like a BD-X or a BD-1

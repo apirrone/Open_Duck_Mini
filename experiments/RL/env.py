@@ -163,7 +163,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.joint_ctrl_history = self.joint_history_length * [13 * [0]]
         MujocoEnv.__init__(
             self,
-            "/home/antoine/MISC/mini_BD1/robots/bd1/scene.xml",
+            "/home/antoine/MISC/mini_BDX/mini_bdx/robots/bdx/scene.xml",
             5,
             observation_space=observation_space,
             **kwargs,
@@ -249,13 +249,15 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         smoothness_reward = self.compute_smoothness_reward()
 
+        # add foot contact reward
+
         reward = (
             0.05  # time reward
-            + 0.1 * walking_height_reward
-            # + 0.1 * upright_reward
+            # + 0.1 * walking_height_reward
+            + 0.1 * upright_reward
             + 2 * velocity_tracking_reward
             + 0.1 * smoothness_reward
-            # + 0.5 * joint_angle_deviation_reward
+            # + 0.1 * joint_angle_deviation_reward
         )
 
         self.do_simulation(a, self.frame_skip)

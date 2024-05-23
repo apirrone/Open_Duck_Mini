@@ -30,7 +30,7 @@ def train(env, sb3_algo, model_dir, log_dir, pretrained=None, device="cuda"):
                     # learning_rate=1e-3,
                     # train_freq=1000,
                     # gradient_steps=1000,
-                    policy_kwargs=dict(net_arch=[400, 300]),
+                    # policy_kwargs=dict(net_arch=[400, 300]),
                 )
             case "TD3":
                 model = TD3(
