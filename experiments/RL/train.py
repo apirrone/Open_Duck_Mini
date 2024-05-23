@@ -22,9 +22,9 @@ def train(env, sb3_algo, model_dir, log_dir, pretrained=None, device="cuda"):
                     verbose=1,
                     device=device,
                     tensorboard_log=log_dir,
-                    action_noise=NormalActionNoise(
-                        mean=np.zeros(n_actions), sigma=0.1 * np.ones(n_actions)
-                    ),
+                    # action_noise=NormalActionNoise(
+                    #     mean=np.zeros(n_actions), sigma=0.1 * np.ones(n_actions)
+                    # ),
                     # learning_starts=10000,
                     # batch_size=100,
                     # learning_rate=1e-3,

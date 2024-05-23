@@ -68,17 +68,18 @@ def goto_init():
 
 
 def check_contact(body1_name, body2_name):
-    # Get the body IDs
-    body1_id = data.body(body1_name)
-    body2_id = data.body(body2_name)
+    body1_id = data.body(body1_name).id
+    body2_id = data.body(body2_name).id
 
-    # Iterate through the contacts
     for i in range(data.ncon):
         contact = data.contact[i]
 
-        # Check if the contact is between the two bodies
-        if (contact.geom1 == body1_id and contact.geom2 == body2_id) or (
-            contact.geom1 == body2_id and contact.geom2 == body1_id
+        if (
+            model.geom_bodyid[contact.geom1] == body1_id
+            and model.geom_bodyid[contact.geom2] == body2_id
+        ) or (
+            model.geom_bodyid[contact.geom1] == body2_id
+            and model.geom_bodyid[contact.geom2] == body1_id
         ):
             return True
 
@@ -98,12 +99,13 @@ while True:
         cv2.imshow("image", im)
         key = cv2.waitKey(1)
         if key == 13:
-            data.xfrc_applied[data.body("base").id][:3] = [1000, 0, 0]  # absolute
-            print("Force applied")
+            data.xfrc_applied[data.body("base").id][:3] = [0, 0, 1000]  # absolute
         else:
             data.xfrc_applied[data.body("base").id][:3] = [0, 0, 0]  # absolute
 
-        print(data.body("base"))
+        print(check_contact("foot_module", "floor"))
+
+        # print(data.body("base"))
 
         # goto_init()
         # print(model.nq)

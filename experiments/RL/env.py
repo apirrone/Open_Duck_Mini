@@ -141,6 +141,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
     | 73  | t-3 head_yaw rotation error                              | -Inf | Inf |                                  |          |                          |
 
     | 74  | sinus                                                    | -Inf | Inf |                                  |          |                          |
+    | 75  | left foot in contact with the floor                      | -Inf | Inf |                                  |          |                          |
+    | 76  | right foot in contact with the floor                     | -Inf | Inf |                                  |          |                          |
 
 
     """
@@ -156,11 +158,15 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def __init__(self, **kwargs):
         utils.EzPickle.__init__(self, **kwargs)
-        observation_space = Box(low=-np.inf, high=np.inf, shape=(75,), dtype=np.float64)
+        observation_space = Box(low=-np.inf, high=np.inf, shape=(77,), dtype=np.float64)
         self.target_velocity = np.asarray([1, 0, 0])  # x, y, yaw
         self.joint_history_length = 3
         self.joint_error_history = self.joint_history_length * [13 * [0]]
         self.joint_ctrl_history = self.joint_history_length * [13 * [0]]
+
+        self.left_foot_in_contact = 0
+        self.right_foot_in_contact = 0
+
         MujocoEnv.__init__(
             self,
             "/home/antoine/MISC/mini_BDX/mini_bdx/robots/bdx/scene.xml",
@@ -169,22 +175,25 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             **kwargs,
         )
 
-    def sample_walk(self):
-        freq = 2
+    def check_contact(self, body1_name, body2_name):
+        body1_id = self.data.body(body1_name).id
+        body2_id = self.data.body(body2_name).id
 
-        s1 = np.sin(2 * np.pi * freq * self.data.time)
-        s2 = np.sin(2 * np.pi * freq * self.data.time + np.pi)
+        for i in range(self.data.ncon):
+            contact = self.data.contact[i]
 
-        targets = init_pos.copy()
-        targets["right_hip_pitch"] = init_pos["right_hip_pitch"] + s1
-        targets["right_knee_pitch"] = init_pos["right_knee_pitch"] - s1
+            if (
+                self.model.geom_bodyid[contact.geom1] == body1_id
+                and self.model.geom_bodyid[contact.geom2] == body2_id
+            ) or (
+                self.model.geom_bodyid[contact.geom1] == body2_id
+                and self.model.geom_bodyid[contact.geom2] == body1_id
+            ):
+                return True
 
-        targets["left_hip_pitch"] = init_pos["left_hip_pitch"] + s2
-        targets["left_knee_pitch"] = init_pos["left_knee_pitch"] - s2
+        return False
 
-        return targets
-
-    def compute_smoothness_reward(self):
+    def smoothness_reward(self):
         # Warning, this function only works if the history is 3 :)
         smooth = 0
         t0 = self.joint_ctrl_history[0]
@@ -198,6 +207,34 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         return -smooth
 
+    def feet_contact_reward(self):
+        self.right_foot_in_contact = self.check_contact("foot_module", "floor")
+        self.left_foot_in_contact = self.check_contact("foot_module_2", "floor")
+
+        return self.right_foot_in_contact + self.left_foot_in_contact
+
+    def velocity_tracking_reward(self):
+        base_velocity = list(self.data.body("base").cvel[3:][:2]) + [
+            self.data.body("base").cvel[:3][2]
+        ]
+        base_velocity = np.asarray(base_velocity)
+        return np.exp(-np.square(base_velocity - self.target_velocity).sum())
+
+    def joint_angle_deviation_reward(self):
+        current_ctrl = self.data.ctrl
+        init_ctrl = np.array(list(init_pos.values()))
+        return -np.square(current_ctrl - init_ctrl).sum()
+
+    def walking_height_reward(self):
+        return (
+            -np.square((self.get_body_com("base")[2] - 0.14)) * 100
+        )  # "normal" walking height is about 0.14m
+
+    def upright_reward(self):
+        # angular distance to upright position in reward
+        Z_vec = np.array(self.data.body("base").xmat).reshape(3, 3)[:, 2]
+        return np.square(np.dot(np.array([0, 0, 1]), Z_vec))
+
     def is_terminated(self) -> bool:
         rot = np.array(self.data.body("base").xmat).reshape(3, 3)
         Z_vec = rot[:, 2]
@@ -205,15 +242,6 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         return (
             self.data.body("base").xpos[2] < 0.08 or np.dot(upright, Z_vec) <= 0
         )  # base z is below 0.08m or base has more than 90 degrees of tilt
-
-    def follow_walk_reward(self):
-        targets = self.sample_walk()
-        reward = 0
-        for joint_name, target in targets.items():
-            joint_id = dofs[joint_name]
-            joint_angle = self.data.qpos[7 + joint_id]
-            reward += -np.square(joint_angle - target)
-        return reward
 
     def step(self, a):
         # https://www.nature.com/articles/s41598-023-38259-7.pdf
@@ -226,38 +254,14 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         #         np.random.randint(-5, 5),
         #     ]  # absolute
 
-        # angular distance to upright position in reward
-        Z_vec = np.array(self.data.body("base").xmat).reshape(3, 3)[:, 2]
-        upright_reward = np.square(np.dot(np.array([0, 0, 1]), Z_vec))
-
-        walking_height_reward = (
-            -np.square((self.get_body_com("base")[2] - 0.14)) * 100
-        )  # "normal" walking height is about 0.14m
-
-        current_ctrl = self.data.ctrl
-        init_ctrl = np.array(list(init_pos.values()))
-        joint_angle_deviation_reward = -np.square(current_ctrl - init_ctrl).sum()
-
-        base_velocity = list(self.data.body("base").cvel[3:][:2]) + [
-            self.data.body("base").cvel[:3][2]
-        ]
-        base_velocity = np.asarray(base_velocity)
-        velocity_tracking_reward = np.exp(
-            -np.square(base_velocity - self.target_velocity).sum()
-        )
-        # print(velocity_tracking_reward)
-
-        smoothness_reward = self.compute_smoothness_reward()
-
-        # add foot contact reward
-
         reward = (
             0.05  # time reward
-            # + 0.1 * walking_height_reward
-            + 0.1 * upright_reward
-            + 2 * velocity_tracking_reward
-            + 0.1 * smoothness_reward
-            # + 0.1 * joint_angle_deviation_reward
+            # + 0.1 * self.walking_height_reward()
+            + 0.1 * self.upright_reward()
+            # + 1.0 * self.velocity_tracking_reward()
+            + 0.1 * self.smoothness_reward()
+            + 0.1 * self.feet_contact_reward()
+            + 0.9 * self.joint_angle_deviation_reward()
         )
 
         self.do_simulation(a, self.frame_skip)
@@ -266,23 +270,19 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         ob = self._get_obs()
 
-        # if self.is_terminated():
-        # print(
-        #     "Terminated because too much tilt or com too low.",
-        # )
-        # self.reset()  # not needed because autoreset is True in register
-
         return (
             ob,
             reward,
             self.is_terminated(),  # terminated
             False,  # truncated
             dict(
-                walking_height_reward=walking_height_reward,
-                upright_reward=upright_reward,
-                velocity_tracking_reward=velocity_tracking_reward,
-                joint_angle_deviation_reward=joint_angle_deviation_reward,
                 time_reward=0.05,
+                walking_height_reward=0.1 * self.walking_height_reward(),
+                upright_reward=0.1 * self.upright_reward(),
+                velocity_tracking_reward=1.0 * self.velocity_tracking_reward(),
+                smoothness_reward=0.1 * self.smoothness_reward(),
+                feet_contact_reward=0.1 * self.feet_contact_reward(),
+                joint_angle_deviation_reward=0.1 * self.joint_angle_deviation_reward(),
             ),
         )
 
@@ -332,5 +332,6 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
                 self.target_velocity,
                 np.array(self.joint_error_history).flatten(),
                 [np.sin(self.data.time)],
+                [self.left_foot_in_contact, self.right_foot_in_contact],
             ]
         )
