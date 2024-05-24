@@ -87,10 +87,15 @@ def check_contact(body1_name, body2_name):
 
 
 target = [0.5, 0.5, 0.1]
-# model.opt.gravity[:] = [0, 0, 0]
+model.opt.gravity[:] = [0, 0, 0]
 # data.qpos[6] = np.deg2rad(90)
 target = [0, 1, 0.1]
-goto_init()
+# goto_init()
+
+
+for i in range(7, len(data.qpos)):
+    data.qpos[i] = np.random.uniform(-0.2, 0.2)
+    data.ctrl[i - 7] = data.qpos[i]
 
 
 im = np.zeros((800, 800, 3), dtype=np.uint8)
@@ -103,7 +108,9 @@ while True:
         else:
             data.xfrc_applied[data.body("base").id][:3] = [0, 0, 0]  # absolute
 
-        print(check_contact("foot_module", "floor"))
+        print(data.qpos)
+
+        # print(check_contact("foot_module", "floor"))
 
         # print(data.body("base"))
 

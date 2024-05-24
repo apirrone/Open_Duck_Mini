@@ -174,6 +174,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             observation_space=observation_space,
             **kwargs,
         )
+        # self.frame_skip = 30
 
     def check_contact(self, body1_name, body2_name):
         body1_id = self.data.body(body1_name).id
@@ -257,33 +258,25 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         # Idea, no reward at all if walking height is not good
         # TODO Maybe the actions are performed at too high frequency
 
+        self.do_simulation(a, self.frame_skip)
+
         reward = (
             0.005  # time reward
-            # + 0.1 * self.walking_height_reward()
+            + 0.2 * self.walking_height_reward()
             + 0.5 * self.upright_reward()
-            + 1.0 * self.velocity_tracking_reward()
+            + 0.0 * self.velocity_tracking_reward()
             + 0.1 * self.smoothness_reward()
             + 0.5 * self.feet_contact_reward()
-            + 0.1 * self.joint_angle_deviation_reward()
+            # + 0.1 * self.joint_angle_deviation_reward()
         )
 
-        # print("time reward", 0.05)
-        # # print("walking height reward", 0.1 * self.walking_height_reward())
-        # print("upright reward", 1.0 * self.upright_reward())
-        # # print("velocity tracking reward", 1.0 * self.velocity_tracking_reward())
-        # # print("smoothness reward", 0.1 * self.smoothness_reward())
-        # print("feet contact reward", 1 * self.feet_contact_reward())
-        # # print("joint angle derivation", 0.1 * self.joint_angle_deviation_reward())
-        # print("--")
-
-        self.do_simulation(a, self.frame_skip)
-        if self.render_mode == "human":
-            self.render()
+        if self.is_terminated():
+            reward = -10
 
         ob = self._get_obs()
 
-        if self.is_terminated():
-            reward = -100
+        if self.render_mode == "human":
+            self.render()
 
         return (
             ob,
@@ -291,20 +284,28 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             self.is_terminated(),  # terminated
             False,  # truncated
             dict(
-                time_reward=0.05,
-                walking_height_reward=0.1 * self.walking_height_reward(),
-                upright_reward=0.1 * self.upright_reward(),
+                time_reward=0.5,
+                walking_height_reward=0.5 * self.walking_height_reward(),
+                upright_reward=0.5 * self.upright_reward(),
                 velocity_tracking_reward=1.0 * self.velocity_tracking_reward(),
                 smoothness_reward=0.1 * self.smoothness_reward(),
-                feet_contact_reward=0.1 * self.feet_contact_reward(),
-                joint_angle_deviation_reward=0.1 * self.joint_angle_deviation_reward(),
+                feet_contact_reward=0.2 * self.feet_contact_reward(),
+                # joint_angle_deviation_reward=0.1 * self.joint_angle_deviation_reward(),
             ),
         )
 
     def reset_model(self):
-        self.goto_init()
+        # self.goto_init()
 
+        # self.model.opt.gravity[:] = [0, 0, 0]
+        # randomize initial position
         qpos = self.data.qpos
+
+        # LATEST
+        # added randomization to the initial position
+        for i in range(7, len(qpos)):
+            qpos[i] = np.random.uniform(-0.3, 0.3)
+
         self.init_qpos = qpos.copy().flatten()
 
         # Randomize later

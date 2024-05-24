@@ -6,7 +6,7 @@ import gymnasium as gym
 import numpy as np
 from gymnasium.envs.registration import register
 from sb3_contrib import TQC
-from stable_baselines3 import A2C, SAC, TD3
+from stable_baselines3 import A2C, PPO, SAC, TD3
 from stable_baselines3.common.noise import NormalActionNoise
 
 
@@ -42,6 +42,10 @@ def train(env, sb3_algo, model_dir, log_dir, pretrained=None, device="cuda"):
                 )
             case "TQC":
                 model = TQC(
+                    "MlpPolicy", env, verbose=1, device=device, tensorboard_log=log_dir
+                )
+            case "PPO":
+                model = PPO(
                     "MlpPolicy", env, verbose=1, device=device, tensorboard_log=log_dir
                 )
             case _:
@@ -102,7 +106,11 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Train BDX")
     parser.add_argument(
-        "-a", "--algo", type=str, choices=["SAC", "TD3", "A2C", "TQC"], default="SAC"
+        "-a",
+        "--algo",
+        type=str,
+        choices=["SAC", "TD3", "A2C", "TQC", "PPO"],
+        default="SAC",
     )
     parser.add_argument("-p", "--pretrained", type=str, required=False)
     parser.add_argument("-d", "--device", type=str, required=False, default="cuda")

@@ -22,10 +22,12 @@
   <default>
     <geom contype="1" conaffinity="1" solref=".004 1" />
     <joint damping="0.09" frictionloss="0.1"/>
-    <position kp="10" forcerange="-5.0 5.0"/>
+    <!-- <position kp="10" forcerange="-5.0 5.0"/>
+    <position kp="10" forcerange="-0.58 0.58"/> -->
+    <position kp="10" forcerange="-2 2"/>
   </default>
   <worldbody>
-    <body name="base" pos="0 0 0.148">
+    <body name="base" pos="0 0 0.19">
       <freejoint />
       <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage"/>
       <geom pos="0.0001271 -0.0066039 0.0230789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0 0 0 1" mesh="body_part"/>
