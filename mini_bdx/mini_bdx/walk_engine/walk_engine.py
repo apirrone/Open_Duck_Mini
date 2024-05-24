@@ -89,13 +89,15 @@ class WalkEngine:
         self.kinematics_solver = kinematics_solver
 
         # self.kinematics_solver.mask_fbase(True)
-        T_world_trunk = np.eye(4)
-        T_world_trunk = fv_utils.rotateInSelf(
-            T_world_trunk, [0, self.trunk_pitch, 0], degrees=True
+        self.T_world_trunk = np.eye(4)
+        self.T_world_trunk = fv_utils.rotateInSelf(
+            self.T_world_trunk, [0, self.trunk_pitch, 0], degrees=True
         )
 
-        self.trunk_task = self.kinematics_solver.add_frame_task("trunk", T_world_trunk)
-        self.trunk_task.configure("trunk", "soft")
+        self.trunk_task = self.kinematics_solver.add_frame_task(
+            "trunk", self.T_world_trunk
+        )
+        self.trunk_task.configure("trunk", "hard")
 
         self.right_foot_tip_task = self.kinematics_solver.add_frame_task(
             "right_foot_tip", robot.get_T_world_frame("right_foot_tip")
@@ -158,28 +160,42 @@ class WalkEngine:
         )
         return T_world_right_foot_tip
 
-    def update(self, time_since_last_step):
+    # imu is angular position of the trunk [roll, pitch, yaw]
+    def update(self, walking, imu, time_since_last_step):
         if time_since_last_step < 0:
             time_since_last_step = 0
         if time_since_last_step > self.step_duration:
             time_since_last_step = self.step_duration
 
-        self.left_foot_tip_task.T_world_frame = self.get_left_foot_pose(
-            time_since_last_step
-        )
-        self.right_foot_tip_task.T_world_frame = self.get_right_foot_pose(
-            time_since_last_step
-        )
+        swing = 0
+        if walking:
+            self.left_foot_tip_task.T_world_frame = self.get_left_foot_pose(
+                time_since_last_step
+            )
+            self.right_foot_tip_task.T_world_frame = self.get_right_foot_pose(
+                time_since_last_step
+            )
 
-        # swing_P = np.pi if self.is_left_support else 0
-        # swing_P += np.pi * 2 * self.swing_phase
-        # swing = self._swing_gain * np.sin(
-        #     np.pi * time_since_last_step / self.step_duration + swing_P
-        # )
+            swing_P = 0 if self.is_left_support else np.pi
+            swing_P += np.pi * 2 * self.swing_phase
+            swing = self._swing_gain * np.sin(
+                np.pi * time_since_last_step / self.step_duration + swing_P
+            )
+        else:
+            self.left_foot_tip_task.T_world_frame = self.get_left_foot_pose(0)
+            self.right_foot_tip_task.T_world_frame = self.get_right_foot_pose(0)
 
-        # fr = np.eye(4)
-        # fr[:3, 3] = [0, swing, 0]
-        # self.trunk_task.T_world_frame = fr
+        self.trunk_pitch = -np.rad2deg(imu[1]) * 2
+        print(self.trunk_pitch)
+        self.T_world_trunk = np.eye(4)
+        self.T_world_trunk = fv_utils.rotateInSelf(
+            self.T_world_trunk, [0, self.trunk_pitch, 0], degrees=True
+        )
+        self.T_world_trunk[:3, 3] = [0, swing, 0]
+
+        fr = self.T_world_trunk
+        fr[:3, 3] = [0, swing, 0]
+        self.trunk_task.T_world_frame = fr
 
     def compute_angles(self):
         angles = {
@@ -274,9 +290,10 @@ class WalkEngine:
 
         step_low = -self.trunk_height
         step_high = (
-            -self.trunk_height + self.rise_gain
-            if (self.step_size_x or self.step_size_y)
-            else -self.trunk_height
+            -self.trunk_height
+            + self.rise_gain
+            # if (self.step_size_x or self.step_size_y)
+            # else -self.trunk_height
         )
         self.support_foot.z_spline.add_point(0, step_low, 0)
         self.support_foot.z_spline.add_point(self.step_duration, step_low, 0)

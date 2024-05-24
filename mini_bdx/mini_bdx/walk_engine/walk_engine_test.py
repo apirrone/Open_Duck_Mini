@@ -13,13 +13,14 @@ solver = placo.KinematicsSolver(robot)
 walk_engine = WalkEngine(
     robot,
     solver,
-    step_size_x=0.08,
+    step_size_x=0.0,
     step_size_y=0.0,
-    swing_gain=0.04,
+    swing_gain=0.02,
     # step_size_yaw=np.deg2rad(10),
-    rise_gain=0.02,
+    rise_gain=0.03,
     foot_y_offset=0.0,
-    trunk_pitch=-20,
+    trunk_pitch=0,
+    frequency=1,
 )
 viz = robot_viz(robot)
 
@@ -35,7 +36,7 @@ while True:
         start = time.time()
         walk_engine.new_step()
 
-    walk_engine.update(t)
+    walk_engine.update(True, [0, 0, 0], t)
     angles = walk_engine.compute_angles()
     robot.update_kinematics()
     solver.solve(True)

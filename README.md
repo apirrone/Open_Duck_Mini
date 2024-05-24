@@ -56,6 +56,15 @@ $ python test.py -a <algo> -p <path_to_model>
 ## TODO
 - try flat feet with additional ankle roll joint ?
 
+### TODO Placo walk engine
+- tune the hell out of it
+  - Get walk wit no step size working
+- Understand it properly
+  - Work out the transition between not moving, stepping without step size and stepping with step size
+- Ramp up step size
+- Pid on trunk pitch and head x position to stabilize 
+  - Already added trunk_pitch = -imu_pitch*2
+
 ## Long term TODO
 - Make it look cool like a BD-X or a BD-1
 - nice close up video https://www.youtube.com/watch?v=QuWaaNN-1hs

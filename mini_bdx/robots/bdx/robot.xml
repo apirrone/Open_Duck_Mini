@@ -21,10 +21,10 @@
   </asset>
   <default>
     <geom contype="1" conaffinity="1" solref=".004 1" />
-    <joint damping="0.09" frictionloss="0.1"/>
-    <!-- <position kp="10" forcerange="-5.0 5.0"/>
-    <position kp="10" forcerange="-0.58 0.58"/> -->
-    <position kp="10" forcerange="-2 2"/>
+    <joint damping="0.12" frictionloss="0.3"/>
+    <position kp="10" forcerange="-5.0 5.0"/>
+    <!-- <position kp="10" forcerange="-0.58 0.58"/>
+    <position kp="10" forcerange="-2 2"/> -->
   </default>
   <worldbody>
     <body name="base" pos="0 0 0.19">
