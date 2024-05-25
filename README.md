@@ -46,8 +46,9 @@ $ python test.py -a <algo> -p <path_to_model>
 
 # TODO
 
-## Design TODO
+## Design TODO
 - Rework the roll/pitch part of the hips, its very ugly right now
+  - Reworked a little, still ugly
 - Integrate contact sensors in the feet
 - Make the head part to link the pitch and yaw
 - Make it look cool like a BD-X or a BD-1
