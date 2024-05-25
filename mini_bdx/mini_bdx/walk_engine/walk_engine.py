@@ -1,3 +1,5 @@
+# Based on https://github.com/Rhoban/walk_engine
+
 import FramesViewer.utils as fv_utils
 import numpy as np
 import placo
@@ -231,8 +233,7 @@ class WalkEngine:
         fr[:3, 3] = [0, swing, 0]
         self.trunk_task.T_world_frame = fr
 
-        # head
-
+        # Head
         tmp = self.T_world_head.copy()
         tmp = fv_utils.translateInSelf(tmp, [0, 0, -target_head_z_offset])
         tmp = fv_utils.rotateInSelf(
@@ -334,12 +335,7 @@ class WalkEngine:
         self.is_left_support = not self.is_left_support
 
         step_low = -self.trunk_height
-        step_high = (
-            -self.trunk_height
-            + self.rise_gain
-            # if (self.step_size_x or self.step_size_y)
-            # else -self.trunk_height
-        )
+        step_high = -self.trunk_height + self.rise_gain
         self.support_foot.z_spline.add_point(0, step_low, 0)
         self.support_foot.z_spline.add_point(self.step_duration, step_low, 0)
 
