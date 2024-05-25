@@ -1,6 +1,8 @@
 # Mini BDX Droid
 
-![Capture d’écran du 2024-05-23 20-31-53](https://github.com/apirrone/mini_BDX/assets/6552564/d9b59a42-511d-40e9-96fc-b4fe29384bfe)
+
+https://github.com/apirrone/mini_BDX/assets/6552564/1b8fb545-8831-40ba-97de-3689f4c851d3
+
 
 
 ## Install 
