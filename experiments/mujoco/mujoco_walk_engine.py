@@ -22,11 +22,9 @@ model = mujoco.MjModel.from_xml_path("../../mini_bdx/robots/bdx/scene.xml")
 data = mujoco.MjData(model)
 
 
-MAX_TARGET_STEP_SIZE_X = 0.03
-MAX_TARGET_STEP_SIZE_Y = 0.03
-MAX_TARGET_YAW = np.deg2rad(15)
-
-
+max_target_step_size_x = 0.03
+max_target_step_size_y = 0.03
+max_target_yaw = np.deg2rad(15)
 target_step_size_x = 0
 target_step_size_y = 0
 target_yaw = 0
@@ -38,34 +36,40 @@ time_since_last_left_contact = 0
 time_since_last_right_contact = 0
 walking = False
 
+start_timeout = time.time()
+
 
 def xbox_input():
-    global target_step_size_x, target_step_size_y, target_yaw, walking, t, walk_engine, target_head_pitch, target_head_yaw, target_head_z_offset
+    global target_step_size_x, target_step_size_y, target_yaw, walking, t, walk_engine, target_head_pitch, target_head_yaw, target_head_z_offset, start_timeout, max_target_step_size_x, max_target_step_size_y, max_target_yaw
     inputs = xbox.read()
-    target_step_size_x = -inputs["l_y"] * MAX_TARGET_STEP_SIZE_X
-    target_step_size_y = inputs["l_x"] * MAX_TARGET_STEP_SIZE_Y
+    target_step_size_x = -inputs["l_y"] * max_target_step_size_x
+    target_step_size_y = inputs["l_x"] * max_target_step_size_y
     if inputs["l_trigger"] > 0.5:
         target_head_pitch = inputs["r_y"] * np.deg2rad(45)
         target_head_yaw = -inputs["r_x"] * np.deg2rad(120)
-        target_head_z_offset = inputs["r_trigger"] * 0.1
+        target_head_z_offset = inputs["r_trigger"] * 0.08
     else:
-        target_yaw = -inputs["r_x"] * MAX_TARGET_YAW
+        target_yaw = -inputs["r_x"] * max_target_yaw
+
+    if inputs["start"] and time.time() - start_timeout > 0.5:
+        walking = not walking
+        start_timeout = time.time()
 
 
 def key_callback(keycode):
-    global target_step_size_x, target_step_size_y, target_yaw, walking, t, walk_engine
+    global target_step_size_x, target_step_size_y, target_yaw, walking, t, walk_engine, max_target_step_size_x, max_target_step_size_y, max_target_yaw
     if keycode == 265:  # up
-        target_step_size_x = 0.03
+        max_target_step_size_x += 0.005
     if keycode == 264:  # down
-        target_step_size_x = -0.03
+        max_target_step_size_x -= 0.005
     if keycode == 263:  # left
-        target_step_size_y = -0.06
+        max_target_step_size_y -= 0.005
     if keycode == 262:  # right
-        target_step_size_y = 0.06
+        max_target_step_size_y += 0.005
     if keycode == 81:  # a
-        target_yaw = np.deg2rad(15)
+        max_target_yaw += np.deg2rad(1)
     if keycode == 69:  # e
-        target_yaw = -np.deg2rad(15)
+        max_target_yaw -= np.deg2rad(1)
     if keycode == 257:  # enter
         walking = not walking
     if keycode == 79:  # o
@@ -73,9 +77,9 @@ def key_callback(keycode):
     if keycode == 80:  # p
         walk_engine.swing_gain += 0.005
     if keycode == 76:  # l
-        walk_engine.trunk_x_offset += 0.001
+        walk_engine.tune_trunk_x_offset += 0.001
     if keycode == 59:  # m
-        walk_engine.trunk_x_offset -= 0.001
+        walk_engine.tune_trunk_x_offset -= 0.001
     if keycode == 266:  # page up
         walk_engine.frequency += 0.1
     if keycode == 267:  # page down
@@ -97,9 +101,9 @@ def key_callback(keycode):
 
     print("----------------")
     print("walking" if walking else "not walking")
-    print("target_step_size_x (up, down)", target_step_size_x)
-    print("target_step_size_y (left, right)", target_step_size_y)
-    print("target_yaw (a, e)", np.rad2deg(target_yaw))
+    print("MAX_TARGET_STEP_SIZE_X (up, down)", max_target_step_size_x)
+    print("MAX_TARGET_STEP_SIZE_Y (left, right)", max_target_step_size_y)
+    print("MAX_TARGET_YAW (a, e)", np.rad2deg(max_target_yaw))
     print("swing gain (o, p)", walk_engine.swing_gain)
     print("trunk x offset (l, m)", walk_engine.trunk_x_offset)
     print("frequency (pageup, pagedown)", walk_engine.frequency)
@@ -114,12 +118,6 @@ robot = placo.RobotWrapper(
 solver = placo.KinematicsSolver(robot)
 
 
-# at freq 2
-# swing gain 0
-# step size x
-# forward : trunk x offset 0.004
-# static trunk x offset 0.007
-# backward trunk x ofset 0.007
 walk_engine = WalkEngine(
     robot,
     solver,

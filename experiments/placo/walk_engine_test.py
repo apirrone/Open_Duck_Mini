@@ -40,18 +40,28 @@ while True:
     cv2.imshow("im", im)
     key = cv2.waitKey(1)
     if key == ord("z"):
-        target_step_size_x = 0.1
+        target_step_size_x = 0.03
     if key == ord("s"):
-        target_step_size_x = -0.1
+        target_step_size_x = -0.03
     if key == ord("q"):
-        target_step_size_y = 0.1
+        target_step_size_y = 0.03
     if key == ord("d"):
-        target_step_size_y = -0.1
+        target_step_size_y = -0.03
     if key == ord("a"):
         target_yaw = np.deg2rad(10)
     if key == ord("e"):
         target_yaw = -np.deg2rad(10)
-
+    if key == ord("o"):
+        walk_engine.swing_gain -= 0.001
+    if key == ord("p"):
+        walk_engine.swing_gain += 0.001
+    if key == ord("l"):
+        walk_engine.frequency -= 0.1
+    if key == ord("m"):
+        walk_engine.frequency += 0.1
+    print("swing gain", walk_engine.swing_gain)
+    print("frequency", walk_engine.frequency)
+    print("--")
     # if key == ord("n"):
     #     t += 0.01
     #     print(t)
@@ -63,7 +73,7 @@ while True:
         walk_engine.new_step()
 
     walk_engine.update(
-        True, [0, 0, 0], target_step_size_x, target_step_size_y, target_yaw, t
+        True, [0, 0, 0], target_step_size_x, target_step_size_y, target_yaw, 0, 0, 0, t
     )
     angles = walk_engine.compute_angles()
     robot.update_kinematics()
