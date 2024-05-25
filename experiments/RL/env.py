@@ -1,7 +1,10 @@
 import numpy as np
+import placo
 from gymnasium import utils
 from gymnasium.envs.mujoco import MujocoEnv
 from gymnasium.spaces import Box
+
+from mini_bdx.walk_engine import WalkEngine
 
 init_pos = {
     "right_hip_yaw": 0,
@@ -167,6 +170,13 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.left_foot_in_contact = 0
         self.right_foot_in_contact = 0
 
+        self.prev_t = 0
+
+        robot = placo.RobotWrapper(
+            "../../mini_bdx/robots/bdx/robot.urdf", placo.Flags.ignore_collisions
+        )
+        self.walk_engine = WalkEngine(robot)
+
         MujocoEnv.__init__(
             self,
             "/home/antoine/MISC/mini_BDX/mini_bdx/robots/bdx/scene.xml",
@@ -209,8 +219,6 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         return -smooth
 
     def feet_contact_reward(self):
-        self.right_foot_in_contact = self.check_contact("foot_module", "floor")
-        self.left_foot_in_contact = self.check_contact("foot_module_2", "floor")
 
         return self.right_foot_in_contact + self.left_foot_in_contact
 
@@ -244,6 +252,25 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             self.data.body("base").xpos[2] < 0.08 or np.dot(upright, Z_vec) <= 0
         )  # base z is below 0.08m or base has more than 90 degrees of tilt
 
+    def follow_walk_engine_reward(self, dt):
+        self.walk_engine.update(
+            True,
+            [0, 0, 0],
+            [0, 0, 0],
+            self.left_foot_in_contact,
+            self.right_foot_in_contact,
+            0.03,
+            0,
+            0,
+            0,
+            0,
+            0,
+            dt,
+            ignore_feet_contact=True,
+        )
+        angles = self.walk_engine.get_angles()
+        return -np.square(self.data.ctrl - list(angles.values())).sum()
+
     def step(self, a):
         # https://www.nature.com/articles/s41598-023-38259-7.pdf
 
@@ -255,38 +282,47 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         #         np.random.randint(-5, 5),
         #     ]  # absolute
 
-        # Idea, no reward at all if walking height is not good
-        # TODO Maybe the actions are performed at too high frequency
+        t = self.data.time
+        dt = t - self.prev_t
 
-        self.do_simulation(a, self.frame_skip)
+        self.do_simulation(a, 1)
+        # self.do_simulation(
+        #     a, self.frame_skip
+        # )  # TODO maybe set frame_skip to 1 when bootstrapping with walk engine
+
+        self.right_foot_in_contact = self.check_contact("foot_module", "floor")
+        self.left_foot_in_contact = self.check_contact("foot_module_2", "floor")
 
         reward = (
-            0.5  # time reward
-            + 0.2 * self.walking_height_reward()
-            + 0.5 * self.upright_reward()
-            + 0.5 * self.velocity_tracking_reward()
+            0.0  # time reward
+            # + 0.2 * self.walking_height_reward()
+            # + 0.5 * self.upright_reward()
+            # + 0.5 * self.velocity_tracking_reward()
             + 0.1 * self.smoothness_reward()
-            + 2.0 * self.feet_contact_reward()
+            # + 2.0 * self.feet_contact_reward()
             # + 0.1 * self.joint_angle_deviation_reward()
+            + 0.01 * self.follow_walk_engine_reward(dt)
         )
 
-        if self.is_terminated():
-            reward = -10
+        # if self.is_terminated():
+        #     reward = -10
 
-        print("time_reward", 0.005)
-        print("walking_height_reward", 0.2 * self.walking_height_reward())
-        print("upright_reward", 0.5 * self.upright_reward())
-        print("velocity_tracking_reward", 0.5 * self.velocity_tracking_reward())
-        print("smoothness_reward", 0.1 * self.smoothness_reward())
-        print("feet_contact_reward", 0.5 * self.feet_contact_reward())
-        print("Terminated reward", -10 if self.is_terminated() else 0)
-        print("Total reward", reward)
-        print("")
+        # print("time_reward", 0.005)
+        # print("walking_height_reward", 0.2 * self.walking_height_reward())
+        # print("upright_reward", 0.5 * self.upright_reward())
+        # print("velocity_tracking_reward", 0.5 * self.velocity_tracking_reward())
+        # print("smoothness_reward", 0.1 * self.smoothness_reward())
+        # print("feet_contact_reward", 0.5 * self.feet_contact_reward())
+        # print("Terminated reward", -10 if self.is_terminated() else 0)
+        # print("Total reward", reward)
+        # print("")
 
         ob = self._get_obs()
 
         if self.render_mode == "human":
             self.render()
+
+        self.prev_t = t
 
         return (
             ob,
@@ -305,10 +341,10 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         )
 
     def reset_model(self):
-        # self.goto_init()
+        self.prev_t = self.data.time
 
-        # self.model.opt.gravity[:] = [0, 0, 0]
-        # randomize initial position
+        self.model.opt.gravity[:] = [0, 0, 0]  # no gravity
+
         qpos = self.data.qpos
 
         # LATEST

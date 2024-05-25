@@ -72,6 +72,9 @@ $ python test.py -a <algo> -p <path_to_model>
   - rise_gain
   - swing_gain
 - OR make the action space of the rl algo to be the cartesian pose of the feet in the trunk frame?
+  
+## Bootstraping by behavior cloning
+- https://stable-baselines.readthedocs.io/en/master/guide/pretrain.html 
 
 # References 
 - https://cults3d.com/en/3d-model/gadget/robot-disney-star-wars

@@ -116,10 +116,8 @@ viewer = mujoco.viewer.launch_passive(model, data, key_callback=key_callback)
 robot = placo.RobotWrapper(
     "../../mini_bdx/robots/bdx/robot.urdf", placo.Flags.ignore_collisions
 )
-kinematics_solver = placo.KinematicsSolver(robot)
 
-
-walk_engine = WalkEngine(robot, kinematics_solver)
+walk_engine = WalkEngine(robot)
 
 
 def get_imu(data):

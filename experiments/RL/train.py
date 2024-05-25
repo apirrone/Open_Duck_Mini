@@ -124,14 +124,14 @@ if __name__ == "__main__":
         help="Name of the experiment",
     )
 
+    args = parser.parse_args()
+
     register(
         id="BDX_env",
         entry_point="env:BDXEnv",
         max_episode_steps=500,
         autoreset=True,
-    )  # TODO play with max_episode_steps
-
-    args = parser.parse_args()
+    )
 
     env = gym.make("BDX_env", render_mode=None)
     # Create directories to hold models and logs

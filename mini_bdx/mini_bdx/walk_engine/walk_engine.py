@@ -66,7 +66,6 @@ class WalkEngine:
     def __init__(
         self,
         robot: placo.RobotWrapper,
-        kinematics_solver: placo.KinematicsSolver,
         default_trunk_x_offset: float = 0.007,
         default_trunk_z_offset: float = 0.02,
         foot_y_offset: float = 0.0,
@@ -81,6 +80,7 @@ class WalkEngine:
         step_size_y: float = 0,
         step_size_yaw: float = 0,
     ):
+        kinematics_solver = placo.KinematicsSolver(robot)
         self.left = Foot()
         self.right = Foot()
         self.swing_spline = PolySpline()
@@ -191,6 +191,7 @@ class WalkEngine:
         target_head_yaw,
         target_head_z_offset,
         dt,
+        ignore_feet_contact=False,
     ):
 
         if left_contact:
@@ -198,7 +199,7 @@ class WalkEngine:
         if right_contact:
             self.time_since_last_right_contact = 0
 
-        if (
+        if ignore_feet_contact or (
             not self.time_since_last_left_contact > self.rise_duration
             and not self.time_since_last_right_contact > self.rise_duration
         ):
