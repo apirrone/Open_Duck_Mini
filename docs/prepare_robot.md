@@ -74,3 +74,16 @@ Put that inside the <mujoco> bracket
 
 still need to add : 
 - change frames to sites
+
+
+## Visualize 
+
+```bash
+$ python3 -m mujoco.viewer --mjcf=<path>/scene.xml
+```
+
+or 
+
+```bash
+$ <path_to_mujoco_bin>/bin/simulate <path>/scene.xml
+```
