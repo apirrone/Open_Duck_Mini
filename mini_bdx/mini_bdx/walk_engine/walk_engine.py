@@ -67,11 +67,11 @@ class WalkEngine:
         kinematics_solver: placo.KinematicsSolver,
         trunk_x_offset: float = 0,
         trunk_z_offset: float = 0.02,
-        foot_y_offset: float = 0.03,
+        foot_y_offset: float = 0.0,
         rise_gain: float = 0.04,
         rise_duration: float = 0.2,
         frequency: float = 1.5,
-        swing_gain: float = 0.02,
+        swing_gain: float = 0.0,
         swing_phase: float = 0.0,
         foot_y_offset_per_step_size_y: float = 0.02,
         trunk_pitch: float = 0,
@@ -88,11 +88,16 @@ class WalkEngine:
         self.robot = robot
         self.kinematics_solver = kinematics_solver
 
-        # self.kinematics_solver.mask_fbase(True)
         self.T_world_trunk = np.eye(4)
         self.T_world_trunk = fv_utils.rotateInSelf(
             self.T_world_trunk, [0, self.trunk_pitch, 0], degrees=True
         )
+
+        self.T_world_head = robot.get_T_world_frame("head")
+        self.head_task = self.kinematics_solver.add_frame_task(
+            "head", self.T_world_head
+        )
+        self.head_task.configure("head", "soft")
 
         self.trunk_task = self.kinematics_solver.add_frame_task(
             "trunk", self.T_world_trunk
@@ -111,7 +116,7 @@ class WalkEngine:
 
         self.is_left_support = False
 
-        self.trunk_height = -robot.get_T_world_frame("left_foot_tip")[:3, 3][2] / 1.3
+        self.trunk_height = -robot.get_T_world_frame("left_foot_tip")[:3, 3][2] / 1.2
         self.foot_distance = np.abs(robot.get_T_world_frame("left_foot_tip")[:3, 3][1])
 
         self.trunk_x_offset = trunk_x_offset
@@ -161,11 +166,34 @@ class WalkEngine:
         return T_world_right_foot_tip
 
     # imu is angular position of the trunk [roll, pitch, yaw]
-    def update(self, walking, imu, time_since_last_step):
+    def update(
+        self,
+        walking,
+        gyro,
+        target_step_x,
+        target_step_y,
+        target_yaw,
+        target_head_pitch,
+        target_head_yaw,
+        target_head_z_offset,
+        time_since_last_step,
+    ):
         if time_since_last_step < 0:
             time_since_last_step = 0
         if time_since_last_step > self.step_duration:
             time_since_last_step = self.step_duration
+
+        # slowly increase self.step_size_x and self.step_size_y to target_step_x and target_step_y
+        # target can be negative or positive or 0
+
+        delta_x = target_step_x - self.step_size_x
+        delta_y = target_step_y - self.step_size_y
+        delta_yaw = target_yaw - self.step_size_yaw
+
+        self.step_size_x = self.step_size_x + (delta_x / 10)
+        self.step_size_y = self.step_size_y + (delta_y / 10)
+
+        self.step_size_yaw = self.step_size_yaw + (delta_yaw / 10)
 
         swing = 0
         if walking:
@@ -185,17 +213,27 @@ class WalkEngine:
             self.left_foot_tip_task.T_world_frame = self.get_left_foot_pose(0)
             self.right_foot_tip_task.T_world_frame = self.get_right_foot_pose(0)
 
-        self.trunk_pitch = -np.rad2deg(imu[1]) * 2
-        print(self.trunk_pitch)
+        self.trunk_pitch = max(-20, min(20, -np.rad2deg(gyro[1]) * 2))
+        self.trunk_roll = max(-10, min(10, np.rad2deg(gyro[0])))
+
         self.T_world_trunk = np.eye(4)
         self.T_world_trunk = fv_utils.rotateInSelf(
-            self.T_world_trunk, [0, self.trunk_pitch, 0], degrees=True
+            self.T_world_trunk, [self.trunk_roll, self.trunk_pitch, 0], degrees=True
         )
         self.T_world_trunk[:3, 3] = [0, swing, 0]
 
         fr = self.T_world_trunk
         fr[:3, 3] = [0, swing, 0]
         self.trunk_task.T_world_frame = fr
+
+        # head
+
+        tmp = self.T_world_head.copy()
+        tmp = fv_utils.translateInSelf(tmp, [0, 0, -target_head_z_offset])
+        tmp = fv_utils.rotateInSelf(
+            tmp, [0, target_head_pitch, target_head_yaw], degrees=False
+        )
+        self.head_task.T_world_frame = tmp
 
     def compute_angles(self):
         angles = {
@@ -230,6 +268,8 @@ class WalkEngine:
         self.right.x_spline.add_point(self.step_duration, self.trunk_x_offset, 0)
         self.right.y_spline.add_point(self.step_duration, self.right.trunk_y_offset, 0)
         self.right.yaw_spline.add_point(self.step_duration, 0, 0)
+
+        self.trunk_pitch = 0
 
         self.new_step()
 
