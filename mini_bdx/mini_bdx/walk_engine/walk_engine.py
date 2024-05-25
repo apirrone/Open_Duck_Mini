@@ -67,12 +67,12 @@ class WalkEngine:
         self,
         robot: placo.RobotWrapper,
         kinematics_solver: placo.KinematicsSolver,
-        trunk_x_offset: float = 0,
-        trunk_z_offset: float = 0.02,
+        default_trunk_x_offset: float = 0.007,
+        default_trunk_z_offset: float = 0.02,
         foot_y_offset: float = 0.0,
-        rise_gain: float = 0.04,
+        rise_gain: float = 0.02,
         rise_duration: float = 0.2,
-        frequency: float = 1.5,
+        frequency: float = 2.0,
         swing_gain: float = -0.001,
         swing_phase: float = 0.0,
         foot_y_offset_per_step_size_y: float = 0.02,
@@ -121,11 +121,12 @@ class WalkEngine:
         self.trunk_height = -robot.get_T_world_frame("left_foot_tip")[:3, 3][2] / 1.2
         self.foot_distance = np.abs(robot.get_T_world_frame("left_foot_tip")[:3, 3][1])
 
-        self.default_trunk_x_offset = trunk_x_offset
+        self.default_trunk_x_offset = default_trunk_x_offset
         self.forward_trunk_x_offset = self.default_trunk_x_offset - 0.004
         self.backward_trunk_x_offset = self.default_trunk_x_offset
         self.tune_trunk_x_offset = 0
-        self.trunk_z_offset = trunk_z_offset
+
+        self.default_trunk_z_offset = default_trunk_z_offset
         self.foot_y_offset = foot_y_offset
         self.rise_gain = rise_gain
         self.rise_duration = rise_duration
@@ -137,13 +138,17 @@ class WalkEngine:
         self.step_size_y = step_size_y
         self.step_size_yaw = step_size_yaw
 
+        self.time_since_last_step = 0
+        self.time_since_last_left_contact = 0
+        self.time_since_last_right_contact = 0
+
         self.step_duration = 0
         self._swing_gain = 0
 
         self.reset()
 
-    def get_left_foot_pose(self, time_since_last_step):
-        left_position = self.left.get_position(time_since_last_step)
+    def get_left_foot_pose(self, t):
+        left_position = self.left.get_position(t)
 
         T_world_left_foot_tip = np.eye(4)
         T_world_left_foot_tip[:3, 3] = [
@@ -171,22 +176,40 @@ class WalkEngine:
         return T_world_right_foot_tip
 
     # gyro is angular position of the trunk [roll, pitch, yaw]
+    # accelerometer is the acceleration of the trunk [x, y, z]
     def update(
         self,
         walking,
         gyro,
+        accelerometer,
+        left_contact,
+        right_contact,
         target_step_x,
         target_step_y,
         target_yaw,
         target_head_pitch,
         target_head_yaw,
         target_head_z_offset,
-        time_since_last_step,
+        dt,
     ):
-        if time_since_last_step < 0:
-            time_since_last_step = 0
-        if time_since_last_step > self.step_duration:
-            time_since_last_step = self.step_duration
+
+        if left_contact:
+            self.time_since_last_left_contact = 0
+        if right_contact:
+            self.time_since_last_right_contact = 0
+
+        if (
+            not self.time_since_last_left_contact > self.rise_duration
+            and not self.time_since_last_right_contact > self.rise_duration
+        ):
+            self.time_since_last_step += dt
+
+        self.time_since_last_left_contact += dt
+        self.time_since_last_right_contact += dt
+
+        if self.time_since_last_step > self.step_duration:
+            self.time_since_last_step = 0
+            self.new_step()
 
         # slowly increase self.step_size_x and self.step_size_y to target_step_x and target_step_y
         # target can be negative or positive or 0
@@ -202,16 +225,16 @@ class WalkEngine:
         swing = 0
         if walking:
             self.left_foot_tip_task.T_world_frame = self.get_left_foot_pose(
-                time_since_last_step
+                self.time_since_last_step
             )
             self.right_foot_tip_task.T_world_frame = self.get_right_foot_pose(
-                time_since_last_step
+                self.time_since_last_step
             )
 
             swing_P = 0 if self.is_left_support else np.pi
             swing_P += np.pi * 2 * self.swing_phase
             swing = self._swing_gain * np.sin(
-                np.pi * time_since_last_step / self.step_duration + swing_P
+                np.pi * self.time_since_last_step / self.step_duration + swing_P
             )
         else:
             self.step_size_x = 0
@@ -220,6 +243,7 @@ class WalkEngine:
             self.left_foot_tip_task.T_world_frame = self.get_left_foot_pose(0)
             self.right_foot_tip_task.T_world_frame = self.get_right_foot_pose(0)
 
+        # Trunk pitch and roll
         self.trunk_pitch = max(-30, min(30, -np.rad2deg(gyro[1]) * 2))
         self.trunk_roll = max(-10, min(10, np.rad2deg(gyro[0])))
 
@@ -241,7 +265,10 @@ class WalkEngine:
         )
         self.head_task.T_world_frame = tmp
 
-    def compute_angles(self):
+        self.robot.update_kinematics()
+        self.kinematics_solver.solve(True)
+
+    def get_angles(self):
         angles = {
             "right_hip_yaw": self.robot.get_joint("right_hip_yaw"),
             "right_hip_roll": self.robot.get_joint("right_hip_roll"),
@@ -383,7 +410,7 @@ class WalkEngine:
             self.step_duration, self.step_size_yaw / 2, 0
         )
 
-    def replan(self, time_since_last_step):
+    def replan(self):
         splines = [
             self.support_foot.x_spline,
             self.flying_foot.x_spline,
@@ -398,9 +425,9 @@ class WalkEngine:
             spline.clear()
             spline.add_point(0, old_spline.get(0), old_spline.get_vel(0))
             spline.add_point(
-                time_since_last_step,
-                old_spline.get(time_since_last_step),
-                old_spline.get_vel(time_since_last_step),
+                self.time_since_last_step,
+                old_spline.get(self.time_since_last_step),
+                old_spline.get_vel(self.time_since_last_step),
             )
 
         self.plan_step_end()

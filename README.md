@@ -61,6 +61,17 @@ $ python test.py -a <algo> -p <path_to_model>
 - First comment of this video explains the reward https://www.youtube.com/watch?v=L_4BPjLBF4E
 
 # Ideas
+- Try to make the action space of the rl algo to be the parameters of the expert walk ? 
+  - frequency
+  - trunk_pitch
+  - trunk_roll
+  - trunk_yaw
+  - trunk_x_offset
+  - step_size_x
+  - step_size_y
+  - rise_gain
+  - swing_gain
+- OR make the action space of the rl algo to be the cartesian pose of the feet in the trunk frame?
 
 # References 
 - https://cults3d.com/en/3d-model/gadget/robot-disney-star-wars

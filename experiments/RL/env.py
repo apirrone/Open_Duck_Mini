@@ -261,17 +261,27 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.do_simulation(a, self.frame_skip)
 
         reward = (
-            0.005  # time reward
+            0.5  # time reward
             + 0.2 * self.walking_height_reward()
             + 0.5 * self.upright_reward()
-            + 0.0 * self.velocity_tracking_reward()
+            + 0.5 * self.velocity_tracking_reward()
             + 0.1 * self.smoothness_reward()
-            + 0.5 * self.feet_contact_reward()
+            + 2.0 * self.feet_contact_reward()
             # + 0.1 * self.joint_angle_deviation_reward()
         )
 
         if self.is_terminated():
             reward = -10
+
+        print("time_reward", 0.005)
+        print("walking_height_reward", 0.2 * self.walking_height_reward())
+        print("upright_reward", 0.5 * self.upright_reward())
+        print("velocity_tracking_reward", 0.5 * self.velocity_tracking_reward())
+        print("smoothness_reward", 0.1 * self.smoothness_reward())
+        print("feet_contact_reward", 0.5 * self.feet_contact_reward())
+        print("Terminated reward", -10 if self.is_terminated() else 0)
+        print("Total reward", reward)
+        print("")
 
         ob = self._get_obs()
 
@@ -309,8 +319,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.init_qpos = qpos.copy().flatten()
 
         # Randomize later
-        self.target_velocity = np.asarray([0, 0, 0])  # x, y, yaw
-        # self.target_velocity = np.asarray([2, 0, 0])  # x, y, yaw
+        # self.target_velocity = np.asarray([0, 0, 0])  # x, y, yaw
+        self.target_velocity = np.asarray([2, 0, 0])  # x, y, yaw
 
         self.set_state(qpos, self.init_qvel)
         return self._get_obs()
