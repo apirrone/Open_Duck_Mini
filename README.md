@@ -17,6 +17,8 @@ Left joystick to translate in x/y, right joystick to rotate. By pressing the lef
 
 Right now I use the keyboard inputs to tune the walk engine's hyperparameters.
 
+I will start building the robot when I can get my hands on some XL330 servos :)
+
 ## CAD 
 
 https://cad.onshape.com/documents/a18ff8cc622a533762a3a6f5/w/27ef6089ad5fe9ba396b6036/e/9ce9b71d7a21eb04415b067f
