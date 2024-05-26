@@ -6,6 +6,17 @@ https://github.com/apirrone/mini_BDX/assets/6552564/1b8fb545-8831-40ba-97de-3689
 
 This is with a custom walk engine based an [old Rhoban walk](https://github.com/Rhoban/walk_engine/tree/master) and the IK is based on [placo](https://github.com/Rhoban/placo)
 
+If you have a xbox controller, you can control the robot with it in MuJoCo (after installing the package, see Install section):
+
+```bash
+$ cd experiments/mujoco
+$ python3 mujoco_walk_engine.py -x 
+```
+
+Left joystick to translate in x/y, right joystick to rotate. By pressing the left trigger, you control the head pitch and yaw with the right joystick, and the head height with the right trigger.
+
+Right now I use the keyboard inputs to tune the walk engine's hyperparameters.
+
 ## CAD 
 
 https://cad.onshape.com/documents/a18ff8cc622a533762a3a6f5/w/27ef6089ad5fe9ba396b6036/e/9ce9b71d7a21eb04415b067f
@@ -25,7 +36,7 @@ For now, I my greatest achievement in RL is making a breakdancing robot :)
 
 https://github.com/apirrone/mini_BDX/assets/6552564/43433948-8dc9-4330-9efd-b5d781792eef
 
-
+This is a mess right now, I'm new to RL and I am experimenting :)
 
 ### There is a known bug with mujoco when trying to render the environment
 

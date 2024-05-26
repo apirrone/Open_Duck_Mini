@@ -1,7 +1,0 @@
-mujoco==3.1.5
-mujoco-python-viewer==0.1.4
-onshape-to-robot==0.3.25
-gymnasium[mujoco] == 0.29.1
-stable-baselines3[extra]==2.3.2
-sb3_contrib==2.3.0
-placo==0.5.0
