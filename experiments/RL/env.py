@@ -145,6 +145,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     | 74  | left foot in contact with the floor                      | -Inf | Inf |                                  |          |                          |
     | 75  | right foot in contact with the floor                     | -Inf | Inf |                                  |          |                          |
+    | 76  | t                                                        | -Inf | Inf |                                  |          |                          |
 
     | x74  | sinus                                                    | -Inf | Inf |                                  |          |                          |
 
@@ -161,7 +162,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def __init__(self, **kwargs):
         utils.EzPickle.__init__(self, **kwargs)
-        observation_space = Box(low=-np.inf, high=np.inf, shape=(76,), dtype=np.float64)
+        observation_space = Box(low=-np.inf, high=np.inf, shape=(77,), dtype=np.float64)
         self.target_velocity = np.asarray([1, 0, 0])  # x, y, yaw
         self.joint_history_length = 3
         self.joint_error_history = self.joint_history_length * [13 * [0]]
@@ -294,14 +295,14 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.left_foot_in_contact = self.check_contact("foot_module_2", "floor")
 
         reward = (
-            0.0  # time reward
-            # + 0.2 * self.walking_height_reward()
-            # + 0.5 * self.upright_reward()
+            0.005  # time reward
+            + 0.2 * self.walking_height_reward()
+            + 0.5 * self.upright_reward()
             # + 0.5 * self.velocity_tracking_reward()
             + 0.1 * self.smoothness_reward()
-            # + 2.0 * self.feet_contact_reward()
+            + 2.0 * self.feet_contact_reward()
             # + 0.1 * self.joint_angle_deviation_reward()
-            + 0.01 * self.follow_walk_engine_reward(dt)
+            # + 0.01 * self.follow_walk_engine_reward(dt)
         )
 
         # if self.is_terminated():
@@ -343,7 +344,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
     def reset_model(self):
         self.prev_t = self.data.time
 
-        self.model.opt.gravity[:] = [0, 0, 0]  # no gravity
+        # self.model.opt.gravity[:] = [0, 0, 0]  # no gravity
 
         qpos = self.data.qpos
 
@@ -395,5 +396,6 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
                 np.array(self.joint_error_history).flatten(),
                 # [np.sin(self.data.time)],
                 [self.left_foot_in_contact, self.right_foot_in_contact],
+                [self.data.time],
             ]
         )

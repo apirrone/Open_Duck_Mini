@@ -1,4 +1,3 @@
-import argparse
 import pickle
 import time
 
@@ -17,6 +16,8 @@ xbox = XboxController()
 
 model = mujoco.MjModel.from_xml_path("../../mini_bdx/robots/bdx/scene.xml")
 data = mujoco.MjData(model)
+
+EPISODE_LENGTH = 2000
 
 
 max_target_step_size_x = 0.03
@@ -66,9 +67,18 @@ def xbox_input():
 
 
 def key_callback(keycode):
-    global recording
+    global recording, walking, target_step_size_x, target_step_size_y, target_yaw, walk_engine, data, t
     if keycode == 257:  # enter
         start_stop_recording()
+    if keycode == 261:  # delete
+        walking = False
+        target_step_size_x = 0
+        target_step_size_y = 0
+        target_yaw = 0
+        walk_engine.reset()
+        data.qpos[:7] = 0
+        data.qpos[2] = 0.19
+        data.ctrl[:] = 0
 
 
 def get_observation():
@@ -98,6 +108,7 @@ def get_observation():
             target_velocity,
             np.array(joint_error_history).flatten(),
             [left_contact, right_contact],
+            [data.time],
         ]
     )
 
@@ -149,6 +160,7 @@ def get_feet_contact(data):
     return right_contact, left_contact
 
 
+start_stop_recording()  # start recording
 prev = data.time
 try:
     while True:
@@ -181,6 +193,10 @@ try:
         if recording:
             current_episode["observations"].append(list(get_observation()))
             current_episode["actions"].append(list(angles.values()))
+
+        if len(current_episode["observations"]) > EPISODE_LENGTH:
+            start_stop_recording()  # stop recording
+            start_stop_recording()  # start recording
 
         # apply the angles to the robot
         data.ctrl[:] = list(angles.values())
