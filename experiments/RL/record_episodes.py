@@ -1,22 +1,19 @@
 import argparse
+import pickle
 import time
 
 import mujoco
 import mujoco.viewer
 import numpy as np
 import placo
+from imitation.data.types import Trajectory
 from scipy.spatial.transform import Rotation as R
 
 from mini_bdx.utils.mujoco_utils import check_contact
 from mini_bdx.utils.xbox_controller import XboxController
 from mini_bdx.walk_engine import WalkEngine
 
-parser = argparse.ArgumentParser()
-parser.add_argument("-x", "--xbox_controller", action="store_true")
-args = parser.parse_args()
-
-if args.xbox_controller:
-    xbox = XboxController()
+xbox = XboxController()
 
 model = mujoco.MjModel.from_xml_path("../../mini_bdx/robots/bdx/scene.xml")
 data = mujoco.MjData(model)
@@ -31,15 +28,26 @@ target_yaw = 0
 target_head_pitch = 0
 target_head_yaw = 0
 target_head_z_offset = 0
+walking = True
 time_since_last_left_contact = 0
 time_since_last_right_contact = 0
-walking = False
+recording = False
+episodes = []
+current_episode = {"observations": [], "actions": []}
+
+joint_history_length = 3
+joint_error_history = joint_history_length * [13 * [0]]
+joint_ctrl_history = joint_history_length * [13 * [0]]
+target_velocity = np.zeros(3)
+
+left_contact = False
+right_contact = False
 
 start_button_timeout = time.time()
 
 
 def xbox_input():
-    global target_step_size_x, target_step_size_y, target_yaw, walking, t, walk_engine, target_head_pitch, target_head_yaw, target_head_z_offset, start_button_timeout, max_target_step_size_x, max_target_step_size_y, max_target_yaw
+    global target_velocity, target_step_size_x, target_step_size_y, target_yaw, walking, t, walk_engine, target_head_pitch, target_head_yaw, target_head_z_offset, start_button_timeout, max_target_step_size_x, max_target_step_size_y, max_target_yaw
     inputs = xbox.read()
     target_step_size_x = -inputs["l_y"] * max_target_step_size_x
     target_step_size_y = inputs["l_x"] * max_target_step_size_y
@@ -54,60 +62,66 @@ def xbox_input():
         walking = not walking
         start_button_timeout = time.time()
 
+    target_velocity = np.array([-inputs["l_y"], inputs["l_x"], -inputs["r_x"]])
 
-# Tune the walk
+
 def key_callback(keycode):
-    global target_step_size_x, target_step_size_y, target_yaw, walking, t, walk_engine, max_target_step_size_x, max_target_step_size_y, max_target_yaw
-    if keycode == 265:  # up
-        max_target_step_size_x += 0.005
-    if keycode == 264:  # down
-        max_target_step_size_x -= 0.005
-    if keycode == 263:  # left
-        max_target_step_size_y -= 0.005
-    if keycode == 262:  # right
-        max_target_step_size_y += 0.005
-    if keycode == 81:  # a
-        max_target_yaw += np.deg2rad(1)
-    if keycode == 69:  # e
-        max_target_yaw -= np.deg2rad(1)
+    global recording
     if keycode == 257:  # enter
-        walking = not walking
-    if keycode == 79:  # o
-        walk_engine.swing_gain -= 0.005
-    if keycode == 80:  # p
-        walk_engine.swing_gain += 0.005
-    if keycode == 76:  # l
-        walk_engine.tune_trunk_x_offset += 0.001
-    if keycode == 59:  # m
-        walk_engine.tune_trunk_x_offset -= 0.001
-    if keycode == 266:  # page up
-        walk_engine.frequency += 0.1
-    if keycode == 267:  # page down
-        walk_engine.frequency -= 0.1
-    if keycode == 32:  # space
-        target_step_size_x = 0
-        target_step_size_y = 0
-        target_yaw = 0
-    if keycode == 261:  # delete
-        walking = False
-        target_step_size_x = 0
-        target_step_size_y = 0
-        target_yaw = 0
-        walk_engine.reset()
-        data.qpos[:7] = 0
-        data.qpos[2] = 0.19
-        data.ctrl[:] = 0
-        t = 0
+        start_stop_recording()
 
-    print("----------------")
-    print("walking" if walking else "not walking")
-    print("MAX_TARGET_STEP_SIZE_X (up, down)", max_target_step_size_x)
-    print("MAX_TARGET_STEP_SIZE_Y (left, right)", max_target_step_size_y)
-    print("MAX_TARGET_YAW (a, e)", np.rad2deg(max_target_yaw))
-    print("swing gain (o, p)", walk_engine.swing_gain)
-    print("trunk x offset (l, m)", walk_engine.trunk_x_offset)
-    print("frequency (pageup, pagedown)", walk_engine.frequency)
-    print("----------------")
+
+def get_observation():
+    global joint_error_history, joint_ctrl_history, target_velocity, left_contact, right_contact, joint_history_length
+
+    joints_rotations = data.qpos[7 : 7 + 13]
+    joints_velocities = data.qvel[6 : 6 + 13]
+
+    joints_error = data.ctrl - data.qpos[7 : 7 + 13]
+    joint_error_history.append(joints_error)
+    joint_error_history = joint_error_history[-joint_history_length:]
+
+    angular_velocity = data.body("base").cvel[
+        :3
+    ]  # TODO this is imu, add noise to it later
+    linear_velocity = data.body("base").cvel[3:]
+
+    joint_ctrl_history.append(data.ctrl.copy())
+    joint_ctrl_history = joint_ctrl_history[-joint_history_length:]
+
+    return np.concatenate(
+        [
+            joints_rotations,
+            joints_velocities,
+            angular_velocity,
+            linear_velocity,
+            target_velocity,
+            np.array(joint_error_history).flatten(),
+            [left_contact, right_contact],
+        ]
+    )
+
+
+def start_stop_recording():
+    global recording, current_episode
+    recording = not recording
+    if not recording:
+        print("Stop recording")
+        # store one last observation here
+        current_episode["observations"].append(list(get_observation()))
+
+        episode = Trajectory(
+            np.array(current_episode["observations"]),
+            np.array(current_episode["actions"]),
+            None,
+            True,
+        )
+        episodes.append(episode)
+        with open("dataset.pkl", "wb") as f:
+            pickle.dump(episodes, f)
+    else:
+        print("Start recording")
+        current_episode = {"observations": [], "actions": []}
 
 
 viewer = mujoco.viewer.launch_passive(model, data, key_callback=key_callback)
@@ -140,8 +154,7 @@ try:
     while True:
         dt = data.time - prev
 
-        if args.xbox_controller:
-            xbox_input()
+        xbox_input()
 
         # Get sensor data
         right_contact, left_contact = get_feet_contact(data)
@@ -163,6 +176,11 @@ try:
         )
 
         angles = walk_engine.get_angles()
+
+        # store obs here
+        if recording:
+            current_episode["observations"].append(list(get_observation()))
+            current_episode["actions"].append(list(angles.values()))
 
         # apply the angles to the robot
         data.ctrl[:] = list(angles.values())
