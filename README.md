@@ -13,7 +13,7 @@ $ cd experiments/mujoco
 $ python3 mujoco_walk_engine.py -x 
 ```
 
-Left joystick to translate in x/y, right joystick to rotate. By pressing the left trigger, you control the head pitch and yaw with the right joystick, and the head height with the right trigger.
+Start button to start the walk, left joystick to translate in x/y, right joystick to rotate. By pressing the left trigger, you control the head pitch and yaw with the right joystick, and the head height with the right trigger.
 
 Right now I use the keyboard inputs to tune the walk engine's hyperparameters.
 
