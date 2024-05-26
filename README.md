@@ -21,9 +21,9 @@ Right now I use the keyboard inputs to tune the walk engine's hyperparameters.
 
 https://cad.onshape.com/documents/a18ff8cc622a533762a3a6f5/w/27ef6089ad5fe9ba396b6036/e/9ce9b71d7a21eb04415b067f
 
-## Install 
-    
 See [this document](docs/prepare_robot.md) for getting from a onshape design to a simulated robot in MuJoCo
+
+## Install 
 
 ```bash
 $ pip install -e .
