@@ -29,9 +29,11 @@ bc_trainer = bc.BC(
     demonstrations=dataset,
     rng=rng,
     device="cpu",
-    policy=PPO("MlpPolicy", env).policy,  # not working with SAC for some reason
+    policy=PPO(
+        "MlpPolicy", env, policy_kwargs=dict(net_arch=[400, 300])
+    ).policy,  # not working with SAC for some reason
 )
-bc_trainer.train(n_epochs=50)
+bc_trainer.train(n_epochs=500)
 
 bc_trainer.policy.save("bc_policy_ppo.zip")
 

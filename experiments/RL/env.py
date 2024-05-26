@@ -145,8 +145,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     | 74  | left foot in contact with the floor                      | -Inf | Inf |                                  |          |                          |
     | 75  | right foot in contact with the floor                     | -Inf | Inf |                                  |          |                          |
-    | 76  | t                                                        | -Inf | Inf |                                  |          |                          |
 
+    | x76  | t                                                        | -Inf | Inf |                                  |          |                          |
     | x74  | sinus                                                    | -Inf | Inf |                                  |          |                          |
 
     """
@@ -162,7 +162,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def __init__(self, **kwargs):
         utils.EzPickle.__init__(self, **kwargs)
-        observation_space = Box(low=-np.inf, high=np.inf, shape=(77,), dtype=np.float64)
+        observation_space = Box(low=-np.inf, high=np.inf, shape=(76,), dtype=np.float64)
         self.target_velocity = np.asarray([1, 0, 0])  # x, y, yaw
         self.joint_history_length = 3
         self.joint_error_history = self.joint_history_length * [13 * [0]]
@@ -296,27 +296,28 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         reward = (
             0.005  # time reward
-            + 0.2 * self.walking_height_reward()
-            + 0.5 * self.upright_reward()
-            # + 0.5 * self.velocity_tracking_reward()
-            + 0.1 * self.smoothness_reward()
-            + 2.0 * self.feet_contact_reward()
+            + 0.1 * self.walking_height_reward()
+            + 0.1 * self.upright_reward()
+            + 0.1 * self.velocity_tracking_reward()
+            # + 0.1 * self.smoothness_reward()
+            + 0.1 * self.feet_contact_reward()
             # + 0.1 * self.joint_angle_deviation_reward()
             # + 0.01 * self.follow_walk_engine_reward(dt)
         )
 
+        # print("time reward", 0.005)
+        # print("walking height reward", 0.1 * self.walking_height_reward())
+        # print("upright reward", 0.1 * self.upright_reward())
+        # print("velocity tracking reward", 0.1 * self.velocity_tracking_reward())
+        # # print("smoothness reward", 0.1 * self.smoothness_reward())
+        # print("feet contact reward", 0.1 * self.feet_contact_reward())
+        # # print("joint angle deviation reward", 0.1 * self.joint_angle_deviation_reward())
+        # # print("follow walk engine reward", 0.01 * self.follow_walk_engine_reward(dt))
+        # print("reward", reward)
+        # print("===")
+
         # if self.is_terminated():
         #     reward = -10
-
-        # print("time_reward", 0.005)
-        # print("walking_height_reward", 0.2 * self.walking_height_reward())
-        # print("upright_reward", 0.5 * self.upright_reward())
-        # print("velocity_tracking_reward", 0.5 * self.velocity_tracking_reward())
-        # print("smoothness_reward", 0.1 * self.smoothness_reward())
-        # print("feet_contact_reward", 0.5 * self.feet_contact_reward())
-        # print("Terminated reward", -10 if self.is_terminated() else 0)
-        # print("Total reward", reward)
-        # print("")
 
         ob = self._get_obs()
 
@@ -394,8 +395,6 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
                 linear_velocity,
                 self.target_velocity,
                 np.array(self.joint_error_history).flatten(),
-                # [np.sin(self.data.time)],
                 [self.left_foot_in_contact, self.right_foot_in_contact],
-                [self.data.time],
             ]
         )

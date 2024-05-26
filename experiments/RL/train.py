@@ -129,7 +129,7 @@ if __name__ == "__main__":
     register(
         id="BDX_env",
         entry_point="env:BDXEnv",
-        max_episode_steps=500,
+        max_episode_steps=None,  # formerly 500
         autoreset=True,
     )
 
