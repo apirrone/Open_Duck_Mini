@@ -5,7 +5,12 @@
 ### Make sure to design you robot according to onshape-to-robot constraints
 https://onshape-to-robot.readthedocs.io/en/latest/design.html
 
-#### (Optional) If you have closing loops, follow the instructions above, then
+
+The urdf will contain frames named `closing_<...>_1` and `closing_<...>_2` that you can use to close the loops in the mjcf file.
+
+### Get get robot urdf from onshape
+
+#### (Optional) If you have closing loops, follow the instructions for handling them in the documentation of onshape-to-robotn then:
 
 In `robot.urdf`, add : 
 ```xml
@@ -16,11 +21,6 @@ In `robot.urdf`, add :
 	...
 </robot>
 ```
-
-The urdf will contain frames named `closing_<...>_1` and `closing_<...>_2` that you can use to close the loops in the mjcf file.
-
-### Get get robot urdf from onshape
-
 
 ```bash
 $ onshape-to-robot robots/bd1/
