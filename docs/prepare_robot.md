@@ -5,6 +5,20 @@
 ### Make sure to design you robot according to onshape-to-robot constraints
 https://onshape-to-robot.readthedocs.io/en/latest/design.html
 
+#### (Optional) If you have closing loops, follow the instructions above, then
+
+In `robot.urdf`, add : 
+```xml
+<robot name="...">
+    <mujoco>
+        <compiler fusestatic="false"/>
+    </mujoco>
+	...
+</robot>
+```
+
+The urdf will contain frames named `closing_<...>_1` and `closing_<...>_2` that you can use to close the loops in the mjcf file.
+
 ### Get get robot urdf from onshape
 
 
@@ -55,6 +69,24 @@ encapsulate the body in a freejoint
 		...
 	</body>
 </worldbody>
+```
+
+## (Optional) Constrain closing loop
+
+Add the following to the mjcf file
+```xml
+<equality>
+    <connect body1="closing_<...>_1" body2="closing_<...>_2" anchor="x y z" />
+</equality>
+```
+
+the x, y, z values can be found in the .urdf 
+
+```xml
+<joint name="closing_<...>_1_frame" type="fixed">
+	<origin xyz="x y z" rpy="r p y" />
+	...
+</joint>
 ```
 
 ## Setup collision groups, damping and friction

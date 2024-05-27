@@ -72,6 +72,10 @@ def key_callback(keycode):
         max_target_yaw -= np.deg2rad(1)
     if keycode == 257:  # enter
         walking = not walking
+    if keycode == 86:  # v
+        walk_engine.trunk_pitch_roll_compensation = (
+            not walk_engine.trunk_pitch_roll_compensation
+        )
     if keycode == 79:  # o
         walk_engine.swing_gain -= 0.005
     if keycode == 80:  # p
@@ -84,6 +88,10 @@ def key_callback(keycode):
         walk_engine.frequency += 0.1
     if keycode == 267:  # page down
         walk_engine.frequency -= 0.1
+    if keycode == 268:  # begin line
+        walk_engine.default_trunk_z_offset -= 0.001
+    if keycode == 269:  # end line
+        walk_engine.default_trunk_z_offset += 0.001
     if keycode == 32:  # space
         target_step_size_x = 0
         target_step_size_y = 0
@@ -98,14 +106,18 @@ def key_callback(keycode):
         data.qpos[2] = 0.19
         data.ctrl[:] = 0
         t = 0
-
+    print(keycode)
     print("----------------")
     print("walking" if walking else "not walking")
+    print(
+        "trunk pitch roll compensation (v)", walk_engine.trunk_pitch_roll_compensation
+    )
     print("MAX_TARGET_STEP_SIZE_X (up, down)", max_target_step_size_x)
     print("MAX_TARGET_STEP_SIZE_Y (left, right)", max_target_step_size_y)
     print("MAX_TARGET_YAW (a, e)", np.rad2deg(max_target_yaw))
     print("swing gain (o, p)", walk_engine.swing_gain)
     print("trunk x offset (l, m)", walk_engine.trunk_x_offset)
+    print("default trunk z offset (begin, end)", walk_engine.default_trunk_z_offset)
     print("frequency (pageup, pagedown)", walk_engine.frequency)
     print("----------------")
 

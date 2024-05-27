@@ -66,10 +66,10 @@ class WalkEngine:
     def __init__(
         self,
         robot: placo.RobotWrapper,
-        default_trunk_x_offset: float = 0.007,
-        default_trunk_z_offset: float = 0.02,
+        default_trunk_x_offset: float = 0.007,  # 0.007
+        default_trunk_z_offset: float = -0.003,
         foot_y_offset: float = 0.0,
-        rise_gain: float = 0.02,
+        max_rise_gain: float = 0.015,
         rise_duration: float = 0.2,
         frequency: float = 2.0,
         swing_gain: float = -0.001,
@@ -86,6 +86,8 @@ class WalkEngine:
         self.swing_spline = PolySpline()
 
         self.trunk_pitch = trunk_pitch
+
+        self.trunk_pitch_roll_compensation = True
 
         self.robot = robot
         self.kinematics_solver = kinematics_solver
@@ -122,13 +124,14 @@ class WalkEngine:
         self.foot_distance = np.abs(robot.get_T_world_frame("left_foot_tip")[:3, 3][1])
 
         self.default_trunk_x_offset = default_trunk_x_offset
-        self.forward_trunk_x_offset = self.default_trunk_x_offset - 0.004
+        self.forward_trunk_x_offset = self.default_trunk_x_offset - 0.002
         self.backward_trunk_x_offset = self.default_trunk_x_offset
         self.tune_trunk_x_offset = 0
 
         self.default_trunk_z_offset = default_trunk_z_offset
         self.foot_y_offset = foot_y_offset
-        self.rise_gain = rise_gain
+        self.max_rise_gain = max_rise_gain
+        self.rise_gain = 0
         self.rise_duration = rise_duration
         self.frequency = frequency
         self.swing_gain = swing_gain
@@ -212,16 +215,19 @@ class WalkEngine:
             self.time_since_last_step = 0
             self.new_step()
 
+        target_rise_gain = self.max_rise_gain if walking else 0
+
         # slowly increase self.step_size_x and self.step_size_y to target_step_x and target_step_y
         # target can be negative or positive or 0
         delta_x = target_step_x - self.step_size_x
         delta_y = target_step_y - self.step_size_y
         delta_yaw = target_yaw - self.step_size_yaw
+        delta_rise_gain = target_rise_gain - self.rise_gain
 
         self.step_size_x = self.step_size_x + (delta_x / 100)
         self.step_size_y = self.step_size_y + (delta_y / 100)
-
         self.step_size_yaw = self.step_size_yaw + (delta_yaw / 100)
+        self.rise_gain = self.rise_gain + (delta_rise_gain / 100)
 
         swing = 0
         if walking:
@@ -245,8 +251,12 @@ class WalkEngine:
             self.right_foot_tip_task.T_world_frame = self.get_right_foot_pose(0)
 
         # Trunk pitch and roll
-        self.trunk_pitch = max(-30, min(30, -np.rad2deg(gyro[1]) * 2))
-        self.trunk_roll = max(-10, min(10, np.rad2deg(gyro[0])))
+        if self.trunk_pitch_roll_compensation:
+            self.trunk_pitch = max(-30, min(30, -np.rad2deg(gyro[1]) * 5))
+            self.trunk_roll = max(-10, min(10, np.rad2deg(gyro[0])))
+        else:
+            self.trunk_pitch = 0
+            self.trunk_roll = 0
 
         self.T_world_trunk = np.eye(4)
         self.T_world_trunk = fv_utils.rotateInSelf(
@@ -362,7 +372,7 @@ class WalkEngine:
 
         self.is_left_support = not self.is_left_support
 
-        step_low = -self.trunk_height
+        step_low = -self.trunk_height + self.default_trunk_z_offset
         step_high = -self.trunk_height + self.rise_gain
         self.support_foot.z_spline.add_point(0, step_low, 0)
         self.support_foot.z_spline.add_point(self.step_duration, step_low, 0)
