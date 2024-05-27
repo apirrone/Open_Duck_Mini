@@ -10,6 +10,12 @@ The urdf will contain frames named `closing_<...>_1` and `closing_<...>_2` that 
 
 ### Get get robot urdf from onshape
 
+Run
+
+```bash
+$ onshape-to-robot robots/bd1/
+```
+
 #### (Optional) If you have closing loops, follow the instructions for handling them in the documentation of onshape-to-robotn then:
 
 In `robot.urdf`, add : 
@@ -20,10 +26,6 @@ In `robot.urdf`, add :
     </mujoco>
 	...
 </robot>
-```
-
-```bash
-$ onshape-to-robot robots/bd1/
 ```
 
 # Convert URDF to MJCF (MuJoCo)
