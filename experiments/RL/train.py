@@ -128,7 +128,7 @@ if __name__ == "__main__":
 
     register(
         id="BDX_env",
-        entry_point="env:BDXEnv",
+        entry_point="env_humanoid:BDXEnv",
         max_episode_steps=None,  # formerly 500
         autoreset=True,
     )

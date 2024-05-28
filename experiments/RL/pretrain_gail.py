@@ -25,15 +25,15 @@ dataset = pickle.load(open(args.dataset, "rb"))
 register(id="BDX_env", entry_point="env:BDXEnv")
 
 SEED = 42
+rng = np.random.default_rng(SEED)
 # env = gym.make("BDX_env", render_mode=None)
 env = make_vec_env(
     "BDX_env",
-    rng=np.random.default_rng(SEED),
+    rng=rng,
     n_envs=8,
     post_wrappers=[lambda env, _: RolloutInfoWrapper(env)],  # to compute rollouts
 )
 
-rng = np.random.default_rng(0)
 
 learner = PPO(
     env=env,

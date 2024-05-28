@@ -7,7 +7,12 @@ from gymnasium.envs.registration import register
 from sb3_contrib import TQC
 from stable_baselines3 import A2C, PPO, SAC, TD3
 
-register(id="BDX_env", entry_point="env:BDXEnv", autoreset=True, max_episode_steps=200)
+register(
+    id="BDX_env",
+    entry_point="env_humanoid:BDXEnv",
+    autoreset=True,
+    # max_episode_steps=200,
+)
 
 
 def test(env, sb3_algo, path_to_model):

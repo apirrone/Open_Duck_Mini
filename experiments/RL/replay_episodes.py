@@ -29,6 +29,8 @@ try:
     while True:
         for i in range(len(current_episode.acts)):
             angles = current_episode.acts[i]
+            # obs = current_episode.obs[i]
+            # print(len(obs))
             dt = data.time - prev
 
             data.ctrl[:] = angles
@@ -40,6 +42,7 @@ try:
         print("new episode")
         current_episode_id += 1
         if current_episode_id >= len(episodes):
+            print("saw all episodes, restarting")
             current_episode_id = 0
 
         current_episode = episodes[current_episode_id]

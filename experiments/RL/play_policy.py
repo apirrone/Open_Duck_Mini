@@ -44,6 +44,7 @@ def get_observation(
             target_velocity,
             np.array(joint_error_history).flatten(),
             [left_contact, right_contact],
+            [data.time],
         ]
     )
 
@@ -88,9 +89,10 @@ def play(env, path_to_model):
 
     viewer = mujoco.viewer.launch_passive(model, data, key_callback=key_callback)
 
-    nn_model = SAC.load(model_path, env)
+    # nn_model = SAC.load(model_path, env)
 
-    # nn_model = PPO("MlpPolicy", env)s
+    nn_model = PPO("MlpPolicy", env)
+    nn_model.policy.load(model_path)
 
     try:
         while True:
