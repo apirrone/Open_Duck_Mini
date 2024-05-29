@@ -102,6 +102,13 @@ $ python test.py -a <algo> -p <path_to_model>
 - https://cults3d.com/en/3d-model/gadget/robot-disney-star-wars
 - https://www.disneytouristblog.com/wp-content/uploads/2023/10/bd1-droid-testing-disney-imagineering-2.jpg
 - nice close up video https://www.youtube.com/watch?v=QuWaaNN-1hs
+  
+## Imitation learning 
+- https://github.com/rgalljamov/DRLoco
+- https://xbpeng.github.io/projects/DeepMimic/index.html
+- 
+## MPC 
+- https://github.com/google-deepmind/mujoco_mpc
 
 # Motors 
 - M288T https://en.robotis.com/shop_en/item.php?it_id=902-0163-000
