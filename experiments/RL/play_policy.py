@@ -9,44 +9,27 @@ import numpy as np
 from gymnasium.envs.registration import register
 from stable_baselines3 import PPO, SAC
 
+from mini_bdx.utils.mujoco_utils import check_contact
 
-def get_observation(
-    data,
-    joint_history_length,
-    joint_error_history,
-    joint_ctrl_history,
-    target_velocity,
-    left_contact,
-    right_contact,
-):
 
-    joints_rotations = data.qpos[7 : 7 + 13]
-    joints_velocities = data.qvel[6 : 6 + 13]
+def get_observation(data, left_contact, right_contact):
 
-    joints_error = data.ctrl - data.qpos[7 : 7 + 13]
-    joint_error_history.append(joints_error)
-    joint_error_history = joint_error_history[-joint_history_length:]
+    position = (
+        data.qpos.flat.copy()
+    )  # position/rotation of trunk + position of all joints
+    velocity = (
+        data.qvel.flat.copy()
+    )  # positional/angular velocity of trunk +  of all joints
 
-    angular_velocity = data.body("base").cvel[
-        :3
-    ]  # TODO this is imu, add noise to it later
-    linear_velocity = data.body("base").cvel[3:]
-
-    joint_ctrl_history.append(data.ctrl.copy())
-    joint_ctrl_history = joint_ctrl_history[-joint_history_length:]
-
-    return np.concatenate(
+    obs = np.concatenate(
         [
-            joints_rotations,
-            joints_velocities,
-            angular_velocity,
-            linear_velocity,
-            target_velocity,
-            np.array(joint_error_history).flatten(),
+            position,
+            velocity,
             [left_contact, right_contact],
-            [data.time],
         ]
     )
+    # print("OBS SIZE", len(obs))
+    return obs
 
 
 def key_callback(keycode):
@@ -74,16 +57,18 @@ def get_model_from_dir(path_to_model):
     return latest_model_path
 
 
+def get_feet_contact(data, model):
+    right_contact = check_contact(data, model, "foot_module", "floor")
+    left_contact = check_contact(data, model, "foot_module_2", "floor")
+    return right_contact, left_contact
+
+
 def play(env, path_to_model):
     model_path = get_model_from_dir(path_to_model)
 
     model = mujoco.MjModel.from_xml_path("../../mini_bdx/robots/bdx/scene.xml")
     data = mujoco.MjData(model)
 
-    joint_history_length = 3
-    joint_error_history = joint_history_length * [13 * [0]]
-    joint_ctrl_history = joint_history_length * [13 * [0]]
-    target_velocity = np.zeros(3)
     left_contact = False
     right_contact = False
 
@@ -96,12 +81,10 @@ def play(env, path_to_model):
 
     try:
         while True:
+
+            right_contact, left_contact = get_feet_contact(data, model)
             obs = get_observation(
                 data,
-                joint_history_length,
-                joint_error_history,
-                joint_ctrl_history,
-                target_velocity,
                 left_contact,
                 right_contact,
             )
@@ -130,6 +113,6 @@ if __name__ == "__main__":
     parser.add_argument("-a", "--algo", default="SAC")
     args = parser.parse_args()
 
-    register(id="BDX_env", entry_point="env:BDXEnv")
+    register(id="BDX_env", entry_point="env_humanoid:BDXEnv")
     env = gym.make("BDX_env", render_mode=None)
     play(env, path_to_model=args.path)

@@ -9,10 +9,11 @@ from imitation.data.types import Trajectory
 from scipy.spatial.transform import Rotation as R
 
 from mini_bdx.utils.mujoco_utils import check_contact
-from mini_bdx.utils.xbox_controller import XboxController
+
+# from mini_bdx.utils.xbox_controller import XboxController
 from mini_bdx.walk_engine import WalkEngine
 
-xbox = XboxController()
+# xbox = XboxController()
 
 model = mujoco.MjModel.from_xml_path("../../mini_bdx/robots/bdx/scene.xml")
 data = mujoco.MjData(model)
@@ -30,16 +31,10 @@ target_head_pitch = 0
 target_head_yaw = 0
 target_head_z_offset = 0
 walking = True
-time_since_last_left_contact = 0
-time_since_last_right_contact = 0
 recording = False
 episodes = []
 current_episode = {"observations": [], "actions": []}
 
-joint_history_length = 3
-joint_error_history = joint_history_length * [13 * [0]]
-joint_ctrl_history = joint_history_length * [13 * [0]]
-target_velocity = np.zeros(3)
 
 left_contact = False
 right_contact = False
@@ -82,35 +77,24 @@ def key_callback(keycode):
 
 
 def get_observation():
-    global joint_error_history, joint_ctrl_history, target_velocity, left_contact, right_contact, joint_history_length
+    global left_contact, right_contact, data
 
-    joints_rotations = data.qpos[7 : 7 + 13]
-    joints_velocities = data.qvel[6 : 6 + 13]
+    position = (
+        data.qpos.flat.copy()
+    )  # position/rotation of trunk + position of all joints
+    velocity = (
+        data.qvel.flat.copy()
+    )  # positional/angular velocity of trunk +  of all joints
 
-    joints_error = data.ctrl - data.qpos[7 : 7 + 13]
-    joint_error_history.append(joints_error)
-    joint_error_history = joint_error_history[-joint_history_length:]
-
-    angular_velocity = data.body("base").cvel[
-        :3
-    ]  # TODO this is imu, add noise to it later
-    linear_velocity = data.body("base").cvel[3:]
-
-    joint_ctrl_history.append(data.ctrl.copy())
-    joint_ctrl_history = joint_ctrl_history[-joint_history_length:]
-
-    return np.concatenate(
+    obs = np.concatenate(
         [
-            joints_rotations,
-            joints_velocities,
-            angular_velocity,
-            linear_velocity,
-            target_velocity,
-            np.array(joint_error_history).flatten(),
+            position,
+            velocity,
             [left_contact, right_contact],
-            [data.time],
         ]
     )
+    # print("OBS SIZE", len(obs))
+    return obs
 
 
 def start_stop_recording():
@@ -154,7 +138,7 @@ def get_imu(data):
     return gyro, accelerometer
 
 
-def get_feet_contact(data):
+def get_feet_contact(data, model):
     right_contact = check_contact(data, model, "foot_module", "floor")
     left_contact = check_contact(data, model, "foot_module_2", "floor")
     return right_contact, left_contact
@@ -166,10 +150,10 @@ try:
     while True:
         dt = data.time - prev
 
-        xbox_input()
+        # xbox_input()
 
         # Get sensor data
-        right_contact, left_contact = get_feet_contact(data)
+        right_contact, left_contact = get_feet_contact(data, model)
         gyro, accelerometer = get_imu(data)
 
         walk_engine.update(

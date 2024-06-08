@@ -17,7 +17,7 @@ args = parser.parse_args()
 
 dataset = pickle.load(open(args.dataset, "rb"))
 
-register(id="BDX_env", entry_point="env:BDXEnv")
+register(id="BDX_env", entry_point="env_humanoid:BDXEnv")
 
 env = gym.make("BDX_env", render_mode=None)
 
@@ -33,7 +33,7 @@ bc_trainer = bc.BC(
         "MlpPolicy", env, policy_kwargs=dict(net_arch=[400, 300])
     ).policy,  # not working with SAC for some reason
 )
-bc_trainer.train(n_epochs=500)
+bc_trainer.train(n_epochs=10)
 
 bc_trainer.policy.save("bc_policy_ppo.zip")
 

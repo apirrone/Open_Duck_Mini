@@ -37,6 +37,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
 
     ## Observation space
+    OBSOLETE
 
     | Num | Observation                                              | Min  | Max | Name (in corresponding XML file) | Joint    | Unit                     |
     | --- | -------------------------------------------------------- | ---- | --- | -------------------------------- | -------- | ------------------------ |
@@ -88,9 +89,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def __init__(self, **kwargs):
         utils.EzPickle.__init__(self, **kwargs)
-        observation_space = Box(
-            low=-np.inf, high=np.inf, shape=(410,), dtype=np.float64
-        )
+        observation_space = Box(low=-np.inf, high=np.inf, shape=(41,), dtype=np.float64)
 
         self.left_foot_in_contact = 0
         self.right_foot_in_contact = 0
@@ -98,7 +97,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self._healthy_z_range = (0.1, 0.2)
 
         self._forward_reward_weight = 1.25
-        self._ctrl_cost_weight = 0.1
+        self._ctrl_cost_weight = 0.3
         self.healthy_reward = 5.0
 
         MujocoEnv.__init__(
@@ -152,16 +151,24 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         xy_velocity = (xy_position_after - xy_position_before) / self.dt
         x_velocity, y_velocity = xy_velocity
 
+        self.right_foot_in_contact = self.check_contact("foot_module", "floor")
+        self.left_foot_in_contact = self.check_contact("foot_module_2", "floor")
+
         ctrl_cost = self.control_cost()
+        moving_cost = 1.0 * (abs(x_velocity) + np.abs(x_velocity))
 
         forward_reward = self._forward_reward_weight * x_velocity
         healthy_reward = self.healthy_reward
 
-        # self.right_foot_in_contact = self.check_contact("foot_module", "floor")
-        # self.left_foot_in_contact = self.check_contact("foot_module_2", "floor")
+        # rewards = forward_reward + healthy_reward
+        rewards = healthy_reward
+        reward = rewards - ctrl_cost - moving_cost
 
-        rewards = forward_reward + healthy_reward
-        reward = rewards - ctrl_cost
+        # print("healthy", healthy_reward)
+        # print("ctrl", ctrl_cost)
+        # print("moving", moving_cost)
+        # print(("total reward", reward))
+        # print("-")
 
         ob = self._get_obs()
 
@@ -187,38 +194,25 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def _get_obs(self):
 
-        position = self.data.qpos.flat.copy()
-        velocity = self.data.qvel.flat.copy()
+        position = (
+            self.data.qpos.flat.copy()
+        )  # position/rotation of trunk + position of all joints
+        velocity = (
+            self.data.qvel.flat.copy()
+        )  # positional/angular velocity of trunk +  of all joints
 
-        com_inertia = self.data.cinert.flat.copy()
-        com_velocity = self.data.cvel.flat.copy()
+        # com_inertia = self.data.cinert.flat.copy()
+        # com_velocity = self.data.cvel.flat.copy()
 
-        actuator_forces = self.data.qfrc_actuator.flat.copy()
-        external_contact_forces = self.data.cfrc_ext.flat.copy()
+        # actuator_forces = self.data.qfrc_actuator.flat.copy()
+        # external_contact_forces = self.data.cfrc_ext.flat.copy()
 
-        # print(
-        #     "OBS SIZE",
-        #     len(
-        #         np.concatenate(
-        #             [
-        #                 position,
-        #                 velocity,
-        #                 com_inertia,
-        #                 com_velocity,
-        #                 actuator_forces,
-        #                 external_contact_forces,
-        #             ]
-        #         )
-        #     ),
-        # )
-
-        return np.concatenate(
+        obs = np.concatenate(
             [
                 position,
                 velocity,
-                com_inertia,
-                com_velocity,
-                actuator_forces,
-                external_contact_forces,
+                [self.left_foot_in_contact, self.right_foot_in_contact],
             ]
         )
+        # print("OBS SIZE", len(obs))
+        return obs

@@ -1,3 +1,5 @@
 __pycache__/
 gym/logs/*
 *.pkl
+mini_bdx/mini_bdx.egg-info/*
+experiments/RL/data/*
