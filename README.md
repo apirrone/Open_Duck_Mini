@@ -71,9 +71,12 @@ $ python test.py -a <algo> -p <path_to_model>
 ## Design TODO
 - Rework the roll/pitch part of the hips, its very ugly right now
   - Reworked a little, still ugly
-- Integrate contact sensors in the feet
-- Make the head part to link the pitch and yaw
-- Make it look cool like a BD-X or a BD-1
+  - 
+### Problems:
+- Hard to plug dxl connectors on some motors after being assambled. 
+- Add groove in head pitch yaw when inserting the motor on which we need to remove the horn.
+- head pitch1 scraps on the wire
+
 
 # TO read
 - https://www.nature.com/articles/s41598-023-38259-7.pdf

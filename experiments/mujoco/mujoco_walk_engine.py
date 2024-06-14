@@ -128,7 +128,7 @@ robot = placo.RobotWrapper(
     "../../mini_bdx/robots/bdx/robot.urdf", placo.Flags.ignore_collisions
 )
 
-walk_engine = WalkEngine(robot)
+walk_engine = WalkEngine(robot, max_rise_gain=0.1)
 
 
 def get_imu(data):
