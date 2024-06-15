@@ -66,6 +66,11 @@ $ tensorboard --logdir=logs
 $ python test.py -a <algo> -p <path_to_model>
 ```
 
+# BOM
+
+- micro usb to micro usb https://shorturl.at/jJEZp
+- battery https://shorturl.at/CCgFw
+
 # TODO
 
 ## Design TODO
