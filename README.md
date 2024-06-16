@@ -27,8 +27,14 @@ See [this document](docs/prepare_robot.md) for getting from a onshape design to 
 
 ## Install 
 
+### Installation on robot 
 ```bash
-$ pip install -e .
+$ pip install -e .[robot]
+```
+
+### Install everything (simulation, rl etc)
+```bash
+$ pip install -e .[all]
 ```
 
 ## RL stuff
