@@ -1,6 +1,6 @@
 import time
 
-from io_330 import Dxl330IO
+from mini_bdx.io_330 import Dxl330IO
 
 # from pypot.dynamixel import Dxl320IO
 

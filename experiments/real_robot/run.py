@@ -31,7 +31,7 @@ robot = placo.RobotWrapper(
     "../../mini_bdx/robots/bdx/robot.urdf", placo.Flags.ignore_collisions
 )
 
-walk_engine = WalkEngine(robot)
+walk_engine = WalkEngine(robot, frequency=1.5, swing_gain=0.0)
 
 
 def xbox_input():
