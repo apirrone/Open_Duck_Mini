@@ -108,20 +108,20 @@ class WalkEngine:
         )
         self.trunk_task.configure("trunk", "hard")
 
-        self.right_foot_tip_task = self.kinematics_solver.add_frame_task(
-            "right_foot_tip", robot.get_T_world_frame("right_foot_tip")
+        self.right_foot_task = self.kinematics_solver.add_frame_task(
+            "right_foot", robot.get_T_world_frame("right_foot")
         )
-        self.right_foot_tip_task.configure("right_foot_tip", "soft", 5.0, 0.1)
+        self.right_foot_task.configure("right_foot", "soft", 5.0, 0.1)
 
-        self.left_foot_tip_task = self.kinematics_solver.add_frame_task(
-            "left_foot_tip", robot.get_T_world_frame("left_foot_tip")
+        self.left_foot_task = self.kinematics_solver.add_frame_task(
+            "left_foot", robot.get_T_world_frame("left_foot")
         )
-        self.left_foot_tip_task.configure("left_foot_tip", "soft", 5.0, 0.1)
+        self.left_foot_task.configure("left_foot", "soft", 5.0, 0.1)
 
         self.is_left_support = False
 
-        self.trunk_height = -robot.get_T_world_frame("left_foot_tip")[:3, 3][2] / 1.2
-        self.foot_distance = np.abs(robot.get_T_world_frame("left_foot_tip")[:3, 3][1])
+        self.trunk_height = -robot.get_T_world_frame("left_foot")[:3, 3][2] / 1.2
+        self.foot_distance = np.abs(robot.get_T_world_frame("left_foot")[:3, 3][1])
 
         self.default_trunk_x_offset = default_trunk_x_offset
         self.forward_trunk_x_offset = self.default_trunk_x_offset - 0.002
@@ -153,30 +153,30 @@ class WalkEngine:
     def get_left_foot_pose(self, t):
         left_position = self.left.get_position(t)
 
-        T_world_left_foot_tip = np.eye(4)
-        T_world_left_foot_tip[:3, 3] = [
+        T_world_left_foot = np.eye(4)
+        T_world_left_foot[:3, 3] = [
             left_position.x,
             left_position.y,
             left_position.z,
         ]
-        T_world_left_foot_tip = fv_utils.rotateInSelf(
-            T_world_left_foot_tip, [0, 0, left_position.yaw], degrees=False
+        T_world_left_foot = fv_utils.rotateInSelf(
+            T_world_left_foot, [0, 0, left_position.yaw], degrees=False
         )
 
-        return T_world_left_foot_tip
+        return T_world_left_foot
 
     def get_right_foot_pose(self, time_since_last_step):
         right_position = self.right.get_position(time_since_last_step)
-        T_world_right_foot_tip = np.eye(4)
-        T_world_right_foot_tip[:3, 3] = [
+        T_world_right_foot = np.eye(4)
+        T_world_right_foot[:3, 3] = [
             right_position.x,
             right_position.y,
             right_position.z,
         ]
-        T_world_right_foot_tip = fv_utils.rotateInSelf(
-            T_world_right_foot_tip, [0, 0, right_position.yaw], degrees=False
+        T_world_right_foot = fv_utils.rotateInSelf(
+            T_world_right_foot, [0, 0, right_position.yaw], degrees=False
         )
-        return T_world_right_foot_tip
+        return T_world_right_foot
 
     # gyro is angular position of the trunk [roll, pitch, yaw]
     # accelerometer is the acceleration of the trunk [x, y, z]
@@ -231,10 +231,10 @@ class WalkEngine:
 
         swing = 0
         if walking:
-            self.left_foot_tip_task.T_world_frame = self.get_left_foot_pose(
+            self.left_foot_task.T_world_frame = self.get_left_foot_pose(
                 self.time_since_last_step
             )
-            self.right_foot_tip_task.T_world_frame = self.get_right_foot_pose(
+            self.right_foot_task.T_world_frame = self.get_right_foot_pose(
                 self.time_since_last_step
             )
 
@@ -247,8 +247,8 @@ class WalkEngine:
             self.step_size_x = 0
             self.step_size_y = 0
             self.step_size_yaw = 0
-            self.left_foot_tip_task.T_world_frame = self.get_left_foot_pose(0)
-            self.right_foot_tip_task.T_world_frame = self.get_right_foot_pose(0)
+            self.left_foot_task.T_world_frame = self.get_left_foot_pose(0)
+            self.right_foot_task.T_world_frame = self.get_right_foot_pose(0)
 
         # Trunk pitch and roll
         if self.trunk_pitch_roll_compensation:
@@ -291,8 +291,8 @@ class WalkEngine:
             "left_hip_pitch": self.robot.get_joint("left_hip_pitch"),
             "left_knee": self.robot.get_joint("left_knee"),
             "left_ankle": self.robot.get_joint("left_ankle"),
-            "head_pitch1": self.robot.get_joint("head_pitch1"),
-            "head_pitch2": self.robot.get_joint("head_pitch2"),
+            "neck_pitch": self.robot.get_joint("neck_pitch"),
+            "head_pitch": self.robot.get_joint("head_pitch"),
             "head_yaw": self.robot.get_joint("head_yaw"),
         }
         return angles

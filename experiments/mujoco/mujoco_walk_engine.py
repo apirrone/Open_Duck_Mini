@@ -128,7 +128,7 @@ robot = placo.RobotWrapper(
     "../../mini_bdx/robots/bdx/robot.urdf", placo.Flags.ignore_collisions
 )
 
-walk_engine = WalkEngine(robot)  # , max_rise_gain=0.1)
+walk_engine = WalkEngine(robot, default_trunk_x_offset=-0.03)  # , max_rise_gain=0.1)
 
 
 def get_imu(data):
@@ -182,7 +182,7 @@ try:
         prev = data.time
         mujoco.mj_step(model, data)
         viewer.sync()
-        time.sleep(model.opt.timestep / 2.5)
+        # time.sleep(model.opt.timestep / 2.5)
 
 except KeyboardInterrupt:
     viewer.close()
