@@ -10,7 +10,7 @@
 - [ ] Integrate greg's placo walk
 
 ## Electronics
-- [ ] Install RPI os on SD card
+- [x] Install RPI os on SD card
 - [ ] Try force sensors with RPI
   - [ ] Find the appropriate resistor for the voltage divider
   - https://www.youtube.com/watch?v=eW3SQCi0aTE
