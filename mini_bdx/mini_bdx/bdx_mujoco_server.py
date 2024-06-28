@@ -15,11 +15,21 @@ class BDXMujocoServer:
         self.data = mujoco.MjData(self.model)
         self.actions_queue = Queue()
 
-        self.viewer = mujoco.viewer.launch_passive(self.model, self.data)
-
+        self.viewer = mujoco.viewer.launch_passive(
+            self.model, self.data, key_callback=self.key_callback
+        )
+        self.sim_speed = 1
         self.dt = 0
         if not gravity_on:
             self.model.opt.gravity[:] = [0, 0, 0]
+
+    def key_callback(self, keycode):
+        if keycode == 80:  # p
+            self.sim_speed += 0.1
+            print("sim speed : ", self.sim_speed)
+        if keycode == 79:  # o
+            self.sim_speed = max(0.005, self.sim_speed - 0.1)
+            print("sim speed : ", self.sim_speed)
 
     def start(self):
         Thread(target=self.run, daemon=True).start()
@@ -37,7 +47,7 @@ class BDXMujocoServer:
             prev = self.data.time
             mujoco.mj_step(self.model, self.data)
             self.viewer.sync()
-            time.sleep(0.001)
+            time.sleep(0.0001 * (1 / self.sim_speed))
 
     def send_action(self, action):
         self.actions_queue.put(action)

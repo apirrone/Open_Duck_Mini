@@ -37,7 +37,7 @@ parameters.single_support_duration = 0.4  # Duration of single support phase [s]
 parameters.single_support_timesteps = (
     10  # Number of planning timesteps per single support phase
 )
-parameters.double_support_ratio = 0.0  # Ratio of double support (0.0 to 1.0)
+parameters.double_support_ratio = 0.2  # Ratio of double support (0.0 to 1.0)
 parameters.startend_double_support_ratio = (
     1.5  # Ratio duration of supports for starting and stopping walk
 )
@@ -185,7 +185,7 @@ while True:
 
         robot.update_kinematics()
         qd_sol = solver.solve(True)
-    solver.dump_status()
+    # solver.dump_status()
 
     # Ensuring the robot is kinematically placed on the floor on the proper foot to avoid integration drifts
     # if not trajectory.support_is_both(t):
