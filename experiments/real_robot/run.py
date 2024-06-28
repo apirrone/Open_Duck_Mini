@@ -31,7 +31,15 @@ robot = placo.RobotWrapper(
     "../../mini_bdx/robots/bdx/robot.urdf", placo.Flags.ignore_collisions
 )
 
-walk_engine = WalkEngine(robot, frequency=1.5, swing_gain=0.0)
+walk_engine = WalkEngine(
+    robot,
+    frequency=1.5,
+    swing_gain=0.0,
+    default_trunk_x_offset=-0.013,
+    default_trunk_z_offset=-0.023,
+    target_trunk_pitch=-11.0,
+    max_rise_gain=0.01,
+)
 
 
 def xbox_input():
@@ -41,9 +49,12 @@ def xbox_input():
     target_step_size_x = -inputs["l_y"] * max_target_step_size_x
     target_step_size_y = inputs["l_x"] * max_target_step_size_y
     if inputs["l_trigger"] > 0.2:
-        target_head_pitch = inputs["r_y"] / 2 * np.deg2rad(45)
-        target_head_yaw = -inputs["r_x"] / 2 * np.deg2rad(120)
-        target_head_z_offset = inputs["r_trigger"] * 4 * 0.08
+        target_head_pitch = inputs["r_y"] / 2 * np.deg2rad(70)
+        print("=== target head pitch", target_head_pitch)
+        target_head_yaw = -inputs["r_x"] / 2 * np.deg2rad(150)
+        target_head_z_offset = inputs["r_trigger"] * 4 * 0.2
+        print(target_head_z_offset)
+        # print("======", target_head_z_offset)
     else:
         target_yaw = -inputs["r_x"] * max_target_yaw
 
@@ -109,19 +120,39 @@ while True:
     cv2.imshow("image", im)
     key = cv2.waitKey(1)
     if key == ord("p"):
-        gyro[1] += 0.001
+        # gyro[1] += 0.001
+        walk_engine.target_trunk_pitch += 0.1
     if key == ord("o"):
-        gyro[1] -= 0.001
+        walk_engine.target_trunk_pitch -= 0.1
+        # gyro[1] -= 0.001
     if key == ord("m"):
-        walk_engine.default_trunk_x_offset += 0.01
+        walk_engine.max_rise_gain += 0.001
     if key == ord("l"):
-        walk_engine.default_trunk_x_offset -= 0.01
+        walk_engine.max_rise_gain -= 0.001
+    if key == ord("b"):
+        walk_engine.default_trunk_x_offset += 0.001
+    if key == ord("n"):
+        walk_engine.default_trunk_x_offset -= 0.001
     if key == ord("i"):
-        walk_engine.default_trunk_z_offset += 0.01
+        walk_engine.default_trunk_z_offset += 0.001
     if key == ord("u"):
-        walk_engine.default_trunk_z_offset -= 0.01
-    print(gyro)
-    print(walk_engine.default_trunk_x_offset)
-    print(walk_engine.default_trunk_z_offset)
+        walk_engine.default_trunk_z_offset -= 0.001
+    if key == ord("f"):
+        walk_engine.frequency -= 0.1
+    if key == ord("g"):
+        walk_engine.frequency += 0.1
+    if key == ord("c"):
+        walk_engine.swing_gain -= 0.001
+    if key == ord("v"):
+        walk_engine.swing_gain += 0.001
+
+    # print("gyro : ", gyro)
+    print("target_trunk pitch", walk_engine.trunk_pitch)
+    print("trunk x offset", walk_engine.default_trunk_x_offset)
+    print("trunk z offset", walk_engine.default_trunk_z_offset)
+    print("max rise gain", walk_engine.max_rise_gain)
+    print("frequency", walk_engine.frequency)
+    print("swing gain", walk_engine.swing_gain)
+    print("===")
 
     prev = t

@@ -22,22 +22,25 @@ class HWI:
             "left_hip_pitch": 22,
             "left_knee": 23,
             "left_ankle": 24,
-            "head_pitch1": 30,
-            "head_pitch2": 31,
+            "neck_pitch": 30,
+            "head_pitch": 31,
             "head_yaw": 32,
         }
-        self.inverted_joints = [
-            "right_hip_pitch",
-            "left_hip_pitch",
-            "right_knee",
-            "left_knee",
-            "right_ankle",
-            "left_ankle",
-        ]
-        self.dxl_io.set_pid_gain({id: [1500, 0, 0] for id in self.joints.values()})
+        # self.dxl_io.set_pid_gain({id: [1500, 0, 0] for id in self.joints.values()})
+        self.set_low_torque()
+
+    def set_low_torque(self):
+        self.dxl_io.set_pid_gain({id: [100, 0, 0] for id in self.joints.values()})
+
+    def set_high_torque(self):
+        self.dxl_io.set_pid_gain({id: [2000, 0, 0] for id in self.joints.values()})
+        for name in ["neck_pitch", "head_pitch", "head_yaw"]:
+            self.dxl_io.set_pid_gain({self.joints[name]: [150, 0, 0]})
 
     def turn_on(self):
         self.dxl_io.enable_torque(self.joints.values())
+        time.sleep(1)
+        self.set_high_torque()
 
     def turn_off(self):
         self.dxl_io.disable_torque(self.joints.values())
@@ -63,8 +66,8 @@ class HWI:
             "left_hip_pitch": -0.9488873968876821,
             "left_knee": 1.6490097909463939,
             "left_ankle": -0.7001367286772635,
-            "head_pitch1": 0.1835609559422233,
-            "head_pitch2": 0.1834247585248765,
+            "neck_pitch": 0.1835609559422233,
+            "head_pitch": 0.1834247585248765,
             "head_yaw": 9.174169188795582e-16,
         }
         init_position = list(init.values())
@@ -81,8 +84,6 @@ class HWI:
                 joint: np.rad2deg(position)
                 for joint, position in zip(self.joints.keys(), values)
             }
-            # for joint in self.inverted_joints:
-            #     goal[self.joints[joint]] *= -1
             self.set_position_all(goal)
             time.sleep(0.1)
 
@@ -95,8 +96,6 @@ class HWI:
             self.joints[joint]: np.rad2deg(-position)
             for joint, position in joints_positions.items()
         }
-        # for joint in self.inverted_joints:
-        #     ids_positions[self.joints[joint]] *= -1
 
         # print(ids_positions)
         self.dxl_io.set_goal_position(ids_positions)

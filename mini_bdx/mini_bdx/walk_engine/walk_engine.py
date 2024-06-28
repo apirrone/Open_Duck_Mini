@@ -75,7 +75,8 @@ class WalkEngine:
         swing_gain: float = -0.001,
         swing_phase: float = 0.0,
         foot_y_offset_per_step_size_y: float = 0.02,
-        trunk_pitch: float = 0,
+        target_trunk_pitch: float = 0,
+        target_trunk_roll: float = 0,
         step_size_x: float = 0,
         step_size_y: float = 0,
         step_size_yaw: float = 0,
@@ -85,9 +86,15 @@ class WalkEngine:
         self.right = Foot()
         self.swing_spline = PolySpline()
 
-        self.trunk_pitch = trunk_pitch
+        self.trunk_pitch = 0
+        self.trunk_roll = 0
 
-        self.trunk_pitch_roll_compensation = True
+        self.trunk_pitch_timeout = 1.0  # s
+
+        self.target_trunk_pitch = target_trunk_pitch
+        self.target_trunk_roll = target_trunk_roll
+
+        self.trunk_pitch_roll_compensation = False
 
         self.robot = robot
         self.kinematics_solver = kinematics_solver
@@ -98,6 +105,9 @@ class WalkEngine:
         )
 
         self.T_world_head = robot.get_T_world_frame("head")
+        self.T_world_head = fv_utils.translateInSelf(
+            self.T_world_head, [-0.05, 0, -0.05]
+        )
         self.head_task = self.kinematics_solver.add_frame_task(
             "head", self.T_world_head
         )
@@ -196,7 +206,8 @@ class WalkEngine:
         dt,
         ignore_feet_contact=False,
     ):
-
+        if self.trunk_pitch_timeout > 0:
+            self.trunk_pitch_timeout -= dt
         if left_contact:
             self.time_since_last_left_contact = 0
         if right_contact:
@@ -227,7 +238,7 @@ class WalkEngine:
         self.step_size_x = self.step_size_x + (delta_x / 100)
         self.step_size_y = self.step_size_y + (delta_y / 100)
         self.step_size_yaw = self.step_size_yaw + (delta_yaw / 100)
-        self.rise_gain = self.rise_gain + (delta_rise_gain / 100)
+        self.rise_gain = self.rise_gain + (delta_rise_gain / 1000)
 
         swing = 0
         if walking:
@@ -254,9 +265,13 @@ class WalkEngine:
         if self.trunk_pitch_roll_compensation:
             self.trunk_pitch = max(-30, min(30, -np.rad2deg(gyro[1]) * 5))
             self.trunk_roll = max(-10, min(10, np.rad2deg(gyro[0])))
-        else:
-            self.trunk_pitch = 0
-            self.trunk_roll = 0
+        # else:
+        #     self.trunk_pitch = 0
+        #     self.trunk_roll = 0
+
+        if self.trunk_pitch_timeout <= 0:
+            delta_trunk_pitch = self.target_trunk_pitch - self.trunk_pitch
+            self.trunk_pitch = self.trunk_pitch + (delta_trunk_pitch / 100)
 
         self.T_world_trunk = np.eye(4)
         self.T_world_trunk = fv_utils.rotateInSelf(
@@ -314,6 +329,7 @@ class WalkEngine:
         self.right.yaw_spline.add_point(self.step_duration, 0, 0)
 
         self.trunk_pitch = 0
+        self.trunk_roll = 0
 
         self.new_step()
 
@@ -373,7 +389,7 @@ class WalkEngine:
         self.is_left_support = not self.is_left_support
 
         step_low = -self.trunk_height + self.default_trunk_z_offset
-        step_high = -self.trunk_height + self.rise_gain
+        step_high = -self.trunk_height + self.default_trunk_z_offset + self.rise_gain
         self.support_foot.z_spline.add_point(0, step_low, 0)
         self.support_foot.z_spline.add_point(self.step_duration, step_low, 0)
 
