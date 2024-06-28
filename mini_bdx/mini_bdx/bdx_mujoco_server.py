@@ -10,7 +10,7 @@ from scipy.spatial.transform import Rotation as R
 
 
 class BDXMujocoServer:
-    def __init__(self, model_path="../../mini_bdx/robots/bdx/"):
+    def __init__(self, model_path="../../mini_bdx/robots/bdx/", gravity_on=True):
         self.model = mujoco.MjModel.from_xml_path(os.path.join(model_path, "scene.xml"))
         self.data = mujoco.MjData(self.model)
         self.actions_queue = Queue()
@@ -18,6 +18,8 @@ class BDXMujocoServer:
         self.viewer = mujoco.viewer.launch_passive(self.model, self.data)
 
         self.dt = 0
+        if not gravity_on:
+            self.model.opt.gravity[:] = [0, 0, 0]
 
     def start(self):
         Thread(target=self.run, daemon=True).start()

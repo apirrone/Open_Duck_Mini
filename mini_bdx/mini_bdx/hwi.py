@@ -9,7 +9,7 @@ from mini_bdx.io_330 import Dxl330IO
 
 
 class HWI:
-    def __init__(self, usb_port="/dev/ttyUSB0", baudrate=1000000):
+    def __init__(self, usb_port="/dev/ttyUSB1", baudrate=1000000):
         self.dxl_io = Dxl330IO(usb_port, baudrate=baudrate)
         self.joints = {
             "right_hip_yaw": 10,
@@ -99,3 +99,9 @@ class HWI:
 
         # print(ids_positions)
         self.dxl_io.set_goal_position(ids_positions)
+
+    def get_present_current(self, joint_name):
+        return self.dxl_io.get_present_current([self.joints[joint_name]])[0]
+
+    def get_goal_current(self, joint_name):
+        return self.dxl_io.get_goal_current([self.joints[joint_name]])[0]

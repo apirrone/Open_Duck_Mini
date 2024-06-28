@@ -234,13 +234,13 @@
     <position name="left_hip_pitch"  joint="left_hip_pitch"  inheritrange="1"/>
     <position name="left_knee"       joint="left_knee"       inheritrange="1"/>
     <position name="left_ankle"      joint="left_ankle"      inheritrange="1"/>
-    <position name="right_hip_roll"  joint="right_hip_roll"  inheritrange="1"/>
     <position name="right_hip_yaw"   joint="right_hip_yaw"   inheritrange="1"/>
+    <position name="right_hip_roll"  joint="right_hip_roll"  inheritrange="1"/>
     <position name="right_hip_pitch" joint="right_hip_pitch" inheritrange="1"/>
     <position name="right_knee"      joint="right_knee"      inheritrange="1"/>
     <position name="right_ankle"     joint="right_ankle"     inheritrange="1"/>
-    <position name="head_pitch"      joint="head_pitch"      inheritrange="1"/>
     <position name="neck_pitch"      joint="neck_pitch"      inheritrange="1"/>
+    <position name="head_pitch"      joint="head_pitch"      inheritrange="1"/>
     <position name="head_yaw"        joint="head_yaw"        inheritrange="1"/>
   </actuator>
 </mujoco>

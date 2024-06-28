@@ -1,3 +1,4 @@
+import argparse
 import time
 
 import cv2
@@ -8,7 +9,12 @@ from mini_bdx.hwi import HWI
 from mini_bdx.utils.xbox_controller import XboxController
 from mini_bdx.walk_engine import WalkEngine
 
-xbox = XboxController()
+parser = argparse.ArgumentParser()
+parser.add_argument("-x", action="store_true", default=False)
+args = parser.parse_args()
+
+if args.x:
+    xbox = XboxController()
 
 
 hwi = HWI()
@@ -63,9 +69,6 @@ def xbox_input():
         start_button_timeout = time.time()
 
 
-# while True:
-#     xbox_input()
-
 im = np.zeros((80, 80, 3), dtype=np.uint8)
 
 
@@ -89,7 +92,17 @@ prev = time.time()
 while True:
     dt = time.time() - prev
     t = time.time()
-    xbox_input()
+    if args.x:
+        xbox_input()
+
+    # TODO use current to find out when the foot is on the ground
+    print("present CURRENT right ankle", hwi.get_present_current("right_ankle"))
+    print("goal CURRENT right ankle", hwi.get_goal_current("right_ankle"))
+    print(
+        "sub",
+        hwi.get_goal_current("right_ankle") - hwi.get_present_current("right_ankle"),
+    )
+    print("===")
 
     # Get sensor data
     # gyro, accelerometer = get_imu()
@@ -145,14 +158,16 @@ while True:
         walk_engine.swing_gain -= 0.001
     if key == ord("v"):
         walk_engine.swing_gain += 0.001
+    if key == ord("w"):
+        walking = not walking
 
     # print("gyro : ", gyro)
-    print("target_trunk pitch", walk_engine.trunk_pitch)
-    print("trunk x offset", walk_engine.default_trunk_x_offset)
-    print("trunk z offset", walk_engine.default_trunk_z_offset)
-    print("max rise gain", walk_engine.max_rise_gain)
-    print("frequency", walk_engine.frequency)
-    print("swing gain", walk_engine.swing_gain)
-    print("===")
+    # print("target_trunk pitch", walk_engine.trunk_pitch)
+    # print("trunk x offset", walk_engine.default_trunk_x_offset)
+    # print("trunk z offset", walk_engine.default_trunk_z_offset)
+    # print("max rise gain", walk_engine.max_rise_gain)
+    # print("frequency", walk_engine.frequency)
+    # print("swing gain", walk_engine.swing_gain)
+    # print("===")
 
     prev = t

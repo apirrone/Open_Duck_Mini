@@ -18,6 +18,11 @@ def dxl_to_degree(value, model):
     return round(((max_deg * float(value)) / (max_pos - 1)) - (max_deg / 2), 2)
 
 
+def dxl_to_current(value, model):
+    return round(((max_deg * float(value)) / (max_pos - 1)) - (max_deg / 2), 2)
+    # return abs(value / 65524)
+
+
 def degree_to_dxl(value, model):
 
     pos = int(round((max_pos - 1) * ((max_deg / 2 + float(value)) / max_deg), 0))
@@ -209,6 +214,18 @@ controls = {
         "length": 4,
         "access": _DxlAccess.readonly,
         "dxl_to_si": dxl_to_degree,
+    },
+    "present current": {
+        "address": 0x7E,
+        "length": 2,
+        "access": _DxlAccess.readonly,
+        # "dxl_to_si": dxl_to_current,
+    },
+    "goal current": {
+        "address": 0x66,
+        "length": 2,
+        "access": _DxlAccess.readonly,
+        # "dxl_to_si": dxl_to_current,
     },
     # "present speed": {
     #     "address": 0x27,
