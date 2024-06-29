@@ -3,7 +3,10 @@ def check_contact(data, model, body1_name, body2_name):
     body2_id = data.body(body2_name).id
 
     for i in range(data.ncon):
-        contact = data.contact[i]
+        try:
+            contact = data.contact[i]
+        except Exception as e:
+            return False
 
         if (
             model.geom_bodyid[contact.geom1] == body1_id

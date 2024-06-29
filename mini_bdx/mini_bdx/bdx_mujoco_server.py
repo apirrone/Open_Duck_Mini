@@ -24,8 +24,12 @@ class BDXMujocoServer:
         self.dt = 0
         if not self.gravity_on:
             self.model.opt.gravity[:] = [0, 0, 0]
+        self.key_pressed = None
+        self.key_pressed_timeout = 0
 
     def key_callback(self, keycode):
+        self.key_pressed = keycode
+        self.key_pressed_timeout = 0.1
         if keycode == 80:  # p
             self.sim_speed += 0.1
             print("sim speed : ", self.sim_speed)
@@ -46,6 +50,9 @@ class BDXMujocoServer:
         prev = self.data.time
         while True:
             self.dt = self.data.time - prev
+            self.key_pressed_timeout -= self.dt
+            if self.key_pressed_timeout < 0:
+                self.key_pressed = None
             try:
                 actions = self.actions_queue.get(block=False)
                 self.data.ctrl[:] = actions
@@ -53,9 +60,9 @@ class BDXMujocoServer:
                 pass
 
             prev = self.data.time
-            mujoco.mj_step(self.model, self.data)
+            mujoco.mj_step(self.model, self.data, 4)
             self.viewer.sync()
-            time.sleep(0.0001 * (1 / self.sim_speed))
+            # time.sleep(0.0001 * (1 / self.sim_speed))
 
     def send_action(self, action):
         self.actions_queue.put(action)
@@ -80,9 +87,11 @@ class BDXMujocoServer:
     def check_contact(self, body1_name, body2_name):
         body1_id = self.data.body(body1_name).id
         body2_id = self.data.body(body2_name).id
-
         for i in range(self.data.ncon):
-            contact = self.data.contact[i]
+            try:
+                contact = self.data.contact[i]
+            except Exception as e:
+                return False
 
             if (
                 self.model.geom_bodyid[contact.geom1] == body1_id

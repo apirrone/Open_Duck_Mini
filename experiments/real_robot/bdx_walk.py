@@ -32,11 +32,6 @@ robot = placo.HumanoidRobot(model_filename)
 # Walk parameters - if double_support_ratio is not set to 0, should be greater than replan_frequency
 parameters = placo.HumanoidParameters()
 
-# Timing parameters
-parameters.single_support_duration = 0.4  # Duration of single support phase [s]
-parameters.single_support_timesteps = (
-    10  # Number of planning timesteps per single support phase
-)
 parameters.double_support_ratio = 0.2  # Ratio of double support (0.0 to 1.0)
 parameters.startend_double_support_ratio = (
     1.5  # Ratio duration of supports for starting and stopping walk
@@ -47,15 +42,24 @@ parameters.replan_timesteps = 10  # Replanning each n timesteps
 
 # Posture parameters
 parameters.walk_com_height = 0.15  # Constant height for the CoM [m]
-parameters.walk_foot_height = 0.03  # Height of foot rising while walking [m]
-parameters.walk_trunk_pitch = 0.0  # Trunk pitch angle [rad]
+parameters.walk_foot_height = 0.006  # Height of foot rising while walking [m]
+parameters.walk_trunk_pitch = np.deg2rad(10)  # Trunk pitch angle [rad]
 parameters.walk_foot_rise_ratio = (
     0.2  # Time ratio for the foot swing plateau (0.0 to 1.0)
 )
 
+# Timing parameters
+# parameters.single_support_duration = 1 / (
+#     0.5 * np.sqrt(9.81 / parameters.walk_com_height)
+# )  # Constant height for the CoM [m]  # Duration of single support phase [s]
+parameters.single_support_duration = 0.2  # Duration of single support phase [s]
+parameters.single_support_timesteps = (
+    10  # Number of planning timesteps per single support phase
+)
+
 # Feet parameters
 parameters.foot_length = 0.06  # Foot length [m]
-parameters.foot_width = 0.01  # Foot width [m]
+parameters.foot_width = 0.006  # Foot width [m]
 parameters.feet_spacing = 0.12  # Lateral feet spacing [m]
 parameters.zmp_margin = 0.0  # ZMP margin [m]
 parameters.foot_zmp_target_x = 0.0  # Reference target ZMP position in the foot [m]
@@ -81,7 +85,7 @@ tasks = placo.WalkTasks()
 tasks.initialize_tasks(solver, robot)
 tasks.left_foot_task.orientation().mask.set_axises("yz", "local")
 tasks.right_foot_task.orientation().mask.set_axises("yz", "local")
-tasks.trunk_orientation_task.configure("trunk_orientation", "soft", 1e-4)
+# tasks.trunk_orientation_task.configure("trunk_orientation", "soft", 1e-4)
 # tasks.left_foot_task.orientation().configure("left_foot_orientation", "soft", 1e-6)
 # tasks.right_foot_task.orientation().configure("right_foot_orientation", "soft", 1e-6)
 
@@ -128,7 +132,7 @@ repetitive_footsteps_planner = placo.FootstepsPlannerRepetitive(parameters)
 d_x = 0.0
 d_y = 0.0
 d_theta = 0.0
-nb_steps = 10
+nb_steps = 5
 repetitive_footsteps_planner.configure(d_x, d_y, d_theta, nb_steps)
 
 # Planning footsteps
@@ -161,8 +165,10 @@ elif args.robot:
     hwi.turn_on()
     time.sleep(2)
 elif args.mujoco:
+    time_since_last_right_contact = 0.0
+    time_since_last_left_contact = 0.0
     bdx_mujoco_server = BDXMujocoServer(
-        model_path="../../mini_bdx/robots/bdx", gravity_on=False
+        model_path="../../mini_bdx/robots/bdx", gravity_on=True
     )
     bdx_mujoco_server.start()
 else:
@@ -175,13 +181,18 @@ initial_delay = -3.0
 t = initial_delay
 last_display = time.time()
 last_replan = 0
-
+petage_de_gueule = False
+got_input = False
 while True:
+    if got_input:
+        repetitive_footsteps_planner.configure(d_x, d_y, d_theta, nb_steps)
+        got_input = False
 
     # Invoking the IK QP solver
     for k in range(REFINE):
         # Updating the QP tasks from planned trajectory
-        tasks.update_tasks_from_trajectory(trajectory, t - DT + k * DT / REFINE)
+        if not petage_de_gueule:
+            tasks.update_tasks_from_trajectory(trajectory, t - DT + k * DT / REFINE)
 
         robot.update_kinematics()
         qd_sol = solver.solve(True)
@@ -262,9 +273,37 @@ while True:
         if args.robot:
             hwi.set_position_all(angles)
         elif args.mujoco:
+            right_contact, left_contact = bdx_mujoco_server.get_feet_contact()
+            if left_contact:
+                time_since_last_left_contact = 0.0
+            if right_contact:
+                time_since_last_right_contact = 0.0
+            # print("time since last left contact :", time_since_last_left_contact)
+            # print("time since last right contact :", time_since_last_right_contact)
             bdx_mujoco_server.send_action(list(angles.values()))
 
-    # Spin-lock until the next tick
+        if (
+            time_since_last_left_contact > parameters.single_support_duration
+            or time_since_last_right_contact > parameters.single_support_duration
+        ):
+            petage_de_gueule = True
+            # print("pétage de gueule")
+        else:
+            petage_de_gueule = False
+
+        time_since_last_left_contact += DT
+        time_since_last_right_contact += DT
+
+        if bdx_mujoco_server.key_pressed is not None:
+            got_input = True
+            d_x = 0.05
+        else:
+            got_input = True
+            d_x = 0
+            d_y = 0
+            d_theta = 0
+
     t += DT
+    # print(t)
     while time.time() < start_t + t:
         time.sleep(1e-3)

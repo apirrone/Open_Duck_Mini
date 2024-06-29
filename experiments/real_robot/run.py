@@ -17,7 +17,7 @@ if args.x:
     xbox = XboxController()
 
 
-hwi = HWI()
+hwi = HWI(usb_port="/dev/ttyUSB0")
 
 max_target_step_size_x = 0.03
 max_target_step_size_y = 0.03
