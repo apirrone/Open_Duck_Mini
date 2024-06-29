@@ -217,6 +217,7 @@ while True:
             time_since_last_right_contact = 0.0
 
         data.ctrl[:] = list(angles.values())
+        print(list(angles.values()))
 
         if (
             time_since_last_left_contact > parameters.single_support_duration
