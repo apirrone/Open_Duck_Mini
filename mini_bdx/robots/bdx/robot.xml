@@ -2,6 +2,7 @@
   <compiler angle="radian"/>
   <asset>
     <mesh name="cage_bottom" file="cage_bottom.stl"/>
+    <mesh name="power_switch" file="power_switch.stl"/>
     <mesh name="rasp_spacer" file="rasp_spacer.stl"/>
     <mesh name="cage_top" file="cage_top.stl"/>
     <mesh name="bno055" file="bno055.stl"/>
@@ -42,90 +43,81 @@
     <mesh name="head" file="head.stl"/>
   </asset>
   <default>
+    <!-- TODO tune damping, frictionloss and kp -->
     <geom contype="1" conaffinity="1" solref=".004 1" />
-    <joint damping="0.12" frictionloss="0.3"/>
-    <position kp="10" forcerange="-5.0 5.0"/>
-    <!-- <position kp="10" forcerange="-0.58 0.58"/>
-    <position kp="10" forcerange="-2 2"/> -->
+    <joint damping="0.05" frictionloss="0.03"/>
+    <position kp="100" forcerange="-0.58 0.58"/>
   </default>
   <worldbody>
     <body name="base" pos="0 0 0.19">
       <freejoint />
-      <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage_bottom"/>
-      <geom pos="-0.0268229 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.768627 0.886275 0.952941 1" mesh="rasp_spacer"/>
-      <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.768627 0.886275 0.952941 1" mesh="rasp_spacer"/>
-      <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage_top"/>
-      <geom pos="-0.0433729 -0.0066039 0.0280789" quat="0 0 -1 0" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="bno055"/>
-      <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="front_cover"/>
-      <geom pos="0.0001271 -0.0066039 -0.00492108" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.301961 0.290196 0.262745 1" mesh="body_part"/>
-      <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage_bottom_battery_hold"/>
-      <geom pos="0.0001271 -0.0066039 -0.00492108" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.917647 0.917647 0.917647 1" mesh="spacer"/>
-      <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage_back"/>
-      <geom pos="0.0001271 -0.0066039 -0.00492108" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.301961 0.301961 0.301961 1" mesh="holder_u2d2_power_hub"/>
-      <geom pos="-0.0498729 -0.114143 -0.0429711" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.768627 0.886275 0.952941 1" mesh="rasp_spacer"/>
-      <geom pos="0.0001271 -0.0316039 0.0195789" quat="0 0 0 -1" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
-      <geom pos="0.0001271 -0.0316039 0.0195789" quat="0 0 0 -1" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
-      <geom pos="0.0001271 -0.0316039 7.8923e-05" quat="0 0 0 -1" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
-      <geom pos="0.0286271 -0.0391039 -0.0219211" quat="0.215881 -0.215881 0.673347 0.673347" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="cell"/>
-      <geom pos="0.0816516 -0.00554542 -0.0319211" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="holder"/>
-      <geom pos="0.0076271 0.0258961 -0.0219211" quat="-0.282031 -0.282031 0.648428 -0.648428" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="cell"/>
-      <geom pos="0.0001271 0.0183961 0.0195789" quat="1 0 0 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
-      <geom pos="0.0001271 0.0183961 0.0195789" quat="1 0 0 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
-      <geom pos="0.0001271 0.0183961 7.8923e-05" quat="1 0 0 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
-      <geom pos="0.0306271 -0.0146039 0.0550789" quat="0.5 0.5 0.5 -0.5" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
-      <geom pos="0.0306271 -0.0146039 0.0550789" quat="0.5 0.5 0.5 -0.5" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
-      <geom pos="0.0306271 0.0048961 0.0550789" quat="0.5 0.5 0.5 -0.5" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
-      <geom pos="-0.0123729 -0.0391039 -0.0219211" quat="0.215881 -0.215881 0.673347 0.673347" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="cell"/>
-      <geom pos="0.0406516 -0.00554542 -0.0319211" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="holder"/>
-      <geom pos="-0.0333729 0.0258961 -0.0219211" quat="-0.282031 -0.282031 0.648428 -0.648428" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="cell"/>
-      <geom pos="-0.0368729 -0.0376039 0.0275789" quat="0.707107 0 -0.707107 0" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="raspberrypizerow"/>
-      <geom pos="-0.0368729 -0.0376039 0.0275789" quat="0.707107 0 -0.707107 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="raspberrypizerow"/>
-      <geom pos="-0.0496229 -0.0116039 0.0397789" quat="0.5 0.5 -0.5 -0.5" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b3b-eh-a.prt.1"/>
-      <geom pos="-0.0496229 -0.0235539 0.0397789" quat="0.5 0.5 -0.5 -0.5" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b4b-eh-a.prt.1"/>
-      <geom pos="-0.219113 -0.0920374 0.0447979" quat="1 0 0 0" type="mesh" rgba="0 0 0 1" mesh="board"/>
-      <geom pos="-0.0377229 -0.0235539 0.0397789" quat="0.5 0.5 -0.5 -0.5" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b4b-eh-a.prt.1"/>
-      <geom pos="-0.0377229 -0.0116039 0.0397789" quat="0.5 0.5 -0.5 -0.5" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b3b-eh-a.prt.1"/>
-      <geom pos="-0.0436229 -0.0235539 0.0397789" quat="0.5 0.5 -0.5 -0.5" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b4b-eh-a.prt.1"/>
-      <geom pos="-0.0436229 -0.0116039 0.0397789" quat="0.5 0.5 -0.5 -0.5" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b3b-eh-a.prt.1"/>
-      <geom pos="-0.0344254 0.0173611 0.0397789" quat="0.5 0.5 -0.5 -0.5" type="mesh" rgba="0.796078 0.823529 0.937255 1" mesh="u2d2_casing.prt"/>
-      <geom pos="-0.0236254 -0.0205389 0.0477789" quat="0.5 0.5 -0.5 -0.5" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b3b-eh-a.prt"/>
-      <geom pos="-0.0323254 -0.0304389 0.0477789" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b4b-ph-k-s.prt"/>
-      <geom pos="-0.0197754 -0.0192889 0.0477789" quat="0.5 0.5 -0.5 -0.5" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b4b-eh-a.prt"/>
-      <geom pos="0.0133225 0.00556468 0.0477789" quat="0 0.707107 0.707107 0" type="mesh" rgba="0 0.294118 0.654902 1" mesh="pcb_u2d2.prt"/>
-      <geom pos="-0.0254254 0.015261 0.0499404" quat="0.5 0.5 -0.5 -0.5" type="mesh" rgba="0.6 0.6 0.6 1" mesh="micro_usb_2_0_connector__ab_rec.prt"/>
-      <geom pos="-0.0384129 0.0109126 0.0395789" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.6 0.6 0.6 1" mesh="39281023.prt"/>
-      <body name="double_u_module" pos="0.0001271 -0.0316039 0.0230789" quat="0 0.707107 0.707107 0">
-        <inertial pos="-0.017 -8.42485e-05 0.0115845" quat="0.259261 0.625097 0.282096 0.680043" mass="0.0188183" diaginertia="4.61959e-06 4.61664e-06 4.1639e-06"/>
-        <joint name="right_hip_yaw" pos="0 0 0" axis="0 0 1" range="-0.698132 0.698132" />
-        <geom pos="0 0 0.023" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
-        <geom pos="-0.146088 0 0.028" quat="0 0 -0.707107 -0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="double_u"/>
-        <geom pos="-0.034 -0.0115002 0.0115" quat="0 1 0 0" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
-        <geom quat="0 -1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
-        <geom pos="-0.034 0.0115 0.0115" quat="0.707107 -0.707107 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
-        <body name="right_hip_pitch_roll_module" pos="-0.034 0.0115 0.0115" quat="0.5 -0.5 -0.5 -0.5">
-          <inertial pos="0.0119128 -0.0117521 -0.00645034" quat="0.664115 0.369051 0.335976 0.556662" mass="0.0506858" diaginertia="1.56781e-05 1.47443e-05 8.52074e-06"/>
-          <joint name="right_hip_roll" pos="0 0 0" axis="0 0 1" range="-1.5708 0.349066" />
-          <geom pos="-0.0670531 -0.0245 0.009" quat="1 0 0 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="hip_right_roll_to_pitch"/>
-          <geom pos="0 0 -0.0035" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
-          <geom pos="0 0 -0.0035" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
-          <geom pos="0 0 -0.023" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
-          <geom pos="0.025 -0.021 -0.0135" quat="0 0 0.707107 -0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
-          <geom pos="0.025 -0.021 -0.0135" quat="0 0 0.707107 -0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
-          <geom pos="0.025 -0.0015 -0.0135" quat="0 0 0.707107 -0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
-          <body name="leg_module" pos="0.025 -0.0245 -0.0135" quat="0 0 -0.707107 -0.707107">
-            <inertial pos="-0.0399016 -7.71133e-06 0.0114004" quat="0.502878 0.497012 0.497197 0.50288" mass="0.0345308" diaginertia="2.06535e-05 1.77761e-05 5.01407e-06"/>
-            <joint name="right_hip_pitch" pos="0 0 0" axis="0 0 1" range="-0.523599 1.5708" />
-            <geom pos="-0.0425 -0.0471308 0.023" quat="0.5 -0.5 0.5 -0.5" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="block_to_axis"/>
-            <geom pos="-0.0425 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="block_to_axis"/>
-            <geom pos="-0.0425 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="renfort_leg"/>
-            <geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
-            <geom pos="0 0 0.023" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
-            <geom pos="-0.065 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
-            <geom pos="-0.065 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
-            <geom pos="-0.065 0 0.023" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
-            <body name="leg_module_2" pos="-0.065 0 0" quat="1 0 0 0">
+      <body name="body_module">
+        <inertial pos="-0.00689065 -0.00643983 0.00826352" quat="0.425895 0.565899 0.568331 0.418773" mass="0.497275" diaginertia="0.00134734 0.00103255 0.000841023"/>
+        <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage_bottom"/>
+        <geom pos="-0.0423729 0.0283961 0.0135789" quat="0.707107 -0.707107 0 0" type="mesh" rgba="0.901961 0.901961 0.901961 1" mesh="power_switch"/>
+        <geom pos="-0.0268229 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.768627 0.886275 0.952941 1" mesh="rasp_spacer"/>
+        <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.768627 0.886275 0.952941 1" mesh="rasp_spacer"/>
+        <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage_top"/>
+        <geom pos="-0.0343729 -0.0056039 0.0300789" quat="0 0 -1 0" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="bno055"/>
+        <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="front_cover"/>
+        <geom pos="0.0001271 -0.0066039 -0.00492108" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.301961 0.290196 0.262745 1" mesh="body_part"/>
+        <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage_bottom_battery_hold"/>
+        <geom pos="0.0001271 -0.0066039 -0.00492108" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.917647 0.917647 0.917647 1" mesh="spacer"/>
+        <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage_back"/>
+        <geom pos="0.0001271 -0.0066039 -0.00592108" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.301961 0.301961 0.301961 1" mesh="holder_u2d2_power_hub"/>
+        <geom pos="-0.0498729 -0.114143 -0.0429711" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.768627 0.886275 0.952941 1" mesh="rasp_spacer"/>
+        <geom pos="0.0001271 -0.0316039 0.0195789" quat="0 0 0 -1" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
+        <geom pos="0.0001271 -0.0316039 0.0195789" quat="0 0 0 -1" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
+        <geom pos="0.0001271 -0.0316039 7.8923e-05" quat="0 0 0 -1" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
+        <geom pos="0.0001271 0.0183961 0.0195789" quat="1 0 0 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
+        <geom pos="0.0001271 0.0183961 0.0195789" quat="1 0 0 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
+        <geom pos="0.0001271 0.0183961 7.8923e-05" quat="1 0 0 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
+        <geom pos="0.0306271 -0.0146039 0.0550789" quat="0.5 0.5 0.5 -0.5" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
+        <geom pos="0.0306271 -0.0146039 0.0550789" quat="0.5 0.5 0.5 -0.5" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
+        <geom pos="0.0306271 0.0048961 0.0550789" quat="0.5 0.5 0.5 -0.5" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
+        <geom pos="-0.0348729 -0.0171039 -0.0239211" quat="0.628779 0.323477 0.628779 0.323477" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="cell"/>
+        <geom pos="-0.00131442 -0.0701284 -0.0339211" quat="1 0 0 0" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="holder"/>
+        <geom pos="0.0301271 0.0038961 -0.0239211" quat="0.657934 -0.259081 -0.657934 0.259081" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="cell"/>
+        <geom pos="-0.0368729 -0.0396039 0.0275789" quat="0.707107 0 -0.707107 0" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="raspberrypizerow"/>
+        <geom pos="-0.0368729 -0.0396039 0.0275789" quat="0.707107 0 -0.707107 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="raspberrypizerow"/>
+        <geom pos="-0.0288729 -0.0123539 0.0467789" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b3b-eh-a.prt.1"/>
+        <geom pos="-0.0169229 -0.0123539 0.0467789" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b4b-eh-a.prt.1"/>
+        <geom pos="0.0515606 -0.181844 0.0517979" quat="0.707107 0 0 0.707107" type="mesh" rgba="0 0 0 1" mesh="board"/>
+        <geom pos="-0.0169229 -0.000453896 0.0467789" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b4b-eh-a.prt.1"/>
+        <geom pos="-0.0288729 -0.000453896 0.0467789" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b3b-eh-a.prt.1"/>
+        <geom pos="-0.0169229 -0.0063539 0.0467789" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b4b-eh-a.prt.1"/>
+        <geom pos="-0.0288729 -0.0063539 0.0467789" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b3b-eh-a.prt.1"/>
+        <geom pos="-0.0578379 0.00284365 0.0467789" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.796078 0.823529 0.937255 1" mesh="u2d2_casing.prt"/>
+        <geom pos="-0.0199379 0.0136436 0.0547789" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b3b-eh-a.prt"/>
+        <geom pos="-0.0100379 0.00494365 0.0547789" quat="0 0 -0.707107 -0.707107" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b4b-ph-k-s.prt"/>
+        <geom pos="-0.0211879 0.0174936 0.0547789" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b4b-eh-a.prt"/>
+        <geom pos="-0.0460415 0.0505915 0.0547789" quat="0 0 -1 0" type="mesh" rgba="0 0.294118 0.654902 1" mesh="pcb_u2d2.prt"/>
+        <geom pos="-0.0557378 0.0118436 0.0569404" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.6 0.6 0.6 1" mesh="micro_usb_2_0_connector__ab_rec.prt"/>
+        <geom pos="-0.0513894 -0.00114389 0.0465789" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.6 0.6 0.6 1" mesh="39281023.prt"/>
+        <body name="trunk" pos="0.0325271 -0.0066039 0.0125789" quat="1 0 0 0">
+          <inertial pos="0 0 0" mass="1e-09" diaginertia="0 0 0"/>
+        </body>
+        <body name="double_u_module" pos="0.0001271 -0.0316039 0.0230789" quat="0 0.707107 0.707107 0">
+          <inertial pos="-0.017 -8.42485e-05 0.0115845" quat="0.259261 0.625097 0.282096 0.680043" mass="0.0188183" diaginertia="4.61959e-06 4.61664e-06 4.1639e-06"/>
+          <joint name="right_hip_yaw" pos="0 0 0" axis="0 0 1" range="-0.698132 0.698132" />
+          <geom pos="0 0 0.023" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
+          <geom pos="-0.146088 0 0.028" quat="0 0 -0.707107 -0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="double_u"/>
+          <geom pos="-0.034 -0.0115002 0.0115" quat="0 1 0 0" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
+          <geom quat="0 -1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
+          <geom pos="-0.034 0.0115 0.0115" quat="0.707107 -0.707107 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
+          <body name="right_hip_pitch_roll_module" pos="-0.034 0.0115 0.0115" quat="0.5 -0.5 -0.5 -0.5">
+            <inertial pos="0.0119128 -0.0117521 -0.00645034" quat="0.664115 0.369051 0.335976 0.556662" mass="0.0506858" diaginertia="1.56781e-05 1.47443e-05 8.52074e-06"/>
+            <joint name="right_hip_roll" pos="0 0 0" axis="0 0 1" range="-1.5708 0.436332" />
+            <geom pos="-0.0670531 -0.0245 0.009" quat="1 0 0 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="hip_right_roll_to_pitch"/>
+            <geom pos="0 0 -0.0035" quat="1 0 0 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
+            <geom pos="0 0 -0.0035" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
+            <geom pos="0 0 -0.023" quat="1 0 0 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
+            <geom pos="0.025 -0.021 -0.0135" quat="0 0 0.707107 -0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
+            <geom pos="0.025 -0.021 -0.0135" quat="0 0 0.707107 -0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
+            <geom pos="0.025 -0.0015 -0.0135" quat="0 0 0.707107 -0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
+            <body name="leg_module" pos="0.025 -0.0245 -0.0135" quat="0 0 -0.707107 -0.707107">
               <inertial pos="-0.0399016 -7.71133e-06 0.0114004" quat="0.502878 0.497012 0.497197 0.50288" mass="0.0345308" diaginertia="2.06535e-05 1.77761e-05 5.01407e-06"/>
-              <joint name="right_knee" pos="0 0 0" axis="0 0 1" range="-2.0944 2.0944" />
+              <joint name="right_hip_pitch" pos="0 0 0" axis="0 0 1" range="-0.523599 1.5708" />
               <geom pos="-0.0425 -0.0471308 0.023" quat="0.5 -0.5 0.5 -0.5" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="block_to_axis"/>
               <geom pos="-0.0425 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="block_to_axis"/>
               <geom pos="-0.0425 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="renfort_leg"/>
@@ -134,95 +126,116 @@
               <geom pos="-0.065 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
               <geom pos="-0.065 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
               <geom pos="-0.065 0 0.023" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
-              <body name="foot_module" pos="-0.065 0 0" quat="1 0 0 0">
-                <inertial pos="-0.0253947 0.00702786 0.0115316" quat="0.43736 0.522662 -0.475536 0.556243" mass="0.0501924" diaginertia="2.1523e-05 2.09945e-05 8.71955e-06"/>
-                <joint name="right_ankle" pos="0 0 0" axis="0 0 1" range="-1.5708 1.5708" />
-                <geom quat="0 -1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
-                <geom pos="0 0 -0.0052" quat="0 -0.707107 0 -0.707107" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="foot"/>
-                <geom pos="0 0 -0.0052" quat="0 -0.707107 0 -0.707107" type="mesh" rgba="0 0 0 1" mesh="foot_contact"/>
+              <body name="leg_module_2" pos="-0.065 0 0" quat="1 0 0 0">
+                <inertial pos="-0.0399016 -7.71133e-06 0.0114004" quat="0.502878 0.497012 0.497197 0.50288" mass="0.0345308" diaginertia="2.06535e-05 1.77761e-05 5.01407e-06"/>
+                <joint name="right_knee" pos="0 0 0" axis="0 0 1" range="-2.0944 2.0944" />
+                <geom pos="-0.0425 -0.0471308 0.023" quat="0.5 -0.5 0.5 -0.5" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="block_to_axis"/>
+                <geom pos="-0.0425 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="block_to_axis"/>
+                <geom pos="-0.0425 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="renfort_leg"/>
+                <geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
                 <geom pos="0 0 0.023" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
+                <geom pos="-0.065 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
+                <geom pos="-0.065 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
+                <geom pos="-0.065 0 0.023" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
+                <body name="foot_module" pos="-0.065 0 0" quat="1 0 0 0">
+                  <inertial pos="-0.0268732 0.00760284 0.0115562" quat="0.443056 0.532696 -0.463707 0.552189" mass="0.0282341" diaginertia="1.31872e-05 1.21932e-05 5.15725e-06"/>
+                  <joint name="right_ankle" pos="0 0 0" axis="0 0 1" range="-1.5708 1.5708" />
+                  <geom quat="0 -1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
+                  <geom pos="0 0 -0.0052" quat="0 -0.707107 0 -0.707107" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="foot"/>
+                  <geom pos="0 0 -0.0052" quat="0 -0.707107 0 -0.707107" type="mesh" rgba="0 0 0 1" mesh="foot_contact"/>
+                  <geom pos="0 0 0.023" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
+                  <body name="right_foot" pos="-0.0375 0 0.0115" quat="0.5 0.5 0.5 0.5">
+                    <inertial pos="0 0 0" mass="1e-09" diaginertia="0 0 0"/>
+                  </body>
+                </body>
               </body>
             </body>
           </body>
         </body>
-      </body>
-      <body name="double_u_module_2" pos="0.0001271 0.0183961 0.0230789" quat="0 0.707107 0.707107 0">
-        <inertial pos="0.017 8.45125e-05 0.0115842" quat="-0.281391 0.680335 -0.258685 0.625336" mass="0.0188183" diaginertia="4.61959e-06 4.61664e-06 4.1639e-06"/>
-        <joint name="left_hip_yaw" pos="0 0 0" axis="0 0 1" range="-0.698132 0.698132" />
-        <geom pos="0.034 0.0115 0.0115" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
-        <geom pos="-0.112088 0.0165 0.0115" quat="0 0 -1 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="double_u"/>
-        <geom pos="0 0 0.0230002" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
-        <geom pos="0.034 -0.0115 0.0115" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
-        <geom quat="0 -1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
-        <body name="left_hip_pitch_roll_module" pos="0.034 -0.0115 0.0115" quat="0.5 0.5 -0.5 0.5">
-          <inertial pos="0.011923 -0.0116065 -0.0163151" quat="0.367078 0.649645 0.581274 0.324555" mass="0.0509361" diaginertia="1.57911e-05 1.48967e-05 8.554e-06"/>
-          <joint name="left_hip_roll" pos="0 0 0" axis="0 0 1" range="-1.5708 0.349066" />
-          <geom pos="-0.0670531 -0.0245 -0.032" quat="0 0 -1 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="hip_left_roll_to_pitch"/>
-          <geom pos="0.025 -0.005 -0.0095" quat="0 0 0.707107 0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
-          <geom pos="0.025 -0.005 -0.0095" quat="0 0 0.707107 0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
-          <geom pos="0.025 -0.0245 -0.0095" quat="0 0 0.707107 0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
-          <geom pos="0 0 -0.0035" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
-          <geom pos="0 0 -0.0035" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
-          <geom pos="0 0 -0.023" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
-          <body name="leg_module_3" pos="0.025 -0.0015 -0.0095" quat="2.76505e-08 2.76505e-08 0.707107 -0.707107">
-            <inertial pos="-0.0399016 -7.71133e-06 0.0114004" quat="0.502878 0.497012 0.497197 0.50288" mass="0.0345308" diaginertia="2.06535e-05 1.77761e-05 5.01407e-06"/>
-            <joint name="left_hip_pitch" pos="0 0 0" axis="0 0 1" range="-0.523599 1.5708" />
-            <geom pos="-0.0425 -0.0471308 0.023" quat="0.5 -0.5 0.5 -0.5" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="block_to_axis"/>
-            <geom pos="-0.0425 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="block_to_axis"/>
-            <geom pos="-0.0425 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="renfort_leg"/>
-            <geom quat="0 -1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
-            <geom pos="0 0 0.023" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
-            <geom pos="-0.065 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
-            <geom pos="-0.065 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
-            <geom pos="-0.065 0 0.023" quat="0 -0.707107 0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
-            <body name="leg_module_4" pos="-0.065 0 0" quat="1 0 0 -3.91037e-08">
+        <body name="double_u_module_2" pos="0.0001271 0.0183961 0.0230789" quat="0 0.707107 0.707107 0">
+          <inertial pos="0.017 8.45125e-05 0.0115842" quat="-0.281391 0.680335 -0.258685 0.625336" mass="0.0188183" diaginertia="4.61959e-06 4.61664e-06 4.1639e-06"/>
+          <joint name="left_hip_yaw" pos="0 0 0" axis="0 0 1" range="-0.698132 0.698132" />
+          <geom pos="0.034 0.0115 0.0115" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
+          <geom pos="-0.112088 0.0165 0.0115" quat="0 0 -1 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="double_u"/>
+          <geom pos="0 0 0.0230002" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
+          <geom pos="0.034 -0.0115 0.0115" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
+          <geom quat="0 -1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
+          <body name="left_hip_pitch_roll_module" pos="0.034 -0.0115 0.0115" quat="0.5 0.5 -0.5 0.5">
+            <inertial pos="0.011923 -0.0116065 -0.0163151" quat="0.367078 0.649645 0.581274 0.324555" mass="0.0509361" diaginertia="1.57911e-05 1.48967e-05 8.554e-06"/>
+            <joint name="left_hip_roll" pos="0 0 0" axis="0 0 1" range="-1.5708 0.436332" />
+            <geom pos="-0.0670531 -0.0245 -0.032" quat="0 0 -1 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="hip_left_roll_to_pitch"/>
+            <geom pos="0.025 -0.005 -0.0095" quat="0 0 0.707107 0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
+            <geom pos="0.025 -0.005 -0.0095" quat="0 0 0.707107 0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
+            <geom pos="0.025 -0.0245 -0.0095" quat="0 0 0.707107 0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
+            <geom pos="0 0 -0.0035" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
+            <geom pos="0 0 -0.0035" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
+            <geom pos="0 0 -0.023" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
+            <body name="leg_module_3" pos="0.025 -0.0015 -0.0095" quat="2.76505e-08 2.76505e-08 0.707107 -0.707107">
               <inertial pos="-0.0399016 -7.71133e-06 0.0114004" quat="0.502878 0.497012 0.497197 0.50288" mass="0.0345308" diaginertia="2.06535e-05 1.77761e-05 5.01407e-06"/>
-              <joint name="left_knee" pos="0 0 0" axis="0 0 1" range="-2.0944 2.0944" />
+              <joint name="left_hip_pitch" pos="0 0 0" axis="0 0 1" range="-0.523599 1.5708" />
               <geom pos="-0.0425 -0.0471308 0.023" quat="0.5 -0.5 0.5 -0.5" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="block_to_axis"/>
               <geom pos="-0.0425 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="block_to_axis"/>
               <geom pos="-0.0425 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="renfort_leg"/>
-              <geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
+              <geom quat="0 -1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
               <geom pos="0 0 0.023" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
               <geom pos="-0.065 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
               <geom pos="-0.065 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
-              <geom pos="-0.065 0 0.023" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
-              <body name="foot_module_2" pos="-0.065 0 0" quat="1 0 0 0">
-                <inertial pos="-0.0253947 0.00702786 0.0115316" quat="0.43736 0.522662 -0.475536 0.556243" mass="0.0501924" diaginertia="2.1523e-05 2.09945e-05 8.71955e-06"/>
-                <joint name="left_ankle" pos="0 0 0" axis="0 0 1" range="-1.5708 1.5708" />
+              <geom pos="-0.065 0 0.023" quat="0 -0.707107 0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
+              <body name="leg_module_4" pos="-0.065 0 0" quat="1 0 0 -3.91037e-08">
+                <inertial pos="-0.0399016 -7.71133e-06 0.0114004" quat="0.502878 0.497012 0.497197 0.50288" mass="0.0345308" diaginertia="2.06535e-05 1.77761e-05 5.01407e-06"/>
+                <joint name="left_knee" pos="0 0 0" axis="0 0 1" range="-2.0944 2.0944" />
+                <geom pos="-0.0425 -0.0471308 0.023" quat="0.5 -0.5 0.5 -0.5" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="block_to_axis"/>
+                <geom pos="-0.0425 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="block_to_axis"/>
+                <geom pos="-0.0425 0.0471308 0" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="renfort_leg"/>
                 <geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
-                <geom pos="0 0 -0.0052" quat="0 -0.707107 0 -0.707107" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="foot"/>
-                <geom pos="0 0 -0.0052" quat="0 -0.707107 0 -0.707107" type="mesh" rgba="0 0 0 1" mesh="foot_contact"/>
                 <geom pos="0 0 0.023" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
+                <geom pos="-0.065 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
+                <geom pos="-0.065 0 0.0035" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
+                <geom pos="-0.065 0 0.023" quat="0 0.707107 -0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
+                <body name="foot_module_2" pos="-0.065 0 0" quat="1 0 0 0">
+                  <inertial pos="-0.0268732 0.00760284 0.0115562" quat="0.443056 0.532696 -0.463707 0.552189" mass="0.0282341" diaginertia="1.31872e-05 1.21932e-05 5.15725e-06"/>
+                  <joint name="left_ankle" pos="0 0 0" axis="0 0 1" range="-1.5708 1.5708" />
+                  <geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
+                  <geom pos="0 0 -0.0052" quat="0 -0.707107 0 -0.707107" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="foot"/>
+                  <geom pos="0 0 -0.0052" quat="0 -0.707107 0 -0.707107" type="mesh" rgba="0 0 0 1" mesh="foot_contact"/>
+                  <geom pos="0 0 0.023" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
+                  <body name="left_foot" pos="-0.0375 0.005 0.0115" quat="0.5 0.5 0.5 0.5">
+                    <inertial pos="0 0 0" mass="1e-09" diaginertia="0 0 0"/>
+                  </body>
+                </body>
               </body>
             </body>
           </body>
         </body>
-      </body>
-      <body name="head_link" pos="0.0306271 -0.0181039 0.0550789" quat="0.707107 -0.707107 0 0">
-        <inertial pos="0 -0.0324998 0.0116522" quat="0.707103 0.70711 0 0" mass="0.0208659" diaginertia="1.42995e-05 1.06688e-05 4.80054e-06"/>
-        <joint name="neck_pitch" pos="0 0 0" axis="0 0 1" range="-1.309 0.174533" />
-        <geom pos="0 0 0.023" quat="0 0 0.707107 -0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="axis_to_axis"/>
-        <geom pos="0 -0.065 0.023" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
-        <geom pos="0 0 0" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="renfort_head_link"/>
-        <geom pos="0 0 0.023" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
-        <geom pos="0 -0.065 0" quat="0 -1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
-        <geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
-        <geom quat="0.707107 0.707107 0 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="axis_to_axis"/>
-        <body name="head_pitch_yaw" pos="0 -0.065 0" quat="0 0.707107 -0.707107 0">
-          <inertial pos="0.00979751 -0.0075633 -0.0114151" quat="0.000790516 0.709114 -0.000486106 0.705093" mass="0.0560266" diaginertia="2.06309e-05 1.50648e-05 1.11883e-05"/>
-          <joint name="head_pitch" pos="0 0 0" axis="0 0 1" range="-0.698132 0.698132" />
-          <geom pos="0.043 0.0001 -0.0115" quat="0.5 0.5 -0.5 -0.5" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="head_roll_pitch"/>
-          <geom pos="0.0345 0 -0.0115" quat="0.707107 0 0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
-          <geom pos="0.0345 0 -0.0115" quat="0.707107 0 0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
-          <geom pos="0.015 0 -0.0115" quat="0.707107 0 0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
-          <geom pos="0 0 -0.0035" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
-          <geom pos="0 0 -0.0035" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
-          <geom pos="0 0 -0.023" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
-          <body name="head_assembly" pos="0.038 0 -0.0115" quat="0.5 0.5 -0.5 -0.5">
-            <inertial pos="0.00767728 -7.54472e-05 0.00665138" quat="0.00192726 0.711385 -0.00162056 0.702798" mass="0.169812" diaginertia="0.000614144 0.000409702 0.000244446"/>
-            <joint name="head_yaw" pos="0 0 0" axis="0 0 1" range="-2.0944 2.0944" />
-            <geom pos="0 0 -0.0052" type="mesh" rgba="0.917647 0.917647 0.917647 1" mesh="head"/>
-            <geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
+        <body name="head_link" pos="0.0306271 -0.0181039 0.0550789" quat="0.707107 -0.707107 0 0">
+          <inertial pos="0 -0.0324998 0.0116522" quat="0.707103 0.70711 0 0" mass="0.0208659" diaginertia="1.42995e-05 1.06688e-05 4.80054e-06"/>
+          <joint name="neck_pitch" pos="0 0 0" axis="0 0 1" range="-1.309 0.174533" />
+          <geom pos="0 0 0.023" quat="0 0 0.707107 -0.707107" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="axis_to_axis"/>
+          <geom pos="0 -0.065 0.023" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
+          <geom pos="0 0 0" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="renfort_head_link"/>
+          <geom pos="0 0 0.023" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
+          <geom pos="0 -0.065 0" quat="0 -1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
+          <geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
+          <geom quat="0.707107 0.707107 0 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="axis_to_axis"/>
+          <body name="head_pitch_yaw" pos="0 -0.065 0" quat="0 0.707107 -0.707107 0">
+            <inertial pos="0.00984624 -0.00749139 -0.0114146" quat="0.00439214 0.709107 -0.0039939 0.705076" mass="0.0557485" diaginertia="2.05405e-05 1.4997e-05 1.10835e-05"/>
+            <joint name="head_pitch" pos="0 0 0" axis="0 0 1" range="-0.698132 0.698132" />
+            <geom pos="0.043 0.0001 -0.0115" quat="0.5 0.5 -0.5 -0.5" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="head_roll_pitch"/>
+            <geom pos="0.0345 0 -0.0115" quat="0.707107 0 0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
+            <geom pos="0.0345 0 -0.0115" quat="0.707107 0 0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
+            <geom pos="0.015 0 -0.0115" quat="0.707107 0 0.707107 0" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
+            <geom pos="0 0 -0.0035" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
+            <geom pos="0 0 -0.0035" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
+            <geom pos="0 0 -0.023" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
+            <body name="head_assembly" pos="0.038 0 -0.0115" quat="0.5 0.5 -0.5 -0.5">
+              <inertial pos="0.00765353 -7.52139e-05 0.00662667" quat="0.00192797 0.711354 -0.00162053 0.70283" mass="0.0895844" diaginertia="0.000323017 0.00021551 0.000128583"/>
+              <joint name="head_yaw" pos="0 0 0" axis="0 0 1" range="-2.0944 2.0944" />
+              <geom pos="0 0 -0.0052" type="mesh" rgba="0.917647 0.917647 0.917647 1" mesh="head"/>
+              <geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
+              <body name="head" pos="0 0 -0.0076" quat="0 -1 0 0">
+                <inertial pos="0 0 0" mass="1e-09" diaginertia="0 0 0"/>
+              </body>
+            </body>
           </body>
         </body>
       </body>

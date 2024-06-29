@@ -2,12 +2,12 @@
     "configuration": "default",
     "documentId": "a18ff8cc622a533762a3a6f5",
     "documentMicroversion": "00f41f8c17e9afee2e4b2289",
-    "elementId": "05360d05e74c3d8f57c2ed2c",
+    "elementId": "8bfad62b97860b67f75e3376",
     "fullConfiguration": "default",
-    "id": "MVGfJzCaRc159i+a2",
+    "id": "M99VFeL41Pi5byGXl",
     "isStandardContent": false,
-    "name": "DC15_A01_CASE_M_DUMMY <1>",
-    "partId": "JFv",
+    "name": "power_switch <1>",
+    "partId": "JHD",
     "suppressed": false,
     "type": "Part"
 }

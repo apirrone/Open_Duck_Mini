@@ -162,7 +162,7 @@ elif args.robot:
     time.sleep(2)
 elif args.mujoco:
     bdx_mujoco_server = BDXMujocoServer(
-        model_path="../../mini_bdx/robots/bdx", gravity_on=True
+        model_path="../../mini_bdx/robots/bdx", gravity_on=False
     )
     bdx_mujoco_server.start()
 else:

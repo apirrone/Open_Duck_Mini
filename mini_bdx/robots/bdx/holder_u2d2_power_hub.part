@@ -1,13 +1,13 @@
 {
     "configuration": "default",
     "documentId": "a18ff8cc622a533762a3a6f5",
-    "documentMicroversion": "1000538aa054b2768c8d41a7",
+    "documentMicroversion": "00f41f8c17e9afee2e4b2289",
     "elementId": "ecfc18694e27c0842b7fd6e5",
     "fullConfiguration": "default",
     "id": "MwzAB4u2uoHpcOUsB",
     "isStandardContent": false,
     "name": "holder_U2D2_power_hub <1>",
-    "partId": "RfED",
+    "partId": "RdED",
     "suppressed": false,
     "type": "Part"
 }
