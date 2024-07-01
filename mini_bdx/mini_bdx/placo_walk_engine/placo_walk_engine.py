@@ -39,14 +39,14 @@ class PlacoWalkEngine:
         # Posture parameters
         self.parameters.walk_com_height = 0.15  # Constant height for the CoM [m]
         self.parameters.walk_foot_height = (
-            0.01  # Height of foot rising while walking [m]
+            0.025  # Height of foot rising while walking [m]
         )
         self.parameters.walk_trunk_pitch = np.deg2rad(10)  # Trunk pitch angle [rad]
         self.parameters.walk_foot_rise_ratio = (
             0.2  # Time ratio for the foot swing plateau (0.0 to 1.0)
         )
         self.parameters.single_support_duration = (
-            0.2  # Duration of single support phase [s]
+            0.18  # Duration of single support phase [s]
         )
         self.parameters.single_support_timesteps = (
             10  # Number of planning timesteps per single support phase
@@ -181,6 +181,10 @@ class PlacoWalkEngine:
             self.time_since_last_left_contact > self.parameters.single_support_duration
             or self.time_since_last_right_contact
             > self.parameters.single_support_duration
+        )
+
+        self.repetitive_footsteps_planner.configure(
+            self.d_x, self.d_y, self.d_theta, self.nb_steps
         )
 
         for k in range(REFINE):

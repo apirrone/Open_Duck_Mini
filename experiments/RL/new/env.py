@@ -1,43 +1,7 @@
 import numpy as np
-import placo
 from gymnasium import utils
 from gymnasium.envs.mujoco import MujocoEnv
 from gymnasium.spaces import Box
-
-from mini_bdx.walk_engine import WalkEngine
-
-init_pos = {
-    "right_hip_yaw": 0,
-    "right_hip_roll": 0,
-    "right_hip_pitch": np.deg2rad(45),
-    "right_knee_pitch": np.deg2rad(-90),
-    "right_ankle_pitch": np.deg2rad(45),
-    "left_hip_yaw": 0,
-    "left_hip_roll": 0,
-    "left_hip_pitch": np.deg2rad(45),
-    "left_knee_pitch": np.deg2rad(-90),
-    "left_ankle_pitch": np.deg2rad(45),
-    "head_pitch1": np.deg2rad(-45),
-    "head_pitch2": np.deg2rad(-45),
-    "head_yaw": 0,
-}
-
-
-dofs = {
-    "right_hip_yaw": 0,
-    "right_hip_roll": 1,
-    "right_hip_pitch": 2,
-    "right_knee_pitch": 3,
-    "right_ankle_pitch": 4,
-    "left_hip_yaw": 5,
-    "left_hip_roll": 6,
-    "left_hip_pitch": 7,
-    "left_knee_pitch": 8,
-    "left_ankle_pitch": 9,
-    "head_pitch1": 10,
-    "head_pitch2": 11,
-    "head_yaw": 12,
-}
 
 
 class BDXEnv(MujocoEnv, utils.EzPickle):
@@ -75,8 +39,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
     | 7   | Rotation left_hip_pitch                                  | -Inf | Inf | left_hip_pitch                   | cylinder | angle (rad)              |
     | 8   | Rotation left_knee_pitch                                 | -Inf | Inf | left_knee_pitch                  | cylinder | angle (rad)              |
     | 9   | Rotation left_ankle_pitch                                | -Inf | Inf | left_ankle_pitch                 | cylinder | angle (rad)              |
-    | 10  | Rotation head_pitch1                                     | -Inf | Inf | head_pitch1                      | cylinder | angle (rad)              |
-    | 11  | Rotation head_pitch2                                     | -Inf | Inf | head_pitch2                      | cylinder | angle (rad)              |
+    | 10  | Rotation neck_pitch                                      | -Inf | Inf | head_pitch1                      | cylinder | angle (rad)              |
+    | 11  | Rotation head_pitch                                      | -Inf | Inf | head_pitch2                      | cylinder | angle (rad)              |
     | 12  | Rotation head_yaw                                        | -Inf | Inf | head_yaw                         | cylinder | angle (rad)              |
     | 13  | Velocity of right_hip_yaw                                | -Inf | Inf | right_hip_yaw                    | cylinder | speed (rad/s)            |
     | 14  | Velocity of right_hip_roll                               | -Inf | Inf | right_hip_roll                   | cylinder | speed (rad/s)            |
@@ -88,8 +52,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
     | 20  | Velocity of left_hip_pitch                               | -Inf | Inf | left_hip_pitch                   | cylinder | speed (rad/s)            |
     | 21  | Velocity of left_knee_pitch                              | -Inf | Inf | left_knee_pitch                  | cylinder | speed (rad/s)            |
     | 22  | Velocity of left_ankle_pitch                             | -Inf | Inf | left_ankle_pitch                 | cylinder | speed (rad/s)            |
-    | 23  | Velocity of head_pitch1                                  | -Inf | Inf | head_pitch1                      | cylinder | speed (rad/s)            |
-    | 24  | Velocity of head_pitch2                                  | -Inf | Inf | head_pitch2                      | cylinder | speed (rad/s)            |
+    | 23  | Velocity of neck_pitch                                   | -Inf | Inf | head_pitch1                      | cylinder | speed (rad/s)            |
+    | 24  | Velocity of head_pitch                                   | -Inf | Inf | head_pitch2                      | cylinder | speed (rad/s)            |
     | 25  | Velocity of head_yaw                                     | -Inf | Inf | head_yaw                         | cylinder | speed (rad/s)            |
 
 
@@ -103,6 +67,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
     | 33  | current y target linear velocity                         | -Inf | Inf |                                  |          |                          |
     | 34  | current yaw target angular velocity                      | -Inf | Inf |                                  |          |                          |
 
+    Changed to control history
     | 35  | t-1 right_hip_yaw rotation error                         | -Inf | Inf |                                  |          |                          |
     | 36  | t-1 right_hip_roll rotation error                        | -Inf | Inf |                                  |          |                          |
     | 37  | t-1 right_hip_pitch rotation error                       | -Inf | Inf |                                  |          |                          |
@@ -113,9 +78,10 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
     | 42  | t-1 left_hip_pitch rotation error                        | -Inf | Inf |                                  |          |                          |
     | 43  | t-1 left_knee_pitch rotation error                       | -Inf | Inf |                                  |          |                          |
     | 44  | t-1 left_ankle_pitch rotation error                      | -Inf | Inf |                                  |          |                          |
-    | 45  | t-1 head_pitch1 rotation error                           | -Inf | Inf |                                  |          |                          |
-    | 46  | t-1 head_pitch2 rotation error                           | -Inf | Inf |                                  |          |                          |
+    | 45  | t-1 neck_pitch rotation error                            | -Inf | Inf |                                  |          |                          |
+    | 46  | t-1 head_pitch rotation error                            | -Inf | Inf |                                  |          |                          |
     | 47  | t-1 head_yaw rotation error                              | -Inf | Inf |                                  |          |                          |
+
     | 48  | t-2 right_hip_yaw rotation error                         | -Inf | Inf |                                  |          |                          |
     | 49  | t-2 right_hip_roll rotation error                        | -Inf | Inf |                                  |          |                          |
     | 50  | t-2 right_hip_pitch rotation error                       | -Inf | Inf |                                  |          |                          |
@@ -126,8 +92,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
     | 55  | t-2 left_hip_pitch rotation error                        | -Inf | Inf |                                  |          |                          |
     | 56  | t-2 left_knee_pitch rotation error                       | -Inf | Inf |                                  |          |                          |
     | 57  | t-2 left_ankle_pitch rotation error                      | -Inf | Inf |                                  |          |                          |
-    | 58  | t-2 head_pitch1 rotation error                           | -Inf | Inf |                                  |          |                          |
-    | 59  | t-2 head_pitch2 rotation error                           | -Inf | Inf |                                  |          |                          |
+    | 58  | t-2 neck_pitch rotation error                            | -Inf | Inf |                                  |          |                          |
+    | 59  | t-2 head_pitch rotation error                            | -Inf | Inf |                                  |          |                          |
     | 60  | t-2 head_yaw rotation error                              | -Inf | Inf |                                  |          |                          |
     | 61  | t-3 right_hip_yaw rotation error                         | -Inf | Inf |                                  |          |                          |
     | 62  | t-3 right_hip_roll rotation error                        | -Inf | Inf |                                  |          |                          |
@@ -139,8 +105,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
     | 68  | t-3 left_hip_pitch rotation error                        | -Inf | Inf |                                  |          |                          |
     | 69  | t-3 left_knee_pitch rotation error                       | -Inf | Inf |                                  |          |                          |
     | 70  | t-3 left_ankle_pitch rotation error                      | -Inf | Inf |                                  |          |                          |
-    | 71  | t-3 head_pitch1 rotation error                           | -Inf | Inf |                                  |          |                          |
-    | 72  | t-3 head_pitch2 rotation error                           | -Inf | Inf |                                  |          |                          |
+    | 71  | t-3 neck_pitch rotation error                            | -Inf | Inf |                                  |          |                          |
+    | 72  | t-3 head_pitch rotation error                            | -Inf | Inf |                                  |          |                          |
     | 73  | t-3 head_yaw rotation error                              | -Inf | Inf |                                  |          |                          |
 
     | 74  | left foot in contact with the floor                      | -Inf | Inf |                                  |          |                          |
@@ -160,6 +126,9 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         "render_fps": 100,
     }
 
+    # Ideas
+    # Low pass filter on the joint angles
+
     def __init__(self, **kwargs):
         utils.EzPickle.__init__(self, **kwargs)
         observation_space = Box(low=-np.inf, high=np.inf, shape=(76,), dtype=np.float64)
@@ -173,7 +142,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.startup_cooldown = 1.0
 
         self.prev_t = 0
-        self.iinit_qpos = np.array(
+        self.init_pos = np.array(
             [
                 -0.013946457213457239,
                 0.07918837709879874,
@@ -218,6 +187,16 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         return False
 
+    def feet_contact_reward(self):
+        return self.right_foot_in_contact + self.left_foot_in_contact
+
+    def velocity_tracking_reward(self):
+        base_velocity = list(self.data.body("base").cvel[3:][:2]) + [
+            self.data.body("base").cvel[:3][2]
+        ]
+        base_velocity = np.asarray(base_velocity)
+        return np.exp(-np.square(base_velocity - self.target_velocity).sum())
+
     def smoothness_reward(self):
         # Warning, this function only works if the history is 3 :)
         smooth = 0
@@ -232,21 +211,22 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         return -smooth
 
-    def feet_contact_reward(self):
+    def smoothness_reward2(self):
+        # Warning, this function only works if the history is 3 :)
+        smooth = 0
+        t0 = self.joint_ctrl_history[0]
+        t_minus1 = self.joint_ctrl_history[1]
+        t_minus2 = self.joint_ctrl_history[2]
 
-        return self.right_foot_in_contact + self.left_foot_in_contact
+        for i in range(13):
+            smooth += np.square(t0[i] - t_minus1[i]) + np.square(
+                t_minus1[i] - t_minus2[i]
+            )
+            # smooth += 2.5 * np.square(t0[i] - t_minus1[i]) + 1.5 * np.square(
+            #     t0[i] - 2 * t_minus1[i] + t_minus2[i]
+            # )
 
-    def velocity_tracking_reward(self):
-        base_velocity = list(self.data.body("base").cvel[3:][:2]) + [
-            self.data.body("base").cvel[:3][2]
-        ]
-        base_velocity = np.asarray(base_velocity)
-        return np.exp(-np.square(base_velocity - self.target_velocity).sum())
-
-    def joint_angle_deviation_reward(self):
-        current_ctrl = self.data.ctrl
-        init_ctrl = np.array(list(init_pos.values()))
-        return -np.square(current_ctrl - init_ctrl).sum()
+        return -smooth
 
     def joint_velocity_reward(self):
         return -np.square(self.data.qvel[:]).sum()
@@ -261,6 +241,9 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         Z_vec = np.array(self.data.body("base").xmat).reshape(3, 3)[:, 2]
         return np.square(np.dot(np.array([0, 0, 1]), Z_vec))
 
+    def init_position_reward(self):
+        return -np.square(self.data.qpos[7 : 7 + 13] - self.init_pos).sum()
+
     def is_terminated(self) -> bool:
         rot = np.array(self.data.body("base").xmat).reshape(3, 3)
         Z_vec = rot[:, 2]
@@ -268,6 +251,27 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         return (
             self.data.body("base").xpos[2] < 0.08 or np.dot(upright, Z_vec) <= 0
         )  # base z is below 0.08m or base has more than 90 degrees of tilt
+
+    def action_LFP(self, action):
+        # Low pass filter for the actions
+        action_tminus1 = self.joint_ctrl_history[0]
+        action_tminus2 = self.joint_ctrl_history[1]
+        action_tminus3 = self.joint_ctrl_history[2]
+        # return action * 0.5 + action_tminus1 * 0.5
+        return (
+            action * 0.5
+            + action_tminus1 * 0.3
+            + action_tminus2 * 0.15
+            + action_tminus3 * 0.05
+        )
+
+        d_action = action - action_tminus1
+
+        action = [
+            a if abs(d) < 0.1 else b
+            for a, b, d in zip(action, action_tminus1, d_action)
+        ]
+        return action
 
     def step(self, a):
         # https://www.nature.com/articles/s41598-023-38259-7.pdf
@@ -286,23 +290,26 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             self.startup_cooldown -= dt
 
         if self.startup_cooldown > 0:
-            self.do_simulation(self.iinit_qpos, 4)
+            self.do_simulation(self.init_pos, 4)
             reward = 0
         else:
+
             self.do_simulation(a, 4)
+            # self.do_simulation(self.action_LFP(a), 4)
             self.right_foot_in_contact = self.check_contact("foot_module", "floor")
             self.left_foot_in_contact = self.check_contact("foot_module_2", "floor")
 
             reward = (
-                0.005  # time reward
+                0.05  # time reward
                 # + 0.1 * self.walking_height_reward()
                 # + 0.1 * self.upright_reward()
                 # + 0.1 * self.velocity_tracking_reward()
-                # + 0.01 * self.smoothness_reward()
+                + 0.01 * self.smoothness_reward2()
+                + 0.1 * self.init_position_reward()
                 # + 0.1 * self.feet_contact_reward()
                 # + 0.1 * self.joint_angle_deviation_reward()
                 # + 0.01 * self.follow_walk_engine_reward(dt)
-                + 0.001 * self.joint_velocity_reward()
+                # + 0.001 * self.joint_velocity_reward()
             )
 
         ob = self._get_obs()
@@ -312,21 +319,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         self.prev_t = t
 
-        return (
-            ob,
-            reward,
-            self.is_terminated(),  # terminated
-            False,  # truncated
-            dict(
-                time_reward=0.5,
-                walking_height_reward=0.5 * self.walking_height_reward(),
-                upright_reward=0.5 * self.upright_reward(),
-                velocity_tracking_reward=1.0 * self.velocity_tracking_reward(),
-                smoothness_reward=0.1 * self.smoothness_reward(),
-                feet_contact_reward=0.2 * self.feet_contact_reward(),
-                # joint_angle_deviation_reward=0.1 * self.joint_angle_deviation_reward(),
-            ),
-        )
+        return (ob, reward, self.is_terminated(), False, {})  # terminated  # truncated
 
     def reset_model(self):
         self.prev_t = self.data.time
@@ -361,19 +354,19 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
 
         self.data.qvel[:] = np.zeros(len(self.data.qvel[:]))
-        self.data.qpos[7 : 7 + 13] = self.iinit_qpos
-        self.data.ctrl[:] = self.iinit_qpos
+        self.data.qpos[7 : 7 + 13] = self.init_pos
+        self.data.ctrl[:] = self.init_pos
 
     def _get_obs(self):
 
         joints_rotations = self.data.qpos[7 : 7 + 13]
         joints_velocities = self.data.qvel[6 : 6 + 13]
 
-        joints_error = self.data.ctrl - self.data.qpos[7 : 7 + 13]
-        self.joint_error_history.append(joints_error)
-        self.joint_error_history = self.joint_error_history[
-            -self.joint_history_length :
-        ]
+        # joints_error = self.data.ctrl - self.data.qpos[7 : 7 + 13]
+        # self.joint_error_history.append(joints_error)
+        # self.joint_error_history = self.joint_error_history[
+        #     -self.joint_history_length :
+        # ]
 
         angular_velocity = self.data.body("base").cvel[
             :3
@@ -390,7 +383,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
                 angular_velocity,
                 linear_velocity,
                 self.target_velocity,
-                np.array(self.joint_error_history).flatten(),
+                np.array(self.joint_ctrl_history).flatten(),
                 [self.left_foot_in_contact, self.right_foot_in_contact],
             ]
         )
