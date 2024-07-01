@@ -27,17 +27,23 @@ class HWI:
             "head_yaw": 32,
         }
         # self.dxl_io.set_pid_gain({id: [1500, 0, 0] for id in self.joints.values()})
-        self.set_low_torque()
+        # self.set_low_torque()
 
     def set_low_torque(self):
         self.dxl_io.set_pid_gain({id: [100, 0, 0] for id in self.joints.values()})
 
     def set_high_torque(self):
+
         self.dxl_io.set_pid_gain({id: [2500, 0, 0] for id in self.joints.values()})
+        # TODO better with I and D ?
+        # self.dxl_io.set_pid_gain(
+        #     {id: [2500, 1000, 1000] for id in self.joints.values()}
+        # )
         for name in ["neck_pitch", "head_pitch", "head_yaw"]:
             self.dxl_io.set_pid_gain({self.joints[name]: [150, 0, 0]})
 
     def turn_on(self):
+        self.set_low_torque()
         self.dxl_io.enable_torque(self.joints.values())
         time.sleep(1)
         self.set_high_torque()
@@ -105,3 +111,6 @@ class HWI:
 
     def get_goal_current(self, joint_name):
         return self.dxl_io.get_goal_current([self.joints[joint_name]])[0]
+
+    def get_current_limit(self, joint_name):
+        return self.dxl_io.get_current_limit([self.joints[joint_name]])[0]

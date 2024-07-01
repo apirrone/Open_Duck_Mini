@@ -170,7 +170,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         self.left_foot_in_contact = 0
         self.right_foot_in_contact = 0
-        self.startup_cooldown = 2.0
+        self.startup_cooldown = 1.0
 
         self.prev_t = 0
         self.iinit_qpos = np.array(
@@ -248,10 +248,13 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         init_ctrl = np.array(list(init_pos.values()))
         return -np.square(current_ctrl - init_ctrl).sum()
 
+    def joint_velocity_reward(self):
+        return -np.square(self.data.qvel[:]).sum()
+
     def walking_height_reward(self):
         return (
-            -np.square((self.get_body_com("base")[2] - 0.14)) * 100
-        )  # "normal" walking height is about 0.14m
+            -np.square((self.get_body_com("base")[2] - 0.15)) * 100
+        )  # "normal" walking height is about 0.15m
 
     def upright_reward(self):
         # angular distance to upright position in reward
@@ -281,41 +284,26 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         dt = t - self.prev_t
         if self.startup_cooldown > 0:
             self.startup_cooldown -= dt
-        if self.startup_cooldown <= 0:
-            self.do_simulation(a, 4)
-        else:
+
+        if self.startup_cooldown > 0:
             self.do_simulation(self.iinit_qpos, 4)
-        # self.do_simulation(
-        #     a, self.frame_skip
-        # )  # TODO maybe set frame_skip to 1 when bootstrapping with walk engine
+            reward = 0
+        else:
+            self.do_simulation(a, 4)
+            self.right_foot_in_contact = self.check_contact("foot_module", "floor")
+            self.left_foot_in_contact = self.check_contact("foot_module_2", "floor")
 
-        self.right_foot_in_contact = self.check_contact("foot_module", "floor")
-        self.left_foot_in_contact = self.check_contact("foot_module_2", "floor")
-
-        reward = (
-            0.005  # time reward
-            # + 0.1 * self.walking_height_reward()
-            + 0.1 * self.upright_reward()
-            # + 0.1 * self.velocity_tracking_reward()
-            # + 0.1 * self.smoothness_reward()
-            # + 0.1 * self.feet_contact_reward()
-            # + 0.1 * self.joint_angle_deviation_reward()
-            # + 0.01 * self.follow_walk_engine_reward(dt)
-        )
-
-        # print("time reward", 0.005)
-        # print("walking height reward", 0.1 * self.walking_height_reward())
-        # print("upright reward", 0.1 * self.upright_reward())
-        # print("velocity tracking reward", 0.1 * self.velocity_tracking_reward())
-        # # print("smoothness reward", 0.1 * self.smoothness_reward())
-        # print("feet contact reward", 0.1 * self.feet_contact_reward())
-        # # print("joint angle deviation reward", 0.1 * self.joint_angle_deviation_reward())
-        # # print("follow walk engine reward", 0.01 * self.follow_walk_engine_reward(dt))
-        # print("reward", reward)
-        # print("===")
-
-        # if self.is_terminated():
-        #     reward = -10
+            reward = (
+                0.005  # time reward
+                # + 0.1 * self.walking_height_reward()
+                # + 0.1 * self.upright_reward()
+                # + 0.1 * self.velocity_tracking_reward()
+                # + 0.01 * self.smoothness_reward()
+                # + 0.1 * self.feet_contact_reward()
+                # + 0.1 * self.joint_angle_deviation_reward()
+                # + 0.01 * self.follow_walk_engine_reward(dt)
+                + 0.001 * self.joint_velocity_reward()
+            )
 
         ob = self._get_obs()
 
@@ -342,7 +330,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def reset_model(self):
         self.prev_t = self.data.time
-        self.startup_cooldown = 2.0
+        self.startup_cooldown = 1.0
 
         # self.model.opt.gravity[:] = [0, 0, 0]  # no gravity
 

@@ -12,6 +12,7 @@ from pypot.dynamixel.protocol import v2 as v2
 
 max_pos = 4096
 max_deg = 360
+max_current = 1750
 
 
 def dxl_to_degree(value, model):
@@ -19,8 +20,11 @@ def dxl_to_degree(value, model):
 
 
 def dxl_to_current(value, model):
-    return round(((max_deg * float(value)) / (max_pos - 1)) - (max_deg / 2), 2)
-    # return abs(value / 65524)
+    if value > 0x7FFF:
+        value = value - 65536
+    # value = value >> 1
+    # print("{0:b}".format(value))
+    return value
 
 
 def degree_to_dxl(value, model):
@@ -132,6 +136,10 @@ controls = {
             conv.voltage_to_dxl(value[1], model),
         ),
     },
+    "current limit": {
+        "address": 0x26,
+        "length": 2,
+    },
     # "max torque": {
     #     "address": 0x0F,
     #     "dxl_to_si": conv.dxl_to_torque,
@@ -219,13 +227,13 @@ controls = {
         "address": 0x7E,
         "length": 2,
         "access": _DxlAccess.readonly,
-        # "dxl_to_si": dxl_to_current,
+        "dxl_to_si": dxl_to_current,
     },
     "goal current": {
         "address": 0x66,
         "length": 2,
         "access": _DxlAccess.readonly,
-        # "dxl_to_si": dxl_to_current,
+        "dxl_to_si": dxl_to_current,
     },
     # "present speed": {
     #     "address": 0x27,

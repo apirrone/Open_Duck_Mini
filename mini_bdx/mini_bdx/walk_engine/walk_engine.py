@@ -238,7 +238,7 @@ class WalkEngine:
         self.step_size_x = self.step_size_x + (delta_x / 100)
         self.step_size_y = self.step_size_y + (delta_y / 100)
         self.step_size_yaw = self.step_size_yaw + (delta_yaw / 100)
-        self.rise_gain = self.rise_gain + (delta_rise_gain / 1000)
+        self.rise_gain = self.rise_gain + (delta_rise_gain / 100)
 
         swing = 0
         if walking:

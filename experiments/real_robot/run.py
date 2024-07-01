@@ -95,24 +95,17 @@ while True:
     if args.x:
         xbox_input()
 
-    # TODO use current to find out when the foot is on the ground
-    print("present CURRENT right ankle", hwi.get_present_current("right_ankle"))
-    print("goal CURRENT right ankle", hwi.get_goal_current("right_ankle"))
-    print(
-        "sub",
-        hwi.get_goal_current("right_ankle") - hwi.get_present_current("right_ankle"),
-    )
-    print("===")
-
     # Get sensor data
     # gyro, accelerometer = get_imu()
-
+    right_contact = abs(hwi.get_present_current("right_ankle")) > 1
+    left_contact = abs(hwi.get_present_current("left_ankle")) > 1
+    # print("left_contact", left_contact, "right_contact", right_contact)
     walk_engine.update(
         walking,
         gyro,
         accelerometer,
-        False,
-        False,
+        left_contact,
+        right_contact,
         target_step_size_x,
         target_step_size_y,
         target_yaw,
