@@ -41,6 +41,8 @@ $ pip install -e .[all]
 
 ## RL stuff
 
+TODO lots of things changed, update this section
+
 For now, I my greatest achievement in RL is making a breakdancing robot :) 
 
 
@@ -76,41 +78,15 @@ $ python test.py -a <algo> -p <path_to_model>
 
 # BOM
 
-- micro usb to micro usb https://shorturl.at/jJEZp
-- battery https://shorturl.at/CCgFw
+TODO
 
-# TODO
-
-## Design TODO
-- Rework the roll/pitch part of the hips, its very ugly right now
-  - Reworked a little, still ugly
-  - 
-### Problems:
-- Hard to plug dxl connectors on some motors after being assambled. 
-- Add groove in head pitch yaw when inserting the motor on which we need to remove the horn.
-- head pitch1 scraps on the wire
-
-
-# TO read
+# Interesting papers and resources
 - https://www.nature.com/articles/s41598-023-38259-7.pdf
 - https://arxiv.org/pdf/2304.13653
 - https://arxiv.org/pdf/2401.16889
 - https://arxiv.org/pdf/1801.01290
 - First comment of this video explains the reward https://www.youtube.com/watch?v=L_4BPjLBF4E
 
-# Ideas
-- Try to make the action space of the rl algo to be the parameters of the expert walk ? 
-  - frequency
-  - trunk_pitch
-  - trunk_roll
-  - trunk_yaw
-  - trunk_x_offset
-  - step_size_x
-  - step_size_y
-  - rise_gain
-  - swing_gain
-- OR make the action space of the rl algo to be the cartesian pose of the feet in the trunk frame?
-  
 ## Bootstraping by behavior cloning
 - https://stable-baselines.readthedocs.io/en/master/guide/pretrain.html 
 
@@ -125,6 +101,3 @@ $ python test.py -a <algo> -p <path_to_model>
 - 
 ## MPC 
 - https://github.com/google-deepmind/mujoco_mpc
-
-# Motors 
-- M288T https://en.robotis.com/shop_en/item.php?it_id=902-0163-000
