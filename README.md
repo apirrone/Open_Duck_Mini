@@ -2,7 +2,7 @@
 
 I'm making a miniature version of the BDX Droid by Disney. It will be about 35 centimeters tall with its legs extended.
 
-https://github.com/apirrone/mini_BDX/assets/6552564/1b8fb545-8831-40ba-97de-3689f4c851d3
+https://github.com/apirrone/mini_BDX/assets/6552564/56cb1919-2f20-4a5c-a4fe-0855db1080ac
 
 This is with a custom walk engine based an [old Rhoban walk](https://github.com/Rhoban/walk_engine/tree/master) and the IK is based on [placo](https://github.com/Rhoban/placo)
 
@@ -17,7 +17,9 @@ Start button to start the walk, left joystick to translate in x/y, right joystic
 
 Right now I use the keyboard inputs to tune the walk engine's hyperparameters.
 
-I will start building the robot when I can get my hands on some XL330 servos :)
+**UPDATE** : I started building the robot :) Here is a sneak peek 
+![Capture d’écran du 2024-07-02 23-14-59](https://github.com/apirrone/mini_BDX/assets/6552564/0f89aa13-471b-4cb6-be48-ccadd3eb23f7)
+
 
 ## CAD 
 
