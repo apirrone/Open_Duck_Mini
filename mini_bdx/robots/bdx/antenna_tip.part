@@ -2,12 +2,12 @@
     "configuration": "default",
     "documentId": "a18ff8cc622a533762a3a6f5",
     "documentMicroversion": "b0b30c595f3d7f2c71819b6f",
-    "elementId": "20dad50bf4a254b818c813f7",
+    "elementId": "3637c78db5929abd08602abb",
     "fullConfiguration": "default",
-    "id": "MhtdHOvIsBT6us1tg",
+    "id": "MDIl/o7j9ZkP0F1Lu",
     "isStandardContent": false,
-    "name": "holder <1>",
-    "partId": "JLD",
+    "name": "antenna_tip <1>",
+    "partId": "RQCD",
     "suppressed": false,
     "type": "Part"
 }

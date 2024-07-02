@@ -177,12 +177,11 @@ try:
         )
 
         angles = walk_engine.get_angles()
-
         # apply the angles to the robot
-        data.ctrl[:] = list(angles.values())
+        data.ctrl[:] = list(angles.values()) + [0, 0]
 
         prev = data.time
-        mujoco.mj_step(model, data)
+        mujoco.mj_step(model, data, 4)
         viewer.sync()
         # time.sleep(model.opt.timestep / 2.5)
 

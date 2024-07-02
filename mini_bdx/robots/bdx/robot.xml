@@ -1,15 +1,17 @@
-<mujoco model="onshape">
+<mujoco model="BDX">
   <compiler angle="radian"/>
   <asset>
     <mesh name="cage_bottom" file="cage_bottom.stl"/>
     <mesh name="power_switch" file="power_switch.stl"/>
     <mesh name="rasp_spacer" file="rasp_spacer.stl"/>
     <mesh name="cage_top" file="cage_top.stl"/>
+    <mesh name="usb_c_charger" file="usb_c_charger.stl"/>
     <mesh name="bno055" file="bno055.stl"/>
     <mesh name="front_cover" file="front_cover.stl"/>
     <mesh name="body_part" file="body_part.stl"/>
     <mesh name="cage_bottom_battery_hold" file="cage_bottom_battery_hold.stl"/>
     <mesh name="spacer" file="spacer.stl"/>
+    <mesh name="bms" file="bms.stl"/>
     <mesh name="cage_back" file="cage_back.stl"/>
     <mesh name="holder_u2d2_power_hub" file="holder_u2d2_power_hub.stl"/>
     <mesh name="dc15_a01_case_f_dummy" file="dc15_a01_case_f_dummy.stl"/>
@@ -40,7 +42,13 @@
     <mesh name="axis_to_axis" file="axis_to_axis.stl"/>
     <mesh name="renfort_head_link" file="renfort_head_link.stl"/>
     <mesh name="head_roll_pitch" file="head_roll_pitch.stl"/>
+    <mesh name="antenna_motor_holder" file="antenna_motor_holder.stl"/>
     <mesh name="head" file="head.stl"/>
+    <mesh name="sg90" file="sg90.stl"/>
+    <mesh name="antenna_tip" file="antenna_tip.stl"/>
+    <mesh name="antenna_holder_left" file="antenna_holder_left.stl"/>
+    <mesh name="antenna" file="antenna.stl"/>
+    <mesh name="antenna_holder_right" file="antenna_holder_right.stl"/>
   </asset>
   <default>
     <!-- TODO tune damping, frictionloss and kp -->
@@ -52,17 +60,19 @@
     <body name="base" pos="0 0 0.21">
       <freejoint />
       <body name="body_module">
-        <inertial pos="-0.00689065 -0.00643983 0.00826352" quat="0.425895 0.565899 0.568331 0.418773" mass="0.497275" diaginertia="0.00134734 0.00103255 0.000841023"/>
+        <inertial pos="-0.0067568 -0.00663747 0.00787052" quat="0.424416 0.567509 0.572577 0.412263" mass="0.501861" diaginertia="0.00136049 0.00104215 0.000854271"/>
         <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage_bottom"/>
         <geom pos="-0.0423729 0.0283961 0.0135789" quat="0.707107 -0.707107 0 0" type="mesh" rgba="0.901961 0.901961 0.901961 1" mesh="power_switch"/>
         <geom pos="-0.0268229 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.768627 0.886275 0.952941 1" mesh="rasp_spacer"/>
         <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.768627 0.886275 0.952941 1" mesh="rasp_spacer"/>
         <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage_top"/>
+        <geom pos="0.0403771 -0.0341039 -0.0209711" quat="0.707107 -0.707107 0 0" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="usb_c_charger"/>
         <geom pos="-0.0343729 -0.0056039 0.0300789" quat="0 0 -1 0" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="bno055"/>
         <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="front_cover"/>
         <geom pos="0.0001271 -0.0066039 -0.00492108" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.301961 0.290196 0.262745 1" mesh="body_part"/>
         <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage_bottom_battery_hold"/>
         <geom pos="0.0001271 -0.0066039 -0.00492108" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.917647 0.917647 0.917647 1" mesh="spacer"/>
+        <geom pos="0.00735916 -0.0341039 0.0312512" quat="0 0 -0.707107 -0.707107" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="bms"/>
         <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage_back"/>
         <geom pos="0.0001271 -0.0066039 -0.00592108" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.301961 0.301961 0.301961 1" mesh="holder_u2d2_power_hub"/>
         <geom pos="-0.0498729 -0.114143 -0.0429711" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.768627 0.886275 0.952941 1" mesh="rasp_spacer"/>
@@ -75,9 +85,9 @@
         <geom pos="0.0306271 -0.0146039 0.0550789" quat="0.5 0.5 0.5 -0.5" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_f_dummy"/>
         <geom pos="0.0306271 -0.0146039 0.0550789" quat="0.5 0.5 0.5 -0.5" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
         <geom pos="0.0306271 0.0048961 0.0550789" quat="0.5 0.5 0.5 -0.5" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
-        <geom pos="-0.0348729 -0.0171039 -0.0239211" quat="0.628779 0.323477 0.628779 0.323477" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="cell"/>
-        <geom pos="-0.00131442 -0.0701284 -0.0339211" quat="1 0 0 0" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="holder"/>
-        <geom pos="0.0301271 0.0038961 -0.0239211" quat="0.657934 -0.259081 -0.657934 0.259081" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="cell"/>
+        <geom pos="-0.0348729 -0.0171039 -0.0249211" quat="0.628779 0.323477 0.628779 0.323477" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="cell"/>
+        <geom pos="-0.00131442 -0.0701284 -0.0349211" quat="1 0 0 0" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="holder"/>
+        <geom pos="0.0301271 0.0038961 -0.0249211" quat="0.657934 -0.259081 -0.657934 0.259081" type="mesh" rgba="0.615686 0.811765 0.929412 1" mesh="cell"/>
         <geom pos="-0.0368729 -0.0396039 0.0275789" quat="0.707107 0 -0.707107 0" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="raspberrypizerow"/>
         <geom pos="-0.0368729 -0.0396039 0.0275789" quat="0.707107 0 -0.707107 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="raspberrypizerow"/>
         <geom pos="-0.0288729 -0.0123539 0.0467789" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="jst-b3b-eh-a.prt.1"/>
@@ -228,12 +238,30 @@
             <geom pos="0 0 -0.0035" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_m_dummy"/>
             <geom pos="0 0 -0.023" type="mesh" rgba="0.282353 0.254902 0.254902 1" mesh="dc15_a01_case_b_dummy"/>
             <body name="head_assembly" pos="0.038 0 -0.0115" quat="0.5 0.5 -0.5 -0.5">
-              <inertial pos="0.00765353 -7.52139e-05 0.00662667" quat="0.00192797 0.711354 -0.00162053 0.70283" mass="0.0895844" diaginertia="0.000323017 0.00021551 0.000128583"/>
+              <inertial pos="-0.00499049 -5.72248e-05 0.0071271" quat="0.00146231 0.713565 -0.00116579 0.700587" mass="0.111822" diaginertia="0.000373616 0.000264094 0.000130946"/>
               <joint name="head_yaw" pos="0 0 0" axis="0 0 1" range="-2.0944 2.0944" />
+              <geom pos="-0.0303066 -0.0303066 -0.0052" quat="0.707107 0 0 -0.707107" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="antenna_motor_holder"/>
               <geom pos="0 0 -0.0052" type="mesh" rgba="0.917647 0.917647 0.917647 1" mesh="head"/>
+              <geom pos="0 0 -0.0052" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="antenna_motor_holder"/>
+              <geom pos="-0.046325 -0.00451836 0.0098" quat="0 0 0.707107 -0.707107" type="mesh" rgba="0.435294 0.670588 0.976471 1" mesh="sg90"/>
+              <geom pos="-0.046325 0.00451836 0.0098" quat="0 0 -0.707107 -0.707107" type="mesh" rgba="0.435294 0.670588 0.976471 1" mesh="sg90"/>
               <geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
               <body name="head" pos="0 0 -0.0076" quat="0 -1 0 0">
                 <inertial pos="0 0 0" mass="1e-09" diaginertia="0 0 0"/>
+              </body>
+              <body name="left_antenna_assembly" pos="-0.052 -0.0315184 0.0098" quat="0.707107 -0.707107 0 0">
+                <inertial pos="-0.00125149 0.0135204 -0.0135694" quat="0.722717 0.676879 0.0872946 -0.109058" mass="0.002174" diaginertia="2.14567e-06 2.0945e-06 1.08402e-07"/>
+                <joint name="left_antenna" pos="0 0 0" axis="0 0 1" range="-1.13446 2.0944" />
+                <geom pos="0.0478297 0.00991054 -0.0806763" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.301961 0.301961 0.301961 1" mesh="antenna_tip"/>
+                <geom pos="0.0502054 -0.0168184 0.0273" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.8 0.8 0.8 1" mesh="antenna_holder_left"/>
+                <geom pos="0.0478297 0.00991054 -0.0806763" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.6 0.6 0.6 1" mesh="antenna"/>
+              </body>
+              <body name="right_antenna_assembly" pos="-0.052 0.0315184 0.0098" quat="0.707107 0.707107 0 0">
+                <inertial pos="-0.00125149 -0.0135795 -0.0135694" quat="0.676943 0.722645 0.10908 -0.0873716" mass="0.002174" diaginertia="2.16016e-06 2.10899e-06 1.08387e-07"/>
+                <joint name="right_antenna" pos="0 0 0" axis="0 0 1" range="-2.0944 1.13446" />
+                <geom pos="0.0502054 0.0168184 -0.0207" quat="0.707107 -0.707107 0 0" type="mesh" rgba="0.8 0.8 0.8 1" mesh="antenna_holder_right"/>
+                <geom pos="0.0478297 -0.0102155 0.0442763" quat="0.707107 -0.707107 0 0" type="mesh" rgba="0.301961 0.301961 0.301961 1" mesh="antenna_tip"/>
+                <geom pos="0.0478297 -0.0102155 0.0442763" quat="0.707107 -0.707107 0 0" type="mesh" rgba="0.6 0.6 0.6 1" mesh="antenna"/>
               </body>
             </body>
           </body>
@@ -255,5 +283,7 @@
     <position name="neck_pitch"      joint="neck_pitch"      inheritrange="1"/>
     <position name="head_pitch"      joint="head_pitch"      inheritrange="1"/>
     <position name="head_yaw"        joint="head_yaw"        inheritrange="1"/>
+    <position name="left_antenna"    joint="left_antenna"    inheritrange="1"/>
+    <position name="right_antenna"   joint="right_antenna"   inheritrange="1"/>
   </actuator>
 </mujoco>

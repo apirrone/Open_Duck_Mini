@@ -163,6 +163,8 @@ class PlacoWalkEngine:
             "neck_pitch": self.robot.get_joint("neck_pitch"),
             "head_pitch": self.robot.get_joint("head_pitch"),
             "head_yaw": self.robot.get_joint("head_yaw"),
+            "left_antenna": self.robot.get_joint("left_antenna"),
+            "right_antenna": self.robot.get_joint("right_antenna"),
         }
 
         return angles
