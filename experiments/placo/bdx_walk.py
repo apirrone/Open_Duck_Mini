@@ -4,7 +4,8 @@ import warnings
 
 import numpy as np
 import placo
-from placo_utils.visualization import footsteps_viz, frame_viz, line_viz, robot_viz
+from placo_utils.visualization import (footsteps_viz, frame_viz, line_viz,
+                                       robot_viz)
 
 from mini_bdx.bdx_mujoco_server import BDXMujocoServer
 from mini_bdx.hwi import HWI
@@ -105,6 +106,8 @@ joints_task.set_joints(
         "head_pitch": 0.0,
         "head_yaw": 0.0,
         "neck_pitch": 0.0,
+        "left_antenna": 0.0,
+        "right_antenna": 0.0,
         # "left_ankle_roll": 0.0,
         # "right_ankle_roll": 0.0
     }

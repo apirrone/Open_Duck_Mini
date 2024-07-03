@@ -1,4 +1,4 @@
-<mujoco model="BDX">
+<mujoco model="bdx">
   <compiler angle="radian"/>
   <asset>
     <mesh name="cage_bottom" file="cage_bottom.stl"/>
@@ -209,7 +209,7 @@
                   <geom pos="0 0 -0.0052" quat="0 -0.707107 0 -0.707107" type="mesh" rgba="0.815686 0.443137 0.00392157 1" mesh="foot"/>
                   <geom pos="0 0 -0.0052" quat="0 -0.707107 0 -0.707107" type="mesh" rgba="0 0 0 1" mesh="foot_contact"/>
                   <geom pos="0 0 0.023" quat="0.5 0.5 0.5 0.5" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="dc15_a01_horn_dummy"/>
-                  <body name="left_foot" pos="-0.0375 0.005 0.0115" quat="0.5 0.5 0.5 0.5">
+                  <body name="left_foot" pos="-0.0375 0 0.0115" quat="0.5 0.5 0.5 0.5">
                     <inertial pos="0 0 0" mass="1e-09" diaginertia="0 0 0"/>
                   </body>
                 </body>
@@ -245,8 +245,8 @@
               <geom pos="0 0 -0.0052" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="antenna_motor_holder"/>
               <geom pos="-0.046325 -0.00451836 0.0098" quat="0 0 0.707107 -0.707107" type="mesh" rgba="0.435294 0.670588 0.976471 1" mesh="sg90"/>
               <geom pos="-0.046325 0.00451836 0.0098" quat="0 0 -0.707107 -0.707107" type="mesh" rgba="0.435294 0.670588 0.976471 1" mesh="sg90"/>
-              <geom quat="0 1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
-              <body name="head" pos="0 0 -0.0076" quat="0 -1 0 0">
+              <geom quat="0 -1 0 0" type="mesh" rgba="0.231373 0.380392 0.705882 1" mesh="dc15_a01_horn_idle2_dummy"/>
+              <body name="head" pos="0 0 -0.0076" quat="0 1 0 0">
                 <inertial pos="0 0 0" mass="1e-09" diaginertia="0 0 0"/>
               </body>
               <body name="left_antenna_assembly" pos="-0.052 -0.0315184 0.0098" quat="0.707107 -0.707107 0 0">
