@@ -1,11 +1,10 @@
 import argparse
+import time
 
-import mujoco
-import mujoco.viewer
 import numpy as np
+from placo_utils.visualization import frame_viz, robot_frame_viz, robot_viz
 
 from mini_bdx.placo_walk_engine import PlacoWalkEngine
-from mini_bdx.utils.mujoco_utils import check_contact
 from mini_bdx.utils.xbox_controller import XboxController
 
 parser = argparse.ArgumentParser()
@@ -23,6 +22,8 @@ d_theta = 0
 # TODO placo mistakes the antennas for leg joints ?
 pwe = PlacoWalkEngine("../../mini_bdx/robots/bdx/robot.urdf")
 
+viz = robot_viz(pwe.robot)
+
 
 def xbox_input():
     global d_x, d_y, d_theta
@@ -35,35 +36,20 @@ def xbox_input():
     print(d_x, d_y, d_theta)
 
 
-model = mujoco.MjModel.from_xml_path("../../mini_bdx/robots/bdx/scene.xml")
-data = mujoco.MjData(model)
-viewer = mujoco.viewer.launch_passive(model, data)
-
-
-def get_feet_contact():
-    right_contact = check_contact(data, model, "foot_module", "floor")
-    left_contact = check_contact(data, model, "foot_module_2", "floor")
-    return right_contact, left_contact
-
-
-speed = 4  # 1 is slowest, 3 looks real time on my machine
-prev = data.time
+prev = time.time()
 while True:
-    t = data.time
+    t = time.time()
     dt = t - prev
-
     if args.x:
         xbox_input()
+
+    viz.display(pwe.robot.state.q)
+    robot_frame_viz(pwe.robot, "left_foot")
+    robot_frame_viz(pwe.robot, "right_foot")
 
     pwe.d_x = d_x
     pwe.d_y = d_y
     pwe.d_theta = d_theta
-    right_contact, left_contact = get_feet_contact()
-    pwe.tick(dt, left_contact, right_contact)
+    pwe.tick(dt)
 
-    angles = pwe.get_angles()
-    data.ctrl[:] = list(angles.values())
-
-    mujoco.mj_step(model, data, speed)  # 4 seems good
-    viewer.sync()
     prev = t

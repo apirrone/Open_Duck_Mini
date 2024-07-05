@@ -42,6 +42,7 @@ class PlacoWalkEngine:
             0.025  # Height of foot rising while walking [m]
         )
         self.parameters.walk_trunk_pitch = np.deg2rad(10)  # Trunk pitch angle [rad]
+        # self.parameters.walk_trunk_pitch = np.deg2rad(0)  # Trunk pitch angle [rad]
         self.parameters.walk_foot_rise_ratio = (
             0.2  # Time ratio for the foot swing plateau (0.0 to 1.0)
         )
@@ -54,9 +55,9 @@ class PlacoWalkEngine:
 
         # Feet parameters
         self.parameters.foot_length = 0.06  # Foot length [m]
-        self.parameters.foot_width = 0.006  # Foot width [m]
-        self.parameters.feet_spacing = 0.12  # Lateral feet spacing [m]
-        self.parameters.zmp_margin = 0.0  # ZMP margin [m]
+        # self.parameters.foot_width = 0.006  # Foot width [m]
+        self.parameters.feet_spacing = 0.12  # Lateral feet spacing [m] # 12
+        self.parameters.zmp_margin = 0.00  # ZMP margin [m]
         self.parameters.foot_zmp_target_x = (
             0.0  # Reference target ZMP position in the foot [m]
         )
@@ -76,6 +77,9 @@ class PlacoWalkEngine:
         self.robot.set_velocity_limits(12.0)
         self.solver.dt = DT / REFINE
 
+        self.robot.set_joint_limits("left_knee", -3.0, 1.9)
+        self.robot.set_joint_limits("right_knee", -4.0, 1.9)
+
         # Creating the walk QP tasks
         self.tasks = placo.WalkTasks()
         # tasks.trunk_mode = True
@@ -94,14 +98,13 @@ class PlacoWalkEngine:
                 "head_pitch": np.deg2rad(-10),
                 "head_yaw": 0.0,
                 "neck_pitch": np.deg2rad(-10),
+                "left_antenna": np.deg2rad(0),
+                "right_antenna": np.deg2rad(0),
+                # "right_knee": np.deg2rad(-10),
+                # "left_knee": np.deg2rad(-10),
             }
         )
         self.joints_task.configure("joints", "soft", 1.0)
-
-        # cam = solver.add_centroidal_momentum_task(np.array([0., 0., 0.]))
-        # cam.mask.set_axises("x", "custom")
-        # cam.mask.R_custom_world = robot.get_T_world_frame("trunk")[:3, :3].T
-        # cam.configure("cam", "soft", 1e-3)
 
         # Placing the robot in the initial position
         print("Placing the robot in the initial position...")
