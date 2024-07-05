@@ -4,8 +4,13 @@ import warnings
 
 import numpy as np
 import placo
-from placo_utils.visualization import (footsteps_viz, frame_viz, line_viz,
-                                       robot_viz)
+from placo_utils.visualization import (
+    footsteps_viz,
+    frame_viz,
+    line_viz,
+    robot_frame_viz,
+    robot_viz,
+)
 
 from mini_bdx.bdx_mujoco_server import BDXMujocoServer
 from mini_bdx.hwi import HWI
@@ -251,6 +256,8 @@ while True:
 
             frame_viz("left_foot_target", trajectory.get_T_world_left(t))
             frame_viz("right_foot_target", trajectory.get_T_world_right(t))
+            robot_frame_viz(robot, "left_foot")
+            robot_frame_viz(robot, "right_foot")
 
             T_world_trunk = np.eye(4)
             T_world_trunk[:3, :3] = trajectory.get_R_world_trunk(t)
