@@ -9,7 +9,7 @@ from stable_baselines3 import A2C, PPO, SAC, TD3
 
 register(
     id="BDX_env",
-    entry_point="env:BDXEnv",
+    entry_point="cassie_inspired_env:BDXEnv",
     autoreset=True,
     # max_episode_steps=200,
 )

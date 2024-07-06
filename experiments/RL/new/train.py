@@ -77,7 +77,7 @@ def train(env, sb3_algo, model_dir, log_dir, pretrained=None, device="cuda"):
                 print("Algorithm not found")
                 return
 
-    TIMESTEPS = 10000
+    TIMESTEPS = 1000
     iters = 0
     while True:
         iters += 1
@@ -116,10 +116,16 @@ if __name__ == "__main__":
 
     register(
         id="BDX_env",
-        entry_point="env:BDXEnv",
+        entry_point="cassie_inspired_env:BDXEnv",
         max_episode_steps=None,  # formerly 500
         autoreset=True,
     )
+    # register(
+    #     id="BDX_env",
+    #     entry_point="env:BDXEnv",
+    #     max_episode_steps=None,  # formerly 500
+    #     autoreset=True,
+    # )
 
     env = gym.make("BDX_env", render_mode=None)
     # Create directories to hold models and logs
