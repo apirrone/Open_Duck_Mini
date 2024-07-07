@@ -3,6 +3,8 @@ from gymnasium import utils
 from gymnasium.envs.mujoco import MujocoEnv
 from gymnasium.spaces import Box
 
+FRAME_SKIP = 10
+
 
 class BDXEnv(MujocoEnv, utils.EzPickle):
     """
@@ -123,7 +125,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             "rgb_array",
             "depth_array",
         ],
-        "render_fps": 100,
+        "render_fps": 50,
     }
 
     # Ideas
@@ -131,11 +133,11 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def __init__(self, **kwargs):
         utils.EzPickle.__init__(self, **kwargs)
-        observation_space = Box(low=-np.inf, high=np.inf, shape=(76,), dtype=np.float64)
+        observation_space = Box(low=-np.inf, high=np.inf, shape=(86,), dtype=np.float64)
         self.target_velocity = np.asarray([0, 0, 0])  # x, y, yaw
         self.joint_history_length = 3
-        self.joint_error_history = self.joint_history_length * [13 * [0]]
-        self.joint_ctrl_history = self.joint_history_length * [13 * [0]]
+        self.joint_error_history = self.joint_history_length * [15 * [0]]
+        self.joint_ctrl_history = self.joint_history_length * [15 * [0]]
 
         self.left_foot_in_contact = 0
         self.right_foot_in_contact = 0
@@ -157,17 +159,17 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
                 -0.17453292519943295,
                 -0.17453292519943295,
                 8.65556854322817e-27,
+                0,
+                0,
             ]
         )
-
         MujocoEnv.__init__(
             self,
             "/home/antoine/MISC/mini_BDX/mini_bdx/robots/bdx/scene.xml",
-            5,
+            FRAME_SKIP,
             observation_space=observation_space,
             **kwargs,
         )
-        # self.frame_skip = 30
 
     def check_contact(self, body1_name, body2_name):
         body1_id = self.data.body(body1_name).id
@@ -204,7 +206,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         t_minus1 = self.joint_ctrl_history[1]
         t_minus2 = self.joint_ctrl_history[2]
 
-        for i in range(13):
+        for i in range(15):
             smooth += 2.5 * np.square(t0[i] - t_minus1[i]) + 1.5 * np.square(
                 t0[i] - 2 * t_minus1[i] + t_minus2[i]
             )
@@ -218,7 +220,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         t_minus1 = self.joint_ctrl_history[1]
         t_minus2 = self.joint_ctrl_history[2]
 
-        for i in range(13):
+        for i in range(15):
             smooth += np.square(t0[i] - t_minus1[i]) + np.square(
                 t_minus1[i] - t_minus2[i]
             )
@@ -242,7 +244,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         return np.square(np.dot(np.array([0, 0, 1]), Z_vec))
 
     def init_position_reward(self):
-        return -np.square(self.data.qpos[7 : 7 + 13] - self.init_pos).sum()
+        return -np.square(self.data.qpos[7 : 7 + 15] - self.init_pos).sum()
 
     def is_terminated(self) -> bool:
         rot = np.array(self.data.body("base").xmat).reshape(3, 3)
@@ -290,11 +292,11 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             self.startup_cooldown -= dt
 
         if self.startup_cooldown > 0:
-            self.do_simulation(self.init_pos, 4)
+            self.do_simulation(self.init_pos, FRAME_SKIP)
             reward = 0
         else:
 
-            self.do_simulation(a, 4)
+            self.do_simulation(a, FRAME_SKIP)
             # self.do_simulation(self.action_LFP(a), 4)
             self.right_foot_in_contact = self.check_contact("foot_module", "floor")
             self.left_foot_in_contact = self.check_contact("foot_module_2", "floor")
@@ -329,8 +331,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         self.goto_init()
 
-        self.joint_error_history = self.joint_history_length * [13 * [0]]
-        self.joint_ctrl_history = self.joint_history_length * [13 * [0]]
+        self.joint_error_history = self.joint_history_length * [15 * [0]]
+        self.joint_ctrl_history = self.joint_history_length * [15 * [0]]
         # qpos = self.data.qpos
 
         # LATEST
@@ -354,13 +356,13 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
 
         self.data.qvel[:] = np.zeros(len(self.data.qvel[:]))
-        self.data.qpos[7 : 7 + 13] = self.init_pos
+        self.data.qpos[7 : 7 + 15] = self.init_pos
         self.data.ctrl[:] = self.init_pos
 
     def _get_obs(self):
 
-        joints_rotations = self.data.qpos[7 : 7 + 13]
-        joints_velocities = self.data.qvel[6 : 6 + 13]
+        joints_rotations = self.data.qpos[7 : 7 + 15]
+        joints_velocities = self.data.qvel[6 : 6 + 15]
 
         # joints_error = self.data.ctrl - self.data.qpos[7 : 7 + 13]
         # self.joint_error_history.append(joints_error)

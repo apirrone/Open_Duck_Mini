@@ -1,4 +1,6 @@
 <mujoco model="bd1 scene">
+	<!-- 100 hz -->
+	<!-- <option timestep="0.01"/> -->
 	<!-- <statistic center="0 0 0.55" extent="1.1" /> -->
 	<include file="robot.xml" />
 	<default>

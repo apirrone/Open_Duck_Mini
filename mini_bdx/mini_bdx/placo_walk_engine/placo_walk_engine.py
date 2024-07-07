@@ -146,7 +146,8 @@ class PlacoWalkEngine:
         self.time_since_last_right_contact = 0.0
         self.time_since_last_left_contact = 0.0
         self.start = None
-        self.initial_delay = -3.0
+        # self.initial_delay = -3.0
+        self.initial_delay = 0
         self.t = self.initial_delay
         self.last_replan = 0
 
@@ -171,6 +172,32 @@ class PlacoWalkEngine:
         }
 
         return angles
+
+    def reset(self):
+        self.t = 0
+        self.start = None
+        self.last_replan = 0
+        self.time_since_last_right_contact = 0.0
+        self.time_since_last_left_contact = 0.0
+
+        self.tasks.reach_initial_pose(
+            np.eye(4),
+            self.parameters.feet_spacing,
+            self.parameters.walk_com_height,
+            self.parameters.walk_trunk_pitch,
+        )
+
+        # Planning footsteps
+        self.T_world_left = placo.flatten_on_floor(self.robot.get_T_world_left())
+        self.T_world_right = placo.flatten_on_floor(self.robot.get_T_world_right())
+        self.footsteps = self.repetitive_footsteps_planner.plan(
+            placo.HumanoidRobot_Side.left, self.T_world_left, self.T_world_right
+        )
+
+        self.supports = placo.FootstepsPlanner.make_supports(
+            self.footsteps, True, self.parameters.has_double_support(), True
+        )
+        self.trajectory = self.walk.plan(self.supports, self.robot.com_world(), 0.0)
 
     def tick(self, dt, left_contact=True, right_contact=True):
         if self.start is None:
