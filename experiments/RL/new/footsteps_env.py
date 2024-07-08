@@ -76,7 +76,6 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.pwe = PlacoWalkEngine(
             "/home/antoine/MISC/mini_BDX/mini_bdx/robots/bdx/robot.urdf",
             ignore_feet_contact=True,
-            startend_ratio=0,
         )
 
         MujocoEnv.__init__(

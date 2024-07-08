@@ -15,7 +15,6 @@ class PlacoWalkEngine:
         self,
         model_filename: str = "../../robots/bdx/robot.urdf",
         ignore_feet_contact: bool = False,
-        startend_ratio=1.5,
     ) -> None:
 
         self.model_filename = model_filename
@@ -31,7 +30,7 @@ class PlacoWalkEngine:
             0.2  # Ratio of double support (0.0 to 1.0)
         )
         self.parameters.startend_double_support_ratio = (
-            startend_ratio  # Ratio duration of supports for starting and stopping walk
+            1.5  # Ratio duration of supports for starting and stopping walk
         )
         self.parameters.planned_timesteps = 48  # Number of timesteps planned ahead
         self.parameters.replan_timesteps = 10  # Replanning each n timesteps
@@ -152,6 +151,7 @@ class PlacoWalkEngine:
         self.t = self.initial_delay
         self.last_replan = 0
 
+        # TODO remove startend_double_support_duration() when starting and ending ?
         self.period = (
             2 * self.parameters.single_support_duration
             + 2 * self.parameters.double_support_duration()
@@ -220,7 +220,7 @@ class PlacoWalkEngine:
         footsteps_in_robot_frame = []
         for footstep in footsteps:
             if not footstep.is_both():
-                T_world_footstepFrame = footstep.frame()
+                T_world_footstepFrame = footstep.frame().copy()
                 T_fbase_footstepFrame = (
                     np.linalg.inv(T_world_fbase) @ T_world_footstepFrame
                 )
@@ -230,6 +230,12 @@ class PlacoWalkEngine:
                 footsteps_in_robot_frame.append(T_fbase_footstepFrame)
 
         return footsteps_in_robot_frame
+
+    def get_current_support_phase(self):
+        if self.trajectory.support_is_both(self.t):
+            return "both"
+
+        return self.trajectory.support_side(self.t)
 
     def tick(self, dt, left_contact=True, right_contact=True):
         if self.start is None:

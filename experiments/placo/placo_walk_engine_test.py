@@ -28,7 +28,7 @@ d_theta = 0.2
 pwe = PlacoWalkEngine("../../mini_bdx/robots/bdx/robot.urdf")
 
 pwe.set_traj(d_x, d_y, d_theta)
-# viz = robot_viz(pwe.robot)
+viz = robot_viz(pwe.robot)
 
 
 def xbox_input():
@@ -49,22 +49,25 @@ def get_clock_signal(t, period):
 
 
 prev = time.time()
+start = time.time()
 while True:
     t = time.time()
     dt = t - prev
     if args.x:
         xbox_input()
 
-    # viz.display(pwe.robot.state.q)
-    # robot_frame_viz(pwe.robot, "left_foot")
-    # robot_frame_viz(pwe.robot, "right_foot")
+    print(pwe.get_current_support_phase())
 
-    footsteps = pwe.get_footsteps_in_robot_frame()
-    for i, footstep in enumerate(footsteps):
-        fv.pushFrame(footstep, "footstep" + str(i))
+    fv.pushFrame(pwe.robot.get_T_world_left(), "left")
+    fv.pushFrame(pwe.robot.get_T_world_right(), "right")
 
-    print(get_clock_signal(t, pwe.period))
+    # footsteps = pwe.get_footsteps_in_robot_frame()
+    # for i, footstep in enumerate(footsteps):
+    #     fv.pushFrame(footstep, "footstep" + str(i))
+
+    # print(get_clock_signal(t, pwe.period))
     # footsteps_viz(pwe.trajectory.get_supports())
+    viz.display(pwe.robot.state.q)
 
     pwe.tick(dt)
     time.sleep(0.01)

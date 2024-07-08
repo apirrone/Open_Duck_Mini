@@ -4,8 +4,13 @@ import warnings
 
 import numpy as np
 import placo
-from placo_utils.visualization import (footsteps_viz, frame_viz, line_viz,
-                                       robot_frame_viz, robot_viz)
+from placo_utils.visualization import (
+    footsteps_viz,
+    frame_viz,
+    line_viz,
+    robot_frame_viz,
+    robot_viz,
+)
 
 from mini_bdx.bdx_mujoco_server import BDXMujocoServer
 from mini_bdx.hwi import HWI
