@@ -131,6 +131,35 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             -np.square((self.get_body_com("base")[2] - 0.14)) * 100
         )  # "normal" walking height is about 0.14m
 
+    def velocity_tracking_reward(self):
+        base_velocity = list(self.data.body("base").cvel[3:][:2]) + [
+            self.data.body("base").cvel[:3][2]
+        ]
+        base_velocity = np.asarray(base_velocity)
+        return np.exp(-np.square(base_velocity - self.target_velocity).sum())
+
+    def upright_reward(self):
+        # angular distance to upright position in reward
+        Z_vec = np.array(self.data.body("base").xmat).reshape(3, 3)[:, 2]
+        return np.square(np.dot(np.array([0, 0, 1]), Z_vec))
+
+    def smoothness_reward2(self):
+        # Warning, this function only works if the history is 3 :)
+        smooth = 0
+        t0 = self.joint_ctrl_history[0]
+        t_minus1 = self.joint_ctrl_history[1]
+        t_minus2 = self.joint_ctrl_history[2]
+
+        for i in range(15):
+            smooth += np.square(t0[i] - t_minus1[i]) + np.square(
+                t_minus1[i] - t_minus2[i]
+            )
+            # smooth += 2.5 * np.square(t0[i] - t_minus1[i]) + 1.5 * np.square(
+            #     t0[i] - 2 * t_minus1[i] + t_minus2[i]
+            # )
+
+        return -smooth
+
     def step(self, a):
 
         t = self.data.time
@@ -162,8 +191,10 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
             reward = (
                 0.05  # time reward
-                # + 0.01 * self.follow_placo_reward()
                 + 0.1 * self.walking_height_reward()
+                + 0.1 * self.upright_reward()
+                + 0.1 * self.velocity_tracking_reward()
+                + 0.01 * self.smoothness_reward2()
             )
             # print(self.follow_placo_reward(a))
 
@@ -187,7 +218,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.joint_error_history = self.joint_history_length * [self.nb_dofs * [0]]
         self.joint_ctrl_history = self.joint_history_length * [self.nb_dofs * [0]]
 
-        self.target_velocity = np.asarray([0, 0, 0])  # x, y, yaw
+        self.target_velocity = np.asarray([0.2, 0, 0])  # x, y, yaw
 
         self.set_state(self.data.qpos, self.data.qvel)
         return self._get_obs()
