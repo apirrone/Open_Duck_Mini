@@ -15,6 +15,7 @@ class PlacoWalkEngine:
         self,
         model_filename: str = "../../robots/bdx/robot.urdf",
         ignore_feet_contact: bool = False,
+        startend_ratio=1.5,
     ) -> None:
 
         self.model_filename = model_filename
@@ -30,7 +31,7 @@ class PlacoWalkEngine:
             0.2  # Ratio of double support (0.0 to 1.0)
         )
         self.parameters.startend_double_support_ratio = (
-            1.5  # Ratio duration of supports for starting and stopping walk
+            startend_ratio  # Ratio duration of supports for starting and stopping walk
         )
         self.parameters.planned_timesteps = 48  # Number of timesteps planned ahead
         self.parameters.replan_timesteps = 10  # Replanning each n timesteps
@@ -151,6 +152,11 @@ class PlacoWalkEngine:
         self.t = self.initial_delay
         self.last_replan = 0
 
+        self.period = (
+            2 * self.parameters.single_support_duration
+            + 2 * self.parameters.double_support_duration()
+        )
+
     def get_angles(self):
 
         angles = {
@@ -199,6 +205,32 @@ class PlacoWalkEngine:
         )
         self.trajectory = self.walk.plan(self.supports, self.robot.com_world(), 0.0)
 
+    def set_traj(self, d_x, d_y, d_theta):
+        self.d_x = d_x
+        self.d_y = d_y
+        self.d_theta = d_theta
+        self.repetitive_footsteps_planner.configure(
+            self.d_x, self.d_y, self.d_theta, self.nb_steps
+        )
+
+    def get_footsteps_in_robot_frame(self):
+        T_world_fbase = self.robot.get_T_world_fbase()
+
+        footsteps = self.trajectory.get_supports()
+        footsteps_in_robot_frame = []
+        for footstep in footsteps:
+            if not footstep.is_both():
+                T_world_footstepFrame = footstep.frame()
+                T_fbase_footstepFrame = (
+                    np.linalg.inv(T_world_fbase) @ T_world_footstepFrame
+                )
+                T_fbase_footstepFrame = placo.flatten_on_floor(T_fbase_footstepFrame)
+                T_fbase_footstepFrame[:3, 3][2] = -T_world_fbase[:3, 3][2]
+
+                footsteps_in_robot_frame.append(T_fbase_footstepFrame)
+
+        return footsteps_in_robot_frame
+
     def tick(self, dt, left_contact=True, right_contact=True):
         if self.start is None:
             self.start = time.time()
@@ -213,10 +245,6 @@ class PlacoWalkEngine:
             self.time_since_last_left_contact > self.parameters.single_support_duration
             or self.time_since_last_right_contact
             > self.parameters.single_support_duration
-        )
-
-        self.repetitive_footsteps_planner.configure(
-            self.d_x, self.d_y, self.d_theta, self.nb_steps
         )
 
         for k in range(REFINE):

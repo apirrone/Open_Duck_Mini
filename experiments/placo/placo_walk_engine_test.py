@@ -2,10 +2,15 @@ import argparse
 import time
 
 import numpy as np
-from placo_utils.visualization import frame_viz, robot_frame_viz, robot_viz
+import placo
+from FramesViewer.viewer import Viewer
+from placo_utils.visualization import footsteps_viz, robot_frame_viz, robot_viz
 
 from mini_bdx.placo_walk_engine import PlacoWalkEngine
 from mini_bdx.utils.xbox_controller import XboxController
+
+fv = Viewer()
+fv.start()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-x", action="store_true", default=False)
@@ -14,15 +19,16 @@ args = parser.parse_args()
 if args.x:
     xbox = XboxController()
 
-d_x = 0
+d_x = 0.05
 d_y = 0
-d_theta = 0
+d_theta = 0.2
 
 
 # TODO placo mistakes the antennas for leg joints ?
 pwe = PlacoWalkEngine("../../mini_bdx/robots/bdx/robot.urdf")
 
-viz = robot_viz(pwe.robot)
+pwe.set_traj(d_x, d_y, d_theta)
+# viz = robot_viz(pwe.robot)
 
 
 def xbox_input():
@@ -36,6 +42,12 @@ def xbox_input():
     print(d_x, d_y, d_theta)
 
 
+def get_clock_signal(t, period):
+    a = np.sin(2 * np.pi * (t % period)) / period
+    b = np.cos(2 * np.pi * (t % period)) / period
+    return [a, b]
+
+
 prev = time.time()
 while True:
     t = time.time()
@@ -43,13 +55,17 @@ while True:
     if args.x:
         xbox_input()
 
-    viz.display(pwe.robot.state.q)
-    robot_frame_viz(pwe.robot, "left_foot")
-    robot_frame_viz(pwe.robot, "right_foot")
+    # viz.display(pwe.robot.state.q)
+    # robot_frame_viz(pwe.robot, "left_foot")
+    # robot_frame_viz(pwe.robot, "right_foot")
 
-    pwe.d_x = d_x
-    pwe.d_y = d_y
-    pwe.d_theta = d_theta
+    footsteps = pwe.get_footsteps_in_robot_frame()
+    for i, footstep in enumerate(footsteps):
+        fv.pushFrame(footstep, "footstep" + str(i))
+
+    print(get_clock_signal(t, pwe.period))
+    # footsteps_viz(pwe.trajectory.get_supports())
+
     pwe.tick(dt)
-
+    time.sleep(0.01)
     prev = t
