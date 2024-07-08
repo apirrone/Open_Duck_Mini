@@ -35,9 +35,25 @@ def xbox_input():
     print(d_x, d_y, d_theta)
 
 
+def key_callback(keycode):
+    global d_x, d_y, d_theta
+    if keycode == 265:  # up
+        d_x = 0.05
+    #     max_target_step_size_x += 0.005
+    # if keycode == 264:  # down
+    #     max_target_step_size_x -= 0.005
+    # if keycode == 263:  # left
+    #     max_target_step_size_y -= 0.005
+    # if keycode == 262:  # right
+    #     max_target_step_size_y += 0.005
+    # if keycode == 81:  # a
+    #     max_target_yaw += np.deg2rad(1)
+    # if keycode == 69:  # e
+
+
 model = mujoco.MjModel.from_xml_path("../../mini_bdx/robots/bdx/scene.xml")
 data = mujoco.MjData(model)
-viewer = mujoco.viewer.launch_passive(model, data)
+viewer = mujoco.viewer.launch_passive(model, data, key_callback=key_callback)
 
 
 def get_feet_contact():

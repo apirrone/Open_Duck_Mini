@@ -146,8 +146,8 @@ class PlacoWalkEngine:
         self.time_since_last_right_contact = 0.0
         self.time_since_last_left_contact = 0.0
         self.start = None
-        # self.initial_delay = -3.0
-        self.initial_delay = 0
+        self.initial_delay = -1.0
+        # self.initial_delay = 0
         self.t = self.initial_delay
         self.last_replan = 0
 

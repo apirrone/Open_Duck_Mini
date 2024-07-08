@@ -24,13 +24,47 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def __init__(self, **kwargs):
         utils.EzPickle.__init__(self, **kwargs)
-        observation_space = Box(
-            low=-np.inf, high=np.inf, shape=(101,), dtype=np.float64
-        )
+        self.nb_dofs = 15
+
         self.target_velocity = np.asarray([0, 0, 0])  # x, y, yaw
         self.joint_history_length = 3
-        self.joint_error_history = self.joint_history_length * [15 * [0]]
-        self.joint_ctrl_history = self.joint_history_length * [15 * [0]]
+        self.joint_error_history = self.joint_history_length * [self.nb_dofs * [0]]
+        self.joint_ctrl_history = self.joint_history_length * [self.nb_dofs * [0]]
+
+        # observation_space = Box(
+        #     low=-np.inf, high=np.inf, shape=(101,), dtype=np.float64
+        # )
+
+        observation_space = Box(
+            np.array(
+                [
+                    *(-np.pi * np.ones(self.nb_dofs)),  # joints_rotations
+                    *(-10 * np.ones(self.nb_dofs)),  # joints_velocities
+                    *(-10 * np.ones(3)),  # angular_velocity
+                    *(-10 * np.ones(3)),  # linear_velocity
+                    *(-10 * np.ones(3)),  # target_velocity
+                    *(
+                        -np.pi * np.ones(self.nb_dofs * self.joint_history_length)
+                    ),  # joint_ctrl_history
+                    *(np.zeros(2)),  # feet_contact
+                    *(-np.pi * np.ones(self.nb_dofs)),  # placo_angles
+                ]
+            ),
+            np.array(
+                [
+                    *(np.pi * np.ones(self.nb_dofs)),  # joints_rotations
+                    *(10 * np.ones(self.nb_dofs)),  # joints_velocities
+                    *(10 * np.ones(3)),  # angular_velocity
+                    *(10 * np.ones(3)),  # linear_velocity
+                    *(10 * np.ones(3)),  # target_velocity
+                    *(
+                        np.pi * np.ones(self.nb_dofs * self.joint_history_length)
+                    ),  # joint_ctrl_history
+                    *(np.ones(2)),  # feet_contact
+                    *(np.pi * np.ones(self.nb_dofs)),  # placo_angles
+                ]
+            ),
+        )
 
         self.left_foot_in_contact = 0
         self.right_foot_in_contact = 0
@@ -85,11 +119,17 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         left_contact = check_contact(self.data, self.model, "foot_module_2", "floor")
         return right_contact, left_contact
 
-    def follow_placo_reward(self, action):
+    def follow_placo_reward(self):
+        current_pos = self.data.qpos[7 : 7 + self.nb_dofs]
         placo_angles = list(self.pwe.get_angles().values())
         # print(np.around(placo_angles, 2))
-        error = np.linalg.norm(placo_angles - action)
+        error = np.linalg.norm(placo_angles - current_pos)
         return -np.square(error)
+
+    def walking_height_reward(self):
+        return (
+            -np.square((self.get_body_com("base")[2] - 0.14)) * 100
+        )  # "normal" walking height is about 0.14m
 
     def step(self, a):
 
@@ -103,6 +143,13 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             reward = 0
         else:
 
+            current_ctrl = self.data.ctrl.copy()
+            # Limiting the control
+            delta_max = 0.1
+            # print("a before clipping", a)
+            a = np.clip(a, current_ctrl - delta_max, current_ctrl + delta_max)
+            # print("a after clipping", a)
+
             self.do_simulation(a, FRAME_SKIP)
 
             # self.right_foot_in_contact, self.left_foot_in_contact = (
@@ -115,8 +162,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
             reward = (
                 0.05  # time reward
-                + self.follow_placo_reward(a)
-                # + 0.1 * self.walking_height_reward()
+                # + 0.01 * self.follow_placo_reward()
+                + 0.1 * self.walking_height_reward()
             )
             # print(self.follow_placo_reward(a))
 
@@ -137,8 +184,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         self.goto_init()
 
-        self.joint_error_history = self.joint_history_length * [15 * [0]]
-        self.joint_ctrl_history = self.joint_history_length * [15 * [0]]
+        self.joint_error_history = self.joint_history_length * [self.nb_dofs * [0]]
+        self.joint_ctrl_history = self.joint_history_length * [self.nb_dofs * [0]]
 
         self.target_velocity = np.asarray([0, 0, 0])  # x, y, yaw
 
@@ -147,7 +194,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def goto_init(self):
         self.data.qvel[:] = np.zeros(len(self.data.qvel[:]))
-        self.data.qpos[7 : 7 + 15] = self.init_pos
+        self.data.qpos[7 : 7 + self.nb_dofs] = self.init_pos
         self.data.qpos[2] = 0.15
         self.data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
 
@@ -155,8 +202,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def _get_obs(self):
 
-        joints_rotations = self.data.qpos[7 : 7 + 15]
-        joints_velocities = self.data.qvel[6 : 6 + 15]
+        joints_rotations = self.data.qpos[7 : 7 + self.nb_dofs]
+        joints_velocities = self.data.qvel[6 : 6 + self.nb_dofs]
 
         angular_velocity = self.data.body("base").cvel[
             :3
