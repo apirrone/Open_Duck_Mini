@@ -1,10 +1,13 @@
 # Inspired by https://arxiv.org/pdf/2207.12644
 import numpy as np
+import placo
 from gymnasium import utils
 from gymnasium.envs.mujoco import MujocoEnv
 from gymnasium.spaces import Box
+from scipy.spatial.transform import Rotation as R
 
 from mini_bdx.placo_walk_engine import PlacoWalkEngine
+from mini_bdx.utils.mujoco_utils import get_contact_force
 
 FRAME_SKIP = 4
 
@@ -30,9 +33,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
                     *(-10 * np.ones(self.nb_dofs)),  # joints_velocities
                     *(-10 * np.ones(3)),  # angular_velocity
                     *(-10 * np.ones(3)),  # linear_velocity
-                    *(
-                        -10 * np.ones(8)
-                    ),  # next two footsteps [x, y, z, theta, x, y, z, theta]
+                    *(-10 * np.ones(8)),  # next two footsteps 2*[x, y, z, theta]
                     *(-np.pi * np.ones(2)),  # clock signal
                 ]
             ),
@@ -42,15 +43,14 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
                     *(10 * np.ones(self.nb_dofs)),  # joints_velocities
                     *(10 * np.ones(3)),  # angular_velocity
                     *(10 * np.ones(3)),  # linear_velocity
-                    *(
-                        10 * np.ones(8)
-                    ),  # next two footsteps [x, y, z, theta, x, y, z, theta]
+                    *(10 * np.ones(8)),  # next two footsteps 2*[x, y, z, theta]
                     *(np.pi * np.ones(2)),  # clock signal
                 ]
             ),
         )
 
-        self.startup_cooldown = 1.0
+        self.prev_action = np.zeros(self.nb_dofs)
+        self.prev_torque = np.zeros(self.nb_dofs)
 
         self.prev_t = 0
         self.init_pos = np.array(
@@ -78,6 +78,9 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             ignore_feet_contact=True,
         )
 
+        self.startup_cooldown = -self.pwe.initial_delay
+        self.next_two_footsteps = self.pwe.get_footsteps_in_world()[:2]
+
         MujocoEnv.__init__(
             self,
             "/home/antoine/MISC/mini_BDX/mini_bdx/robots/bdx/scene.xml",
@@ -94,6 +97,112 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         return (
             self.data.body("base").xpos[2] < 0.08 or np.dot(upright, Z_vec) <= 0.2
         )  # base z is below 0.08m or base has more than 90 degrees of tilt
+
+    def gait_reward(self):
+        # During single support:
+        #   - reward force on the supporting foot and speed on the flying foot
+        #   - penalize force on the flying foot and speed on the supporting foot
+        # During double support:
+        #   - reward force on both feet
+        #   - penalize speed on both feet
+
+        support_phase = self.pwe.get_current_support_phase()  # left, right, both
+        right_contact_force = np.sum(
+            get_contact_force(self.data, self.model, "foot_module", "floor")
+        )
+        left_contact_force = np.sum(
+            get_contact_force(self.data, self.model, "foot_module_2", "floor")
+        )
+        right_speed = self.data.body("foot_module").cvel  # [rot:vel] size 6
+        left_speed = self.data.body("foot_module_2").cvel  # [rot:vel] size 6
+
+        if support_phase == "both":
+            return (
+                right_contact_force
+                + left_contact_force
+                - np.linalg.norm(right_speed)
+                - np.linalg.norm(left_speed)
+            )
+        elif support_phase is placo.HumanoidRobot_Side.left:
+            return (
+                right_contact_force
+                - np.linalg.norm(right_speed)
+                - left_contact_force
+                + np.linalg.norm(left_speed)
+            )
+        elif support_phase is placo.HumanoidRobot_Side.right:
+            return (
+                left_contact_force
+                - np.linalg.norm(left_speed)
+                - right_contact_force
+                + np.linalg.norm(right_speed)
+            )
+
+    def step_reward(self):
+        # Incentivize the robot to step and orient the body toward targets
+        # dfoot : distance of the closest foot to the upcoming footstep
+        # hit reward : reward any foot that hits the upcoming footstep. Only when either or both feet are within a radius of the target
+        # progress reward : encourage the moving base to move toward he target
+
+        target_radius = (
+            0.1  # Only when either or both feet are within a radius of the target ??
+        )
+
+        base_pos_2D = self.data.body("base").xpos[:2]
+        upcoming_footstep = self.next_two_footsteps[0]
+        second_footstep = self.next_two_footsteps[1]
+
+        base_target_2D = np.mean(
+            [upcoming_footstep[:3, 3][:2], second_footstep[:3, 3][:2]], axis=0
+        )
+
+        right_foot_pos = self.data.body("foot_module").xpos  # right
+        left_foot_pos = self.data.body("foot_module_2").xpos  # left
+
+        right_foot_dist = np.linalg.norm(upcoming_footstep[:3, 3] - right_foot_pos)
+        left_foot_dist = np.linalg.norm(upcoming_footstep[:3, 3] - left_foot_pos)
+
+        dfoot = min(right_foot_dist, left_foot_dist)
+        droot = np.linalg.norm(base_pos_2D - base_target_2D)
+
+        khit = 0.8
+        return khit * np.exp(-dfoot / 0.25) + (1 - khit) * np.exp(-droot / 2)
+
+    def orient_reward(self):
+        euler = R.from_matrix(self.pwe.robot.get_T_world_fbase()[:3, :3]).as_euler(
+            "xyz"
+        )
+        euler[0] = 0
+        euler[1] = 0
+        desired_quat = R.from_euler("xyz", euler).as_quat()
+        current_quat = self.data.body("base").xquat
+        current_quat = [
+            current_quat[3],
+            current_quat[1],
+            current_quat[2],
+            current_quat[0],
+        ]
+        return np.exp(-10 * (1 - np.linalg.norm(desired_quat - current_quat)))
+
+    def height_reward(self):
+        current_height = self.data.body("base").xpos[2]
+        return np.exp(-40 * (0.15 - current_height) ** 2)
+
+    def upright_reward(self):
+        # angular distance to upright position in reward
+        Z_vec = np.array(self.data.body("base").xmat).reshape(3, 3)[:, 2]
+        return np.square(np.dot(np.array([0, 0, 1]), Z_vec))
+
+    def action_reward(self, a):
+        current_action = a.copy()
+
+        return np.exp(-5 * np.sum((self.prev_action - current_action)) / self.nb_dofs)
+
+    def torque_reward(self):
+        current_torque = self.data.qfrc_actuator
+        return np.exp(
+            -0.25 * np.sum((self.prev_torque - current_torque)) / self.nb_dofs
+        )
 
     def step(self, a):
 
@@ -120,11 +229,14 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             self.pwe.tick(dt)
 
             reward = (
-                0.05  # time reward
-                + 0.1 * self.walking_height_reward()
-                + 0.1 * self.upright_reward()
-                + 0.1 * self.velocity_tracking_reward()
-                + 0.01 * self.smoothness_reward2()
+                0.05
+                + 0.15 * self.gait_reward()
+                + 0.45 * self.step_reward()
+                + 0.05 * self.orient_reward()
+                + 0.05 * self.height_reward()
+                + 0.05 * self.upright_reward()
+                + 0.05 * self.action_reward(a)
+                + 0.05 * self.torque_reward()
             )
 
         ob = self._get_obs()
@@ -133,6 +245,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             self.render()
 
         self.prev_t = t
+        self.prev_action = a
+        self.prev_torque = self.data.qfrc_actuator
 
         # self.viz.display(self.pwe.robot.state.q)
         return (ob, reward, self.is_terminated(), False, {})  # terminated  # truncated
@@ -140,6 +254,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
     def reset_model(self):
         self.prev_t = self.data.time
         self.startup_cooldown = 1.0
+        self.prev_action = np.zeros(self.nb_dofs)
+        self.prev_torque = np.zeros(self.nb_dofs)
         self.pwe.reset()
 
         self.goto_init()
@@ -149,7 +265,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def goto_init(self):
         self.data.qvel[:] = np.zeros(len(self.data.qvel[:]))
-        self.data.qpos[7 : 7 + self.nb_dofs] = self.init_pos
+        noise = np.random.uniform(-0.01, 0.01, self.nb_dofs)
+        self.data.qpos[7 : 7 + self.nb_dofs] = self.init_pos + noise
         self.data.qpos[2] = 0.15
         self.data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
 
@@ -170,7 +287,11 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         ]  # TODO this is imu, add noise to it later
         linear_velocity = self.data.body("base").cvel[3:]
 
-        next_two_footsteps = self.pwe.get_footsteps_in_robot_frame()[:2]
+        self.next_two_footsteps = self.pwe.get_footsteps_in_world()[:2].copy()
+        next_two_footsteps = []  # 2*[x, y, z, theta]
+        for footstep in self.next_two_footsteps:
+            yaw = R.from_matrix(footstep[:3, :3]).as_euler("xyz")[2]
+            next_two_footsteps.append(list(footstep[:3, 3]) + [yaw])
 
         return np.concatenate(
             [
@@ -178,7 +299,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
                 joints_velocities,
                 angular_velocity,
                 linear_velocity,
-                next_two_footsteps,
+                np.array(next_two_footsteps).flatten(),
                 self.get_clock_signal(),
             ]
         )

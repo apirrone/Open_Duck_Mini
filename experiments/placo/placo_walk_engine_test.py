@@ -61,9 +61,9 @@ while True:
     fv.pushFrame(pwe.robot.get_T_world_left(), "left")
     fv.pushFrame(pwe.robot.get_T_world_right(), "right")
 
-    # footsteps = pwe.get_footsteps_in_robot_frame()
-    # for i, footstep in enumerate(footsteps):
-    #     fv.pushFrame(footstep, "footstep" + str(i))
+    footsteps = pwe.get_footsteps_in_robot_frame()
+    for i, footstep in enumerate(footsteps):
+        fv.pushFrame(footstep, "footstep" + str(i))
 
     # print(get_clock_signal(t, pwe.period))
     # footsteps_viz(pwe.trajectory.get_supports())

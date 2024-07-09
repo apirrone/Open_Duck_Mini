@@ -116,7 +116,7 @@ if __name__ == "__main__":
 
     register(
         id="BDX_env",
-        entry_point="placo_imitate_env:BDXEnv",
+        entry_point="footsteps_env:BDXEnv",
         max_episode_steps=None,  # formerly 500
         autoreset=True,
     )
