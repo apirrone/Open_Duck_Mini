@@ -2,17 +2,32 @@ import argparse
 import os
 from glob import glob
 
+import FramesViewer.utils as fv_utils
 import gymnasium as gym
+import mujoco
 from gymnasium.envs.registration import register
 from sb3_contrib import TQC
 from stable_baselines3 import A2C, PPO, SAC, TD3
 
 register(
     id="BDX_env",
-    entry_point="placo_imitate_env:BDXEnv",
+    entry_point="footsteps_env:BDXEnv",
     autoreset=True,
     # max_episode_steps=200,
 )
+
+
+def draw_frame(pose, i, env):
+    pose = fv_utils.rotateInSelf(pose, [0, 90, 0])
+    # env.mujoco_renderer._get_viewer(render_mode="human")
+    env.mujoco_renderer._get_viewer(render_mode="human").add_marker(
+        pos=pose[:3, 3],
+        mat=pose[:3, :3],
+        size=[0.005, 0.005, 0.1],
+        type=mujoco.mjtGeom.mjGEOM_ARROW,
+        rgba=[1, 0, 0, 1],
+        label=str(i),
+    )
 
 
 def test(env, sb3_algo, path_to_model):
@@ -59,6 +74,9 @@ def test(env, sb3_algo, path_to_model):
     while True:
         action, _ = model.predict(obs)
         obs, _, done, _, _ = env.step(action)
+        footsteps = env.next_footsteps
+        for i, footstep in enumerate(footsteps):
+            draw_frame(footstep, i, env)
 
         if done:
             extra_steps -= 1

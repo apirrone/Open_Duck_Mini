@@ -213,6 +213,15 @@ class PlacoWalkEngine:
             self.d_x, self.d_y, self.d_theta, self.nb_steps
         )
 
+    def get_footsteps_in_world(self):
+        footsteps = self.trajectory.get_supports()
+        footsteps_in_world = []
+        for footstep in footsteps:
+            if not footstep.is_both():
+                footsteps_in_world.append(footstep.frame())
+
+        return footsteps_in_world
+
     def get_footsteps_in_robot_frame(self):
         T_world_fbase = self.robot.get_T_world_fbase()
 

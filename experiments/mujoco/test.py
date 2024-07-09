@@ -18,7 +18,7 @@ pwe = PlacoWalkEngine(
     "/home/antoine/MISC/mini_BDX/mini_bdx/robots/bdx/robot.urdf",
     ignore_feet_contact=True,
 )
-pwe.set_traj(0.05, 0, 0.3)
+pwe.set_traj(0.02, 0, 0.001)
 
 
 def draw_frame(pose, i):

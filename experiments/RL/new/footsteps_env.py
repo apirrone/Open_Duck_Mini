@@ -79,7 +79,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         )
 
         self.startup_cooldown = -self.pwe.initial_delay
-        self.next_two_footsteps = self.pwe.get_footsteps_in_world()[:2]
+        self.next_footsteps = self.pwe.get_footsteps_in_world()
 
         MujocoEnv.__init__(
             self,
@@ -95,7 +95,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         Z_vec /= np.linalg.norm(Z_vec)
         upright = np.array([0, 0, 1])
         return (
-            self.data.body("base").xpos[2] < 0.08 or np.dot(upright, Z_vec) <= 0.2
+            self.data.body("base").xpos[2] < 0.08 or np.dot(upright, Z_vec) <= 0.4
         )  # base z is below 0.08m or base has more than 90 degrees of tilt
 
     def gait_reward(self):
@@ -149,8 +149,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         )
 
         base_pos_2D = self.data.body("base").xpos[:2]
-        upcoming_footstep = self.next_two_footsteps[0]
-        second_footstep = self.next_two_footsteps[1]
+        upcoming_footstep = self.next_footsteps[0]
+        second_footstep = self.next_footsteps[1]
 
         base_target_2D = np.mean(
             [upcoming_footstep[:3, 3][:2], second_footstep[:3, 3][:2]], axis=0
@@ -258,6 +258,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.prev_torque = np.zeros(self.nb_dofs)
         self.pwe.reset()
 
+        self.pwe.set_traj(0.02, 0, 0.001)
+
         self.goto_init()
 
         self.set_state(self.data.qpos, self.data.qvel)
@@ -287,9 +289,9 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         ]  # TODO this is imu, add noise to it later
         linear_velocity = self.data.body("base").cvel[3:]
 
-        self.next_two_footsteps = self.pwe.get_footsteps_in_world()[:2].copy()
+        self.next_footsteps = self.pwe.get_footsteps_in_world().copy()
         next_two_footsteps = []  # 2*[x, y, z, theta]
-        for footstep in self.next_two_footsteps:
+        for footstep in self.next_footsteps[:2]:
             yaw = R.from_matrix(footstep[:3, :3]).as_euler("xyz")[2]
             next_two_footsteps.append(list(footstep[:3, 3]) + [yaw])
 
