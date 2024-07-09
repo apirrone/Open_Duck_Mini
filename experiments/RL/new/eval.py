@@ -5,6 +5,7 @@ from glob import glob
 import FramesViewer.utils as fv_utils
 import gymnasium as gym
 import mujoco
+import numpy as np
 from gymnasium.envs.registration import register
 from sb3_contrib import TQC
 from stable_baselines3 import A2C, PPO, SAC, TD3
@@ -75,6 +76,17 @@ def test(env, sb3_algo, path_to_model):
         action, _ = model.predict(obs)
         obs, _, done, _, _ = env.step(action)
         footsteps = env.next_footsteps
+        base_target_2D = np.mean(
+            [footsteps[0][:3, 3][:2], footsteps[1][:3, 3][:2]], axis=0
+        )
+        base_target_frame = np.eye(4)
+        base_target_frame[:3, 3][:2] = base_target_2D
+        draw_frame(base_target_frame, "base target", env)
+        base_pos_2D = env.data.body("base").xpos[:2]
+        base_pos_frame = np.eye(4)
+        base_pos_frame[:3, 3][:2] = base_pos_2D
+        draw_frame(base_pos_frame, "base pos", env)
+
         for i, footstep in enumerate(footsteps):
             draw_frame(footstep, i, env)
 

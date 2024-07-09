@@ -61,7 +61,7 @@ while True:
     fv.pushFrame(pwe.robot.get_T_world_left(), "left")
     fv.pushFrame(pwe.robot.get_T_world_right(), "right")
 
-    footsteps = pwe.get_footsteps_in_robot_frame()
+    footsteps = pwe.get_footsteps_in_world()
     for i, footstep in enumerate(footsteps):
         fv.pushFrame(footstep, "footstep" + str(i))
 

@@ -1,4 +1,3 @@
-# Inspired by https://arxiv.org/pdf/2207.12644
 import numpy as np
 import placo
 from gymnasium import utils
@@ -13,6 +12,7 @@ FRAME_SKIP = 4
 
 
 class BDXEnv(MujocoEnv, utils.EzPickle):
+    # Inspired by https://arxiv.org/pdf/2207.12644
     metadata = {
         "render_modes": [
             "human",
@@ -113,8 +113,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         left_contact_force = np.sum(
             get_contact_force(self.data, self.model, "foot_module_2", "floor")
         )
-        right_speed = self.data.body("foot_module").cvel  # [rot:vel] size 6
-        left_speed = self.data.body("foot_module_2").cvel  # [rot:vel] size 6
+        right_speed = self.data.body("foot_module").cvel[3:]  # [rot:vel] size 6
+        left_speed = self.data.body("foot_module_2").cvel[3:]  # [rot:vel] size 6
 
         if support_phase == "both":
             return (
@@ -125,17 +125,17 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             )
         elif support_phase is placo.HumanoidRobot_Side.left:
             return (
+                left_contact_force
+                - np.linalg.norm(left_speed)
+                + right_contact_force
+                + np.linalg.norm(right_speed)
+            )
+        elif support_phase is placo.HumanoidRobot_Side.right:
+            return (
                 right_contact_force
                 - np.linalg.norm(right_speed)
                 - left_contact_force
                 + np.linalg.norm(left_speed)
-            )
-        elif support_phase is placo.HumanoidRobot_Side.right:
-            return (
-                left_contact_force
-                - np.linalg.norm(left_speed)
-                - right_contact_force
-                + np.linalg.norm(right_speed)
             )
 
     def step_reward(self):
