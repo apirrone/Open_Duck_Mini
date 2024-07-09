@@ -159,6 +159,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         # hit reward : reward any foot that hits the upcoming footstep. Only when either or both feet are within a radius of the target
         # progress reward : encourage the moving base to move toward he target
 
+        # TODO I don't really understand what's going on with the feet positions relative to the body.
+        # TODO Maybe go back to absolute positions ?
         target_radius = (
             0.1  # Only when either or both feet are within a radius of the target ??
         )
@@ -269,15 +271,6 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
             self.pwe.tick(dt)
 
-            # print("Gait reward: ", 0.15 * self.gait_reward())
-            # print("Step reward: ", 0.45 * self.step_reward())
-            # print("Orient reward: ", 0.05 * self.orient_reward())
-            # print("Height reward: ", 0.05 * self.height_reward())
-            # print("Upright reward: ", 0.05 * self.upright_reward())
-            # print("Action reward: ", 0.05 * self.action_reward(a))
-            # print("Torque reward: ", 0.05 * self.torque_reward())
-            # print("===")
-
             reward = (
                 0.05
                 + 0.15 * self.gait_reward()
@@ -292,6 +285,15 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         ob = self._get_obs()
 
         if self.render_mode == "human":
+            if self.startup_cooldown <= 0:
+                print("Gait reward: ", 0.15 * self.gait_reward())
+                print("Step reward: ", 0.45 * self.step_reward())
+                print("Orient reward: ", 0.05 * self.orient_reward())
+                print("Height reward: ", 0.05 * self.height_reward())
+                print("Upright reward: ", 0.05 * self.upright_reward())
+                print("Action reward: ", 0.05 * self.action_reward(a))
+                print("Torque reward: ", 0.05 * self.torque_reward())
+                print("===")
             self.render()
 
         self.prev_t = t
