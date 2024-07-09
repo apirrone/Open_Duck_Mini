@@ -206,6 +206,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         dfoot = min(right_foot_dist, left_foot_dist)
         droot = np.linalg.norm(base_pos_2D - base_target_2D)
+        if dfoot > target_radius:
+            dfoot = 2  # penalize if the foot is too far from the target
 
         khit = 0.8
         return khit * np.exp(-dfoot / 0.25) + (1 - khit) * np.exp(-droot / 2)
@@ -222,7 +224,6 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def height_reward(self):
         current_height = self.data.body("base").xpos[2]
-        print("current_height: ", current_height)
         return np.exp(-40 * (0.15 - current_height) ** 2)
 
     def upright_reward(self):
