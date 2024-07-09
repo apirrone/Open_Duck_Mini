@@ -6,7 +6,7 @@ from gymnasium.spaces import Box
 from scipy.spatial.transform import Rotation as R
 
 from mini_bdx.placo_walk_engine import PlacoWalkEngine
-from mini_bdx.utils.mujoco_utils import get_contact_force
+from mini_bdx.utils.mujoco_utils import check_contact, get_contact_force
 
 FRAME_SKIP = 4
 
@@ -93,12 +93,24 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         )
 
     def is_terminated(self) -> bool:
+
+        left_antenna_contact = check_contact(
+            self.data, self.model, "left_antenna_assembly", "floor"
+        )
+        right_antenna_contact = check_contact(
+            self.data, self.model, "right_antenna_assembly", "floor"
+        )
+        body_contact = check_contact(self.data, self.model, "body_module", "floor")
         rot = np.array(self.data.body("base").xmat).reshape(3, 3)
         Z_vec = rot[:, 2]
         Z_vec /= np.linalg.norm(Z_vec)
         upright = np.array([0, 0, 1])
         return (
-            self.data.body("base").xpos[2] < 0.08 or np.dot(upright, Z_vec) <= 0.4
+            self.data.body("base").xpos[2] < 0.08
+            or np.dot(upright, Z_vec) <= 0.4
+            or left_antenna_contact
+            or right_antenna_contact
+            or body_contact
         )  # base z is below 0.08m or base has more than 90 degrees of tilt
 
     def gait_reward(self):
@@ -255,14 +267,14 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
             self.pwe.tick(dt)
 
-            print("Gait reward: ", 0.15 * self.gait_reward())
-            print("Step reward: ", 0.45 * self.step_reward())
-            print("Orient reward: ", 0.05 * self.orient_reward())
-            print("Height reward: ", 0.05 * self.height_reward())
-            print("Upright reward: ", 0.05 * self.upright_reward())
-            print("Action reward: ", 0.05 * self.action_reward(a))
-            print("Torque reward: ", 0.05 * self.torque_reward())
-            print("===")
+            # print("Gait reward: ", 0.15 * self.gait_reward())
+            # print("Step reward: ", 0.45 * self.step_reward())
+            # print("Orient reward: ", 0.05 * self.orient_reward())
+            # print("Height reward: ", 0.05 * self.height_reward())
+            # print("Upright reward: ", 0.05 * self.upright_reward())
+            # print("Action reward: ", 0.05 * self.action_reward(a))
+            # print("Torque reward: ", 0.05 * self.torque_reward())
+            # print("===")
 
             reward = (
                 0.05
