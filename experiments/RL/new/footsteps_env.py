@@ -172,17 +172,11 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         euler = R.from_matrix(self.pwe.robot.get_T_world_fbase()[:3, :3]).as_euler(
             "xyz"
         )
-        euler[0] = 0
-        euler[1] = 0
-        desired_quat = R.from_euler("xyz", euler).as_quat()
-        current_quat = self.data.body("base").xquat
-        current_quat = [
-            current_quat[3],
-            current_quat[1],
-            current_quat[2],
-            current_quat[0],
-        ]
-        return np.exp(-10 * (1 - np.linalg.norm(desired_quat - current_quat)))
+        desired_yaw = euler[2]
+        current_yaw = R.from_matrix(
+            np.array(self.data.body("base").xmat).reshape(3, 3)
+        ).as_euler("xyz")[2]
+        return (desired_yaw - current_yaw) ** 2
 
     def height_reward(self):
         current_height = self.data.body("base").xpos[2]

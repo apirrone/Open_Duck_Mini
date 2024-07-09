@@ -13,12 +13,21 @@ from mini_bdx.placo_walk_engine import PlacoWalkEngine
 model = mujoco.MjModel.from_xml_path("../../mini_bdx/robots/bdx/scene.xml")
 data = mujoco.MjData(model)
 # viewer = mujoco.viewer.launch_passive(model, data)
-viewer = mujoco_viewer.MujocoViewer(model, data)
+viewer = mujoco_viewer.MujocoViewer(model, data, width=1280, height=720)
 pwe = PlacoWalkEngine(
     "/home/antoine/MISC/mini_BDX/mini_bdx/robots/bdx/robot.urdf",
     ignore_feet_contact=True,
 )
 pwe.set_traj(0.02, 0, 0.001)
+
+
+def orient_reward():
+    euler = R.from_matrix(pwe.robot.get_T_world_fbase()[:3, :3]).as_euler("xyz")
+    desired_yaw = euler[2]
+    current_yaw = R.from_matrix(
+        np.array(data.body("base").xmat).reshape(3, 3)
+    ).as_euler("xyz")[2]
+    return (desired_yaw - current_yaw) ** 2
 
 
 def draw_frame(pose, i):
@@ -33,17 +42,6 @@ def draw_frame(pose, i):
     )
 
 
-def orient_reward():
-    euler = R.from_matrix(pwe.robot.get_T_world_fbase()[:3, :3]).as_euler("xyz")
-    euler[0] = 0
-    euler[1] = 0
-    desired_quat = R.from_euler("xyz", euler).as_quat()
-    current_quat = data.body("base").xquat
-
-    # swap w for current_quat
-    current_quat = [current_quat[3], current_quat[1], current_quat[2], current_quat[0]]
-
-
 prev = data.time
 while True:
     t = data.time
@@ -53,9 +51,9 @@ while True:
     next_footsteps = pwe.get_footsteps_in_world()
     for i, footstep in enumerate(next_footsteps):
         draw_frame(footstep, i)
-    # orient_reward()
-    print(data.qfrc_actuator)
-    data.ctrl[:] = list(pwe.get_angles().values())
+    print(orient_reward())
+    # print(data.qfrc_actuator)
+    # data.ctrl[:] = list(pwe.get_angles().values())
     # pos = data.body("base").xpos
     # quat = data.body("base").xquat
     # rot = R.from_quat(quat).as_matrix()
