@@ -77,7 +77,7 @@ def train(env, sb3_algo, model_dir, log_dir, pretrained=None, device="cuda"):
                 print("Algorithm not found")
                 return
 
-    TIMESTEPS = 1000
+    TIMESTEPS = 10000
     iters = 0
     while True:
         iters += 1
