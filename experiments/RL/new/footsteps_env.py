@@ -190,7 +190,10 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
     def action_reward(self, a):
         current_action = a.copy()
 
-        return np.exp(-5 * np.sum((self.prev_action - current_action)) / self.nb_dofs)
+        # This can explode, don't understand why
+        return min(
+            2, np.exp(-5 * np.sum((self.prev_action - current_action)) / self.nb_dofs)
+        )
 
     def torque_reward(self):
         current_torque = self.data.qfrc_actuator
@@ -222,6 +225,15 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
             self.pwe.tick(dt)
 
+            print("Gait reward: ", 0.15 * self.gait_reward())
+            print("Step reward: ", 0.45 * self.step_reward())
+            print("Orient reward: ", 0.05 * self.orient_reward())
+            print("Height reward: ", 0.05 * self.height_reward())
+            print("Upright reward: ", 0.05 * self.upright_reward())
+            print("Action reward: ", 0.05 * self.action_reward(a))
+            print("Torque reward: ", 0.05 * self.torque_reward())
+            print("===")
+
             reward = (
                 0.05
                 + 0.15 * self.gait_reward()
@@ -239,8 +251,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             self.render()
 
         self.prev_t = t
-        self.prev_action = a
-        self.prev_torque = self.data.qfrc_actuator
+        self.prev_action = a.copy()
+        self.prev_torque = self.data.qfrc_actuator.copy()
 
         # self.viz.display(self.pwe.robot.state.q)
         return (ob, reward, self.is_terminated(), False, {})  # terminated  # truncated
