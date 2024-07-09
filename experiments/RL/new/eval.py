@@ -75,7 +75,7 @@ def test(env, sb3_algo, path_to_model):
     while True:
         action, _ = model.predict(obs)
         obs, _, done, _, _ = env.step(action)
-        footsteps = env.next_footsteps
+        footsteps = env.next_footsteps_world
         base_target_2D = np.mean(
             [footsteps[0][:3, 3][:2], footsteps[1][:3, 3][:2]], axis=0
         )

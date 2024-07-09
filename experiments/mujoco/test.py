@@ -18,6 +18,7 @@ pwe = PlacoWalkEngine(
     "/home/antoine/MISC/mini_BDX/mini_bdx/robots/bdx/robot.urdf",
     ignore_feet_contact=True,
 )
+
 pwe.set_traj(0.02, 0, 0.001)
 
 
@@ -35,8 +36,10 @@ def draw_frame(pose, i):
     viewer.add_marker(
         pos=pose[:3, 3],
         mat=pose[:3, :3],
-        size=[0.005, 0.005, 0.1],
-        type=mujoco.mjtGeom.mjGEOM_ARROW,
+        size=[0.005, 0.005, 0.005],
+        type=mujoco.mjtGeom.mjGEOM_BOX,
+        # size=[0.005, 0.005, 0.1],
+        # type=mujoco.mjtGeom.mjGEOM_ARROW,
         rgba=[1, 0, 0, 1],
         label=str(i),
     )
@@ -48,30 +51,30 @@ while True:
     dt = t - prev
 
     pwe.tick(dt)
-    next_footsteps = pwe.get_footsteps_in_world()
+
+    next_footsteps = pwe.get_footsteps_in_robot_frame()
+    for i in range(len(next_footsteps)):
+        next_footsteps[i][:3, 3][2] = 0
     for i, footstep in enumerate(next_footsteps):
         draw_frame(footstep, i)
-    print(orient_reward())
-    # print(data.qfrc_actuator)
-    # data.ctrl[:] = list(pwe.get_angles().values())
-    # pos = data.body("base").xpos
-    # quat = data.body("base").xquat
-    # rot = R.from_quat(quat).as_matrix()
-    # T_world_body = np.eye(4)
-    # T_world_body[:3, :3] = rot
-    # T_world_body[:3, 3] = pos
+    if t > 1.0:
+        pos = data.body("base").xpos
+        mat = data.body("base").xmat
+        T_world_body = np.eye(4)
+        T_world_body[:3, :3] = mat.reshape(3, 3)
+        T_world_body[:3, 3] = pos
 
-    # T_world_rightFoot = np.eye(4)
-    # pos = data.body("foot_module").xpos
-    # quat = data.body("foot_module").xquat
-    # mat = R.from_quat(quat).as_matrix()
-    # T_world_rightFoot[:3, :3] = mat
-    # T_world_rightFoot[:3, 3] = pos
+        draw_frame(T_world_body, 100)
 
-    # T_body_rightFoot = np.linalg.inv(T_world_body) @ T_world_rightFoot
+        T_world_rightFoot = np.eye(4)
+        pos = data.body("right_foot").xpos
+        mat = data.body("right_foot").xmat
+        T_world_rightFoot[:3, 3] = pos
+        T_world_rightFoot[:3, :3] = mat.reshape(3, 3)
 
-    # fv.pushFrame(T_world_body, "aze")
-    # fv.pushFrame(T_world_rightFoot, "aze2")
+        T_body_rightFoot = np.linalg.inv(T_world_body) @ T_world_rightFoot
+        T_world_rightFoot2 = T_world_body @ T_body_rightFoot
+        draw_frame(T_world_rightFoot, 101)
 
     mujoco.mj_step(model, data, 4)  # 4 seems good
 

@@ -220,6 +220,9 @@ class PlacoWalkEngine:
             if not footstep.is_both():
                 footsteps_in_world.append(footstep.frame())
 
+        for i in range(len(footsteps_in_world)):
+            footsteps_in_world[i][:3, 3][1] += self.parameters.feet_spacing / 2
+
         return footsteps_in_world
 
     def get_footsteps_in_robot_frame(self):

@@ -79,7 +79,10 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         )
 
         self.startup_cooldown = -self.pwe.initial_delay
-        self.next_footsteps = self.pwe.get_footsteps_in_world()
+        self.next_footsteps = self.pwe.get_footsteps_in_robot_frame().copy()
+        self.next_footsteps_world = self.pwe.get_footsteps_in_world().copy()
+        for i in range(len(self.next_footsteps)):
+            self.next_footsteps[i][:3, 3][2] = 0
 
         MujocoEnv.__init__(
             self,
@@ -108,13 +111,13 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         support_phase = self.pwe.get_current_support_phase()  # left, right, both
         right_contact_force = np.sum(
-            get_contact_force(self.data, self.model, "foot_module", "floor")
+            get_contact_force(self.data, self.model, "right_foot", "floor")
         )
         left_contact_force = np.sum(
-            get_contact_force(self.data, self.model, "foot_module_2", "floor")
+            get_contact_force(self.data, self.model, "left_foot", "floor")
         )
-        right_speed = self.data.body("foot_module").cvel[3:]  # [rot:vel] size 6
-        left_speed = self.data.body("foot_module_2").cvel[3:]  # [rot:vel] size 6
+        right_speed = self.data.body("right_foot").cvel[3:]  # [rot:vel] size 6
+        left_speed = self.data.body("left_foot").cvel[3:]  # [rot:vel] size 6
 
         if support_phase == "both":
             return (
@@ -156,11 +159,38 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             [upcoming_footstep[:3, 3][:2], second_footstep[:3, 3][:2]], axis=0
         )
 
-        right_foot_pos = self.data.body("foot_module").xpos  # right
-        left_foot_pos = self.data.body("foot_module_2").xpos  # left
+        pos = self.data.body("base").xpos
+        mat = self.data.body("base").xmat
+        T_world_body = np.eye(4)
+        T_world_body[:3, :3] = mat.reshape(3, 3)
+        T_world_body[:3, 3] = pos
 
-        right_foot_dist = np.linalg.norm(upcoming_footstep[:3, 3] - right_foot_pos)
-        left_foot_dist = np.linalg.norm(upcoming_footstep[:3, 3] - left_foot_pos)
+        T_world_rightFoot = np.eye(4)
+        T_world_rightFoot = np.eye(4)
+        pos = self.data.body("right_foot").xpos
+        mat = self.data.body("right_foot").xmat
+        T_world_rightFoot[:3, 3] = pos
+        T_world_rightFoot[:3, :3] = mat.reshape(3, 3)
+
+        T_world_leftFoot = np.eye(4)
+        T_world_leftFoot = np.eye(4)
+        pos = self.data.body("left_foot").xpos
+        mat = self.data.body("left_foot").xmat
+        T_world_leftFoot[:3, 3] = pos
+        T_world_leftFoot[:3, :3] = mat.reshape(3, 3)
+
+        T_body_rightFoot = np.linalg.inv(T_world_body) @ T_world_rightFoot
+        T_body_leftFoot = np.linalg.inv(T_world_body) @ T_world_leftFoot
+
+        # right_foot_pos = self.data.body("right_foot").xpos  # right
+        # left_foot_pos = self.data.body("left_foot").xpos  # left
+
+        right_foot_dist = np.linalg.norm(
+            upcoming_footstep[:3, 3] - T_body_rightFoot[:3, 3]
+        )
+        left_foot_dist = np.linalg.norm(
+            upcoming_footstep[:3, 3] - T_body_leftFoot[:3, 3]
+        )
 
         dfoot = min(right_foot_dist, left_foot_dist)
         droot = np.linalg.norm(base_pos_2D - base_target_2D)
@@ -264,7 +294,10 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.prev_torque = np.zeros(self.nb_dofs)
         self.pwe.reset()
 
-        self.pwe.set_traj(0.02, 0, 0.001)
+        d_x = np.random.uniform(0.01, 0.03)
+        d_y = np.random.uniform(-0.01, 0.01)
+        d_theta = np.random.uniform(-0.1, 0.1)
+        self.pwe.set_traj(d_x, d_y, d_theta)
 
         self.goto_init()
 
@@ -295,7 +328,10 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         ]  # TODO this is imu, add noise to it later
         linear_velocity = self.data.body("base").cvel[3:]
 
-        self.next_footsteps = self.pwe.get_footsteps_in_world().copy()
+        self.next_footsteps = self.pwe.get_footsteps_in_robot_frame().copy()
+        self.next_footsteps_world = self.pwe.get_footsteps_in_world().copy()
+        for i in range(len(self.next_footsteps)):
+            self.next_footsteps[i][:3, 3][2] = 0
         next_two_footsteps = []  # 2*[x, y, z, theta]
         for footstep in self.next_footsteps[:2]:
             yaw = R.from_matrix(footstep[:3, :3]).as_euler("xyz")[2]
