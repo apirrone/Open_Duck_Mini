@@ -28,7 +28,7 @@ def orient_reward():
     current_yaw = R.from_matrix(
         np.array(data.body("base").xmat).reshape(3, 3)
     ).as_euler("xyz")[2]
-    return (desired_yaw - current_yaw) ** 2
+    return -((desired_yaw - current_yaw) ** 2)
 
 
 def draw_frame(pose, i):
@@ -63,7 +63,7 @@ while True:
         T_world_body = np.eye(4)
         T_world_body[:3, :3] = mat.reshape(3, 3)
         T_world_body[:3, 3] = pos
-
+        print(orient_reward())
         draw_frame(T_world_body, 100)
 
         T_world_rightFoot = np.eye(4)

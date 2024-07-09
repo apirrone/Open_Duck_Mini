@@ -220,7 +220,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         current_yaw = R.from_matrix(
             np.array(self.data.body("base").xmat).reshape(3, 3)
         ).as_euler("xyz")[2]
-        return (desired_yaw - current_yaw) ** 2
+        return -((desired_yaw - current_yaw) ** 2)
 
     def height_reward(self):
         current_height = self.data.body("base").xpos[2]
