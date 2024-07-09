@@ -222,6 +222,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def height_reward(self):
         current_height = self.data.body("base").xpos[2]
+        print("current_height: ", current_height)
         return np.exp(-40 * (0.15 - current_height) ** 2)
 
     def upright_reward(self):
@@ -259,9 +260,9 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             a += self.init_pos
 
             # Maybe use that too :)
-            # current_ctrl = self.data.ctrl.copy()
-            # delta_max = 0.1
-            # a = np.clip(a, current_ctrl - delta_max, current_ctrl + delta_max)
+            current_ctrl = self.data.ctrl.copy()
+            delta_max = 0.05
+            a = np.clip(a, current_ctrl - delta_max, current_ctrl + delta_max)
 
             self.do_simulation(a, FRAME_SKIP)
 
