@@ -265,7 +265,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             # https://github.com/google-deepmind/mujoco/issues/104
 
             reward = (
-                +0.30 * self.gait_reward()
+                0.30 * self.gait_reward()
                 + 0.45 * self.step_reward()
                 + 0.05 * self.orient_reward()
                 + 0.10 * self.height_reward()
