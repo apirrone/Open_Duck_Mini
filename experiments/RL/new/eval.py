@@ -86,6 +86,10 @@ def test(env, sb3_algo, path_to_model):
         base_pos_frame = np.eye(4)
         base_pos_frame[:3, 3][:2] = base_pos_2D
         draw_frame(base_pos_frame, "base pos", env)
+        # for i in range(env.data.ncon):
+        #     print(env.data.contact[i])
+        #     print("--")
+        # print("==")
 
         for i, footstep in enumerate(footsteps):
             draw_frame(footstep, i, env)

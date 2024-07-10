@@ -258,6 +258,11 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
             self.pwe.tick(dt)
 
+            # TODO penalize auto collisions
+            # check all collisions and penalize all that is not foot on the ground.
+            # Need to ignore the auto collisions that occur because of the robot's assembly.
+            # Tried contact exclude but does not seem to work
+            # https://github.com/google-deepmind/mujoco/issues/104
             reward = (
                 0.05
                 + 0.30 * self.gait_reward()
