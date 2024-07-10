@@ -2,6 +2,7 @@ import argparse
 import os
 from glob import glob
 
+import cv2
 import FramesViewer.utils as fv_utils
 import gymnasium as gym
 import mujoco
@@ -16,6 +17,25 @@ register(
     autoreset=True,
     # max_episode_steps=200,
 )
+
+
+def draw_clock(clock):
+    # clock [a, b]
+    clock_radius = 100
+    im = np.zeros((clock_radius * 2, clock_radius * 2, 3), np.uint8)
+    im = cv2.circle(im, (clock_radius, clock_radius), clock_radius, (255, 255, 255), -1)
+    im = cv2.line(
+        im,
+        (clock_radius, clock_radius),
+        (
+            int(clock_radius + clock_radius * clock[0]),
+            int(clock_radius + clock_radius * clock[1]),
+        ),
+        (0, 0, 255),
+        2,
+    )
+    cv2.imshow("clock", im)
+    cv2.waitKey(1)
 
 
 def draw_frame(pose, i, env):
@@ -86,10 +106,8 @@ def test(env, sb3_algo, path_to_model):
         base_pos_frame = np.eye(4)
         base_pos_frame[:3, 3][:2] = base_pos_2D
         draw_frame(base_pos_frame, "base pos", env)
-        # for i in range(env.data.ncon):
-        #     print(env.data.contact[i])
-        #     print("--")
-        # print("==")
+
+        # draw_clock(env.get_clock_signal())
 
         for i, footstep in enumerate(footsteps):
             draw_frame(footstep, i, env)

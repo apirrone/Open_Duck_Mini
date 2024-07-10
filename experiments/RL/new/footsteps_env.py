@@ -148,7 +148,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             return (
                 right_contact_force
                 - np.linalg.norm(right_speed)
-                - left_contact_force
+                + left_contact_force
                 + np.linalg.norm(left_speed)
             )
 
@@ -209,7 +209,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         current_yaw = R.from_matrix(
             np.array(self.data.body("base").xmat).reshape(3, 3)
         ).as_euler("xyz")[2]
-        return -((desired_yaw - current_yaw) ** 2)
+        return -((abs(desired_yaw) - abs(current_yaw)) ** 2)
 
     def height_reward(self):
         current_height = self.data.body("base").xpos[2]
@@ -278,14 +278,15 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         if self.render_mode == "human":
             if self.startup_cooldown <= 0:
-                print("Gait reward: ", 0.30 * self.gait_reward())
-                print("Step reward: ", 0.45 * self.step_reward())
-                print("Orient reward: ", 0.05 * self.orient_reward())
-                print("Height reward: ", 0.10 * self.height_reward())
-                print("Upright reward: ", 0.05 * self.upright_reward())
-                print("Action reward: ", 0.05 * self.action_reward(a))
-                print("Torque reward: ", 0.05 * self.torque_reward())
-                print("===")
+                # print("Gait reward: ", 0.30 * self.gait_reward())
+                # print("Step reward: ", 0.45 * self.step_reward())
+                # print("Orient reward: ", 0.05 * self.orient_reward())
+                # print("Height reward: ", 0.10 * self.height_reward())
+                # print("Upright reward: ", 0.05 * self.upright_reward())
+                # print("Action reward: ", 0.05 * self.action_reward(a))
+                # print("Torque reward: ", 0.05 * self.torque_reward())
+                # print("===")
+                pass
             self.render()
 
         self.prev_t = t
@@ -323,8 +324,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.data.ctrl[:] = self.init_pos
 
     def get_clock_signal(self):
-        a = np.sin(2 * np.pi * (self.data.time % self.pwe.period)) / self.pwe.period
-        b = np.cos(2 * np.pi * (self.data.time % self.pwe.period)) / self.pwe.period
+        a = np.sin(2 * np.pi * (self.pwe.t % self.pwe.period) / self.pwe.period)
+        b = np.cos(2 * np.pi * (self.pwe.t % self.pwe.period) / self.pwe.period)
         return [a, b]
 
     def _get_obs(self):
