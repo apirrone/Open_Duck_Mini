@@ -36,10 +36,8 @@ def draw_frame(pose, i):
     viewer.add_marker(
         pos=pose[:3, 3],
         mat=pose[:3, :3],
-        size=[0.005, 0.005, 0.005],
-        type=mujoco.mjtGeom.mjGEOM_BOX,
-        # size=[0.005, 0.005, 0.1],
-        # type=mujoco.mjtGeom.mjGEOM_ARROW,
+        size=[0.005, 0.005, 0.1],
+        type=mujoco.mjtGeom.mjGEOM_ARROW,
         rgba=[1, 0, 0, 1],
         label=str(i),
     )
@@ -52,7 +50,7 @@ while True:
 
     pwe.tick(dt)
 
-    next_footsteps = pwe.get_footsteps_in_robot_frame()
+    next_footsteps = pwe.get_footsteps_in_world()
     for i in range(len(next_footsteps)):
         next_footsteps[i][:3, 3][2] = 0
     for i, footstep in enumerate(next_footsteps):

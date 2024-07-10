@@ -251,7 +251,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
             # Maybe use that too :)
             current_ctrl = self.data.ctrl.copy()
-            delta_max = 0.05
+            delta_max = 0.02
             a = np.clip(a, current_ctrl - delta_max, current_ctrl + delta_max)
 
             self.do_simulation(a, FRAME_SKIP)
@@ -305,7 +305,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         d_x = np.random.uniform(0.01, 0.03)
         d_y = np.random.uniform(-0.01, 0.01)
         d_theta = np.random.uniform(-0.1, 0.1)
-        self.pwe.set_traj(d_x, d_y, d_theta)
+        # self.pwe.set_traj(d_x, d_y, d_theta)
+        self.pwe.set_traj(0.03, 0, 0.001)
 
         self.goto_init()
 

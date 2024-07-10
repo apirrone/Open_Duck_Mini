@@ -47,7 +47,7 @@ class PlacoWalkEngine:
             0.2  # Time ratio for the foot swing plateau (0.0 to 1.0)
         )
         self.parameters.single_support_duration = (
-            0.25  # Duration of single support phase [s]
+            0.5  # Duration of single support phase [s]
         )
         self.parameters.single_support_timesteps = (
             10  # Number of planning timesteps per single support phase
