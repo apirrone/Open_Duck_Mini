@@ -79,8 +79,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         )
 
         self.startup_cooldown = -self.pwe.initial_delay
-        self.next_footsteps = self.pwe.get_footsteps_in_robot_frame().copy()
-        self.next_footsteps_world = self.pwe.get_footsteps_in_world().copy()
+        self.next_footsteps = self.pwe.get_footsteps_in_world().copy()
         for i in range(len(self.next_footsteps)):
             self.next_footsteps[i][:3, 3][2] = 0
 
@@ -159,8 +158,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         # hit reward : reward any foot that hits the upcoming footstep. Only when either or both feet are within a radius of the target
         # progress reward : encourage the moving base to move toward he target
 
-        # TODO I don't really understand what's going on with the feet positions relative to the body.
-        # TODO Maybe go back to absolute positions ?
+        # Using absolute positions here, while in the paper they use relative
+
         target_radius = (
             0.1  # Only when either or both feet are within a radius of the target ??
         )
@@ -180,30 +179,18 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         T_world_body[:3, 3] = pos
 
         T_world_rightFoot = np.eye(4)
-        T_world_rightFoot = np.eye(4)
-        pos = self.data.body("right_foot").xpos
-        mat = self.data.body("right_foot").xmat
-        T_world_rightFoot[:3, 3] = pos
-        T_world_rightFoot[:3, :3] = mat.reshape(3, 3)
+        T_world_rightFoot[:3, 3] = self.data.body("right_foot").xpos
+        T_world_rightFoot[:3, :3] = self.data.body("right_foot").xmat.reshape(3, 3)
 
         T_world_leftFoot = np.eye(4)
-        T_world_leftFoot = np.eye(4)
-        pos = self.data.body("left_foot").xpos
-        mat = self.data.body("left_foot").xmat
-        T_world_leftFoot[:3, 3] = pos
-        T_world_leftFoot[:3, :3] = mat.reshape(3, 3)
-
-        T_body_rightFoot = np.linalg.inv(T_world_body) @ T_world_rightFoot
-        T_body_leftFoot = np.linalg.inv(T_world_body) @ T_world_leftFoot
-
-        # right_foot_pos = self.data.body("right_foot").xpos  # right
-        # left_foot_pos = self.data.body("left_foot").xpos  # left
+        T_world_leftFoot[:3, 3] = self.data.body("left_foot").xpos
+        T_world_leftFoot[:3, :3] = self.data.body("left_foot").xmat.reshape(3, 3)
 
         right_foot_dist = np.linalg.norm(
-            upcoming_footstep[:3, 3] - T_body_rightFoot[:3, 3]
+            upcoming_footstep[:3, 3] - T_world_rightFoot[:3, 3]
         )
         left_foot_dist = np.linalg.norm(
-            upcoming_footstep[:3, 3] - T_body_leftFoot[:3, 3]
+            upcoming_footstep[:3, 3] - T_world_leftFoot[:3, 3]
         )
 
         dfoot = min(right_foot_dist, left_foot_dist)
@@ -344,8 +331,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         ]  # TODO this is imu, add noise to it later
         linear_velocity = self.data.body("base").cvel[3:]
 
-        self.next_footsteps = self.pwe.get_footsteps_in_robot_frame().copy()
-        self.next_footsteps_world = self.pwe.get_footsteps_in_world().copy()
+        self.next_footsteps = self.pwe.get_footsteps_in_world().copy()
         for i in range(len(self.next_footsteps)):
             self.next_footsteps[i][:3, 3][2] = 0
         next_two_footsteps = []  # 2*[x, y, z, theta]
