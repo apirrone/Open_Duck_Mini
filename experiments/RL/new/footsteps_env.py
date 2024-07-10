@@ -263,9 +263,9 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             # Need to ignore the auto collisions that occur because of the robot's assembly.
             # Tried contact exclude but does not seem to work
             # https://github.com/google-deepmind/mujoco/issues/104
+
             reward = (
-                0.05
-                + 0.30 * self.gait_reward()
+                +0.30 * self.gait_reward()
                 + 0.45 * self.step_reward()
                 + 0.05 * self.orient_reward()
                 + 0.10 * self.height_reward()
