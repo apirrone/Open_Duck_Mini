@@ -52,7 +52,6 @@ def draw_frame(pose, i, env):
 
 
 def test(env, sb3_algo, path_to_model):
-
     if not path_to_model.endswith(".zip"):
         models_paths = glob(path_to_model + "/*.zip")
         latest_model_id = 0
@@ -81,10 +80,7 @@ def test(env, sb3_algo, path_to_model):
         case "TQC":
             model = TQC.load(path_to_model, env=env)
         case "PPO":
-            model = PPO("MlpPolicy", env)
-            model.policy.load(path_to_model)
-            # model = PPO.load(path_to_model, env=env)
-
+            model = PPO.load(path_to_model, env=env)
         case _:
             print("Algorithm not found")
             return
@@ -120,7 +116,6 @@ def test(env, sb3_algo, path_to_model):
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(description="Test model")
     parser.add_argument(
         "-p",

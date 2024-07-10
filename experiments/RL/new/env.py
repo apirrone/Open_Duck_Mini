@@ -295,7 +295,6 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             self.do_simulation(self.init_pos, FRAME_SKIP)
             reward = 0
         else:
-
             self.do_simulation(a, FRAME_SKIP)
             # self.do_simulation(self.action_LFP(a), 4)
             self.right_foot_in_contact = self.check_contact("foot_module", "floor")
@@ -360,7 +359,6 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.data.ctrl[:] = self.init_pos
 
     def _get_obs(self):
-
         joints_rotations = self.data.qpos[7 : 7 + 15]
         joints_velocities = self.data.qvel[6 : 6 + 15]
 
