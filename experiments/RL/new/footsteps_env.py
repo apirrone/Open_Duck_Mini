@@ -251,7 +251,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
             # Maybe use that too :)
             current_ctrl = self.data.ctrl.copy()
-            delta_max = 0.02
+            delta_max = 0.05
             a = np.clip(a, current_ctrl - delta_max, current_ctrl + delta_max)
 
             self.do_simulation(a, FRAME_SKIP)
