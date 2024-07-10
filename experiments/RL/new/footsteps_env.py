@@ -161,7 +161,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         # Using absolute positions here, while in the paper they use relative
 
         target_radius = (
-            0.1  # Only when either or both feet are within a radius of the target ??
+            0.05  # Only when either or both feet are within a radius of the target ??
         )
 
         base_pos_2D = self.data.body("base").xpos[:2]
@@ -260,10 +260,10 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
             reward = (
                 0.05
-                + 0.15 * self.gait_reward()
+                + 0.30 * self.gait_reward()
                 + 0.45 * self.step_reward()
                 + 0.05 * self.orient_reward()
-                + 0.05 * self.height_reward()
+                + 0.10 * self.height_reward()
                 + 0.05 * self.upright_reward()
                 + 0.05 * self.action_reward(a)
                 + 0.05 * self.torque_reward()
@@ -273,10 +273,10 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         if self.render_mode == "human":
             if self.startup_cooldown <= 0:
-                print("Gait reward: ", 0.15 * self.gait_reward())
+                print("Gait reward: ", 0.30 * self.gait_reward())
                 print("Step reward: ", 0.45 * self.step_reward())
                 print("Orient reward: ", 0.05 * self.orient_reward())
-                print("Height reward: ", 0.05 * self.height_reward())
+                print("Height reward: ", 0.10 * self.height_reward())
                 print("Upright reward: ", 0.05 * self.upright_reward())
                 print("Action reward: ", 0.05 * self.action_reward(a))
                 print("Torque reward: ", 0.05 * self.torque_reward())
