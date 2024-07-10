@@ -165,8 +165,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         )
 
         base_pos_2D = self.data.body("base").xpos[:2]
-        upcoming_footstep = self.next_footsteps[0]
-        second_footstep = self.next_footsteps[1]
+        upcoming_footstep = self.next_footsteps[2]
+        second_footstep = self.next_footsteps[3]
 
         base_target_2D = np.mean(
             [upcoming_footstep[:3, 3][:2], second_footstep[:3, 3][:2]], axis=0
@@ -278,14 +278,14 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         if self.render_mode == "human":
             if self.startup_cooldown <= 0:
-                # print("Gait reward: ", 0.30 * self.gait_reward())
-                # print("Step reward: ", 0.45 * self.step_reward())
-                # print("Orient reward: ", 0.05 * self.orient_reward())
-                # print("Height reward: ", 0.10 * self.height_reward())
-                # print("Upright reward: ", 0.05 * self.upright_reward())
-                # print("Action reward: ", 0.05 * self.action_reward(a))
-                # print("Torque reward: ", 0.05 * self.torque_reward())
-                # print("===")
+                print("Gait reward: ", 0.30 * self.gait_reward())
+                print("Step reward: ", 0.45 * self.step_reward())
+                print("Orient reward: ", 0.05 * self.orient_reward())
+                print("Height reward: ", 0.10 * self.height_reward())
+                print("Upright reward: ", 0.05 * self.upright_reward())
+                print("Action reward: ", 0.05 * self.action_reward(a))
+                print("Torque reward: ", 0.05 * self.torque_reward())
+                print("===")
                 pass
             self.render()
 
@@ -342,7 +342,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         for i in range(len(self.next_footsteps)):
             self.next_footsteps[i][:3, 3][2] = 0
         next_two_footsteps = []  # 2*[x, y, z, theta]
-        for footstep in self.next_footsteps[:2]:
+        for footstep in self.next_footsteps[2:4]:
             yaw = R.from_matrix(footstep[:3, :3]).as_euler("xyz")[2]
             next_two_footsteps.append(list(footstep[:3, 3]) + [yaw])
 

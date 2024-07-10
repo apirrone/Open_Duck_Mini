@@ -109,7 +109,7 @@ def test(env, sb3_algo, path_to_model):
 
         # draw_clock(env.get_clock_signal())
 
-        for i, footstep in enumerate(footsteps):
+        for i, footstep in enumerate(footsteps[2:]):
             draw_frame(footstep, i, env)
 
         if done:

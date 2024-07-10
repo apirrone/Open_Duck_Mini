@@ -50,14 +50,14 @@ while True:
 
     pwe.tick(dt)
 
-    next_footsteps = pwe.get_footsteps_in_robot_frame()
+    next_footsteps = pwe.get_footsteps_in_world()
 
     next_footsteps_in_world = []
-    # for i in range(len(next_footsteps)):
-    #     next_footsteps[i][:3, 3][2] = 0
+    for i in range(len(next_footsteps)):
+        next_footsteps[i][:3, 3][2] = 0
 
-    # for i, footstep in enumerate(next_footsteps):
-    #     draw_frame(footstep, i)
+    for i, footstep in enumerate(next_footsteps):
+        draw_frame(footstep, i)
     if t > 1.0:
         pos = data.body("base").xpos
         mat = data.body("base").xmat
@@ -66,9 +66,6 @@ while True:
         T_world_body[:3, 3] = pos
 
         draw_frame(T_world_body, 100)
-        for i, next_footsteps in enumerate(next_footsteps):
-            T_world_footstep = T_world_body @ next_footsteps
-            draw_frame(T_world_footstep, i)
 
         T_world_rightFoot = np.eye(4)
         pos = data.body("right_foot").xpos
