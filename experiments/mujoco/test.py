@@ -97,7 +97,7 @@ while True:
 
         print("follow yaw target reward", follow_yaw_target_reward())
         print("follow_xy_target_reward", follow_xy_target_reward())
-        data.qvel[0] = 0.1
+        data.qvel[0] = 0.05
         data.qvel[1] = 0.0
 
     mujoco.mj_step(model, data, 4)  # 4 seems good

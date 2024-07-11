@@ -263,11 +263,11 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.cumulated_reward = 0.0
         self.last_time_both_feet_on_the_ground = self.data.time
 
-        v_x = np.random.uniform(0.0, 1.0)
-        v_y = np.random.uniform(-0.5, 0.5)
-        v_theta = np.random.uniform(-0.5, 0.5)
+        v_x = np.random.uniform(0.0, 0.05)
+        v_y = np.random.uniform(-0.03, 0.03)
+        v_theta = np.random.uniform(-0.1, 0.1)
         # self.target_velocities = np.asarray([v_x, v_y, v_theta])  # x, y, yaw
-        self.target_velocities = np.asarray([0.5, 0, 0])  # x, y, yaw
+        self.target_velocities = np.asarray([0.05, 0, 0])  # x, y, yaw
 
         self.prev_action = np.zeros(self.nb_dofs)
         self.prev_torque = np.zeros(self.nb_dofs)
