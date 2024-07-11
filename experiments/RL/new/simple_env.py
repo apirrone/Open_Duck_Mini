@@ -124,7 +124,9 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             self.data.body("left_foot").cvel[3:]
         )  # [rot:vel] size 6
 
-        return left_contact_force - right_contact_force + right_speed - left_speed
+        return abs(left_contact_force - right_contact_force) + abs(
+            right_speed - left_speed
+        )
 
     def orient_reward(self):
         desired_yaw = self.target_velocities[2]
@@ -187,7 +189,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
             # Maybe use that too :)
             current_ctrl = self.data.ctrl.copy()
-            delta_max = 0.05
+            delta_max = 0.02
             a = np.clip(a, current_ctrl - delta_max, current_ctrl + delta_max)
 
             self.do_simulation(a, FRAME_SKIP)
@@ -211,6 +213,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
                 print("Upright reward: ", 0.05 * self.upright_reward())
                 print("Action reward: ", 0.05 * self.action_reward(a))
                 print("Torque reward: ", 0.05 * self.torque_reward())
+                print("TARGET : ", self.target_velocities)
                 print("===")
             self.render()
 

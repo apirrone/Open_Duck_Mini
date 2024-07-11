@@ -1,4 +1,5 @@
 import argparse
+from scipy.spatial.transform import Rotation as R
 import os
 from glob import glob
 
@@ -13,7 +14,7 @@ from stable_baselines3 import A2C, PPO, SAC, TD3
 
 register(
     id="BDX_env",
-    entry_point="footsteps_env:BDXEnv",
+    entry_point="simple_env:BDXEnv",
     autoreset=True,
     # max_episode_steps=200,
 )
@@ -49,6 +50,28 @@ def draw_frame(pose, i, env):
         rgba=[1, 0, 0, 1],
         label=str(i),
     )
+
+
+def draw_velocities(robot_orig_xy, velocities_xytheta, env):
+    horizon = 10  # seconds
+
+    robot_orig_xyz = np.array([robot_orig_xy[0], robot_orig_xy[1], 0])
+    for i in range(horizon):
+        j = i * 0.1
+        frame = np.eye(4)
+        frame[:3, 3] = robot_orig_xyz + np.array(
+            [velocities_xytheta[0] * j, velocities_xytheta[1] * j, 0]
+        )
+        # rotate frame to point in the direction of the velocity
+
+        frame = fv_utils.rotateAbout(
+            frame,
+            [0, 0, velocities_xytheta[2] * j],
+            center=robot_orig_xyz,
+            degrees=False,
+        )
+
+        draw_frame(frame, i, env)
 
 
 def test(env, sb3_algo, path_to_model):
@@ -91,22 +114,8 @@ def test(env, sb3_algo, path_to_model):
     while True:
         action, _ = model.predict(obs)
         obs, _, done, _, _ = env.step(action)
-        footsteps = env.next_footsteps
-        base_target_2D = np.mean(
-            [footsteps[2][:3, 3][:2], footsteps[3][:3, 3][:2]], axis=0
-        )
-        base_target_frame = np.eye(4)
-        base_target_frame[:3, 3][:2] = base_target_2D
-        draw_frame(base_target_frame, "base target", env)
-        base_pos_2D = env.data.body("base").xpos[:2]
-        base_pos_frame = np.eye(4)
-        base_pos_frame[:3, 3][:2] = base_pos_2D
-        draw_frame(base_pos_frame, "base pos", env)
 
-        # draw_clock(env.get_clock_signal())
-
-        for i, footstep in enumerate(footsteps[2:]):
-            draw_frame(footstep, i, env)
+        draw_velocities(env.data.body("base").xpos[:2], env.target_velocities, env)
 
         if done:
             extra_steps -= 1
