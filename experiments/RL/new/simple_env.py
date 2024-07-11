@@ -80,6 +80,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.target_velocities = np.asarray([0, 0, 0])  # x, y, yaw
         self.cumulated_reward = 0.0
         self.last_time_both_feet_on_the_ground = 0
+        self.init_pos_noise = np.zeros(self.nb_dofs)
 
         MujocoEnv.__init__(
             self,
@@ -187,7 +188,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         if self.startup_cooldown > 0:
             self.startup_cooldown -= dt
-            self.do_simulation(self.init_pos, FRAME_SKIP)
+            self.do_simulation(self.init_pos + self.init_pos_noise, FRAME_SKIP)
             reward = 0
             self.last_time_both_feet_on_the_ground = t
         else:
@@ -233,6 +234,11 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
                 print("Upright reward: ", 0.05 * self.upright_reward())
                 print("Action reward: ", 0.05 * self.action_reward(a))
                 print("Torque reward: ", 0.05 * self.torque_reward())
+                print("Feet spacing reward: ", 0.05 * self.feet_spacing_reward())
+                print(
+                    "Both feet on the ground reward: ",
+                    0.05 * self.both_feet_on_the_ground_reward(),
+                )
                 print("TARGET : ", self.target_velocities)
                 print("===")
             self.render()
@@ -266,8 +272,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def goto_init(self):
         self.data.qvel[:] = np.zeros(len(self.data.qvel[:]))
-        noise = np.random.uniform(-0.01, 0.01, self.nb_dofs)
-        self.data.qpos[7 : 7 + self.nb_dofs] = self.init_pos + noise
+        self.init_pos_noise = np.random.uniform(-0.01, 0.01, self.nb_dofs)
+        self.data.qpos[7 : 7 + self.nb_dofs] = self.init_pos + self.init_pos_noise
         self.data.qpos[2] = 0.15
         self.data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
 
