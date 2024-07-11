@@ -78,6 +78,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         self.startup_cooldown = 1.0
         self.walk_period = 1.0
         self.target_velocities = np.asarray([0, 0, 0])  # x, y, yaw
+        self.cumulated_reward = 0.0
+        self.last_time_both_feet_on_the_ground = 0
 
         MujocoEnv.__init__(
             self,
@@ -168,6 +170,17 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             -0.25 * np.sum((self.prev_torque - current_torque)) / self.nb_dofs
         )
 
+    def feet_spacing_reward(self):
+        target_spacing = 0.12
+        left_pos = self.data.body("left_foot").xpos
+        right_pos = self.data.body("right_foot").xpos
+        spacing = np.linalg.norm(left_pos - right_pos)
+        return np.exp(-10 * (spacing - target_spacing) ** 2)
+
+    def both_feet_on_the_ground_reward(self):
+        elapsed = self.data.time - self.last_time_both_feet_on_the_ground
+        return -(elapsed**2)
+
     def step(self, a):
         t = self.data.time
         dt = t - self.prev_t
@@ -176,6 +189,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             self.startup_cooldown -= dt
             self.do_simulation(self.init_pos, FRAME_SKIP)
             reward = 0
+            self.last_time_both_feet_on_the_ground = t
         else:
             self.right_foot_contact = check_contact(
                 self.data, self.model, "right_foot", "floor"
@@ -183,6 +197,9 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             self.left_foot_contact = check_contact(
                 self.data, self.model, "left_foot", "floor"
             )
+
+            if self.right_foot_contact and self.left_foot_contact:
+                self.last_time_both_feet_on_the_ground = t
 
             # We want to learn deltas from the initial position
             a += self.init_pos
@@ -201,7 +218,10 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
                 + 0.05 * self.upright_reward()
                 + 0.05 * self.action_reward(a)
                 + 0.05 * self.torque_reward()
+                + 0.05 * self.feet_spacing_reward()
+                + 0.05 * self.both_feet_on_the_ground_reward()
             )
+            self.cumulated_reward += reward
 
         ob = self._get_obs()
 
@@ -226,6 +246,9 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
     def reset_model(self):
         self.prev_t = self.data.time
         self.startup_cooldown = 1.0
+        print("CUMULATED REWARD: ", self.cumulated_reward)
+        self.cumulated_reward = 0.0
+        self.last_time_both_feet_on_the_ground = self.data.time
 
         v_x = np.random.uniform(0.0, 1.0)
         v_y = np.random.uniform(-0.5, 0.5)
