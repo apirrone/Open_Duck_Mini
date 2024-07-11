@@ -92,7 +92,6 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         )
 
     def is_terminated(self) -> bool:
-
         left_antenna_contact = check_contact(
             self.data, self.model, "left_antenna_assembly", "floor"
         )
@@ -162,6 +161,24 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
                 + left_contact_force
                 + np.linalg.norm(left_speed)
             )
+
+    def support_flying_reward(self):
+        # Idea : reward when there is a support foot and a flying foot
+        # penalize when both feet are in the air or both feet are on the ground
+        right_contact_force = abs(
+            np.sum(get_contact_force(self.data, self.model, "right_foot", "floor"))
+        )
+        left_contact_force = abs(
+            np.sum(get_contact_force(self.data, self.model, "left_foot", "floor"))
+        )
+        right_speed = np.linalg.norm(
+            self.data.body("right_foot").cvel[3:]
+        )  # [rot:vel] size 6
+        left_speed = np.linalg.norm(
+            self.data.body("left_foot").cvel[3:]
+        )  # [rot:vel] size 6
+
+        return left_contact_force - right_contact_force + right_speed - left_speed
 
     def step_reward(self):
         # Incentivize the robot to step and orient the body toward targets
@@ -246,7 +263,6 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         )
 
     def step(self, a):
-
         t = self.data.time
         dt = t - self.prev_t
         if self.startup_cooldown > 0:
@@ -256,7 +272,6 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             self.do_simulation(self.init_pos, FRAME_SKIP)
             reward = 0
         else:
-
             # We want to learn deltas from the initial position
             a += self.init_pos
 
@@ -276,7 +291,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             # https://github.com/google-deepmind/mujoco/issues/104
 
             reward = (
-                0.30 * self.gait_reward()
+                # 0.30 * self.gait_reward()
+                0.30 * self.support_flying_reward()
                 + 0.6 * self.step_reward()
                 + 0.05 * self.orient_reward()
                 + 0.15 * self.height_reward()
@@ -289,7 +305,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         if self.render_mode == "human":
             if self.startup_cooldown <= 0:
-                print("Gait reward: ", 0.30 * self.gait_reward())
+                print("support flying reward: ", 0.30 * self.support_flying_reward())
+                # print("Gait reward: ", 0.30 * self.gait_reward())
                 print("Step reward: ", 0.6 * self.step_reward())
                 print("Orient reward: ", 0.05 * self.orient_reward())
                 print("Height reward: ", 0.15 * self.height_reward())
@@ -297,7 +314,6 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
                 print("Action reward: ", 0.05 * self.action_reward(a))
                 print("Torque reward: ", 0.05 * self.torque_reward())
                 print("===")
-                pass
             self.render()
 
         self.prev_t = t
@@ -340,7 +356,6 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         return [a, b]
 
     def _get_obs(self):
-
         joints_rotations = self.data.qpos[7 : 7 + self.nb_dofs]
         joints_velocities = self.data.qvel[6 : 6 + self.nb_dofs]
 
