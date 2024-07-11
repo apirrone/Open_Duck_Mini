@@ -93,7 +93,7 @@ def test(env, sb3_algo, path_to_model):
         obs, _, done, _, _ = env.step(action)
         footsteps = env.next_footsteps
         base_target_2D = np.mean(
-            [footsteps[0][:3, 3][:2], footsteps[1][:3, 3][:2]], axis=0
+            [footsteps[2][:3, 3][:2], footsteps[3][:3, 3][:2]], axis=0
         )
         base_target_frame = np.eye(4)
         base_target_frame[:3, 3][:2] = base_target_2D

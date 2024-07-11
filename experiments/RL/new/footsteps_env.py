@@ -104,12 +104,23 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         Z_vec = rot[:, 2]
         Z_vec /= np.linalg.norm(Z_vec)
         upright = np.array([0, 0, 1])
+
+        base_pos_2D = self.data.body("base").xpos[:2]
+        upcoming_footstep = self.next_footsteps[2]
+        second_footstep = self.next_footsteps[3]
+        base_target_2D = np.mean(
+            [upcoming_footstep[:3, 3][:2], second_footstep[:3, 3][:2]], axis=0
+        )
+        base_dist_to_target = np.linalg.norm(base_pos_2D - base_target_2D)
+        if base_dist_to_target > 0.3:
+            print("TERMINATED BECAUSE TOO FAR FROM TARGET")
         return (
             self.data.body("base").xpos[2] < 0.08
             or np.dot(upright, Z_vec) <= 0.4
             or left_antenna_contact
             or right_antenna_contact
             or body_contact
+            or base_dist_to_target > 0.3
         )  # base z is below 0.08m or base has more than 90 degrees of tilt
 
     def gait_reward(self):
@@ -266,7 +277,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
             reward = (
                 0.30 * self.gait_reward()
-                + 0.45 * self.step_reward()
+                + 0.6 * self.step_reward()
                 + 0.05 * self.orient_reward()
                 + 0.10 * self.height_reward()
                 + 0.05 * self.upright_reward()
@@ -279,7 +290,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         if self.render_mode == "human":
             if self.startup_cooldown <= 0:
                 print("Gait reward: ", 0.30 * self.gait_reward())
-                print("Step reward: ", 0.45 * self.step_reward())
+                print("Step reward: ", 0.6 * self.step_reward())
                 print("Orient reward: ", 0.05 * self.orient_reward())
                 print("Height reward: ", 0.10 * self.height_reward())
                 print("Upright reward: ", 0.05 * self.upright_reward())
