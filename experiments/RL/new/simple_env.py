@@ -139,14 +139,17 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         return -((abs(desired_yaw) - abs(current_yaw)) ** 2)
 
-    def follow_target_reward(self):
+    def follow_xy_target_reward(self):
+        x_velocity = self.data.body("base").cvel[3:][0]
+        y_velocity = self.data.body("base").cvel[3:][1]
+        x_error = abs(self.target_velocities[0] - x_velocity)
+        y_error = abs(self.target_velocities[1] - y_velocity)
+        return -(x_error + y_error)
+
+    def follow_yaw_target_reward(self):
         yaw_velocity = self.data.body("base").cvel[:3][2]
-        linear_velocity = self.data.body("base").cvel[3:][:2]  # xy
-
-        yaw_error = abs(abs(self.target_velocities[2]) - abs(yaw_velocity))
-        linear_error = np.linalg.norm(self.target_velocities[:2] - linear_velocity)
-
-        return -((yaw_error + linear_error) ** 2)
+        yaw_error = abs(self.target_velocities[2] - yaw_velocity)
+        return -yaw_error
 
     def height_reward(self):
         current_height = self.data.body("base").xpos[2]
@@ -214,7 +217,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
             reward = (
                 0.1 * self.support_flying_reward()
-                + 0.5 * self.follow_target_reward()
+                + 0.5 * self.follow_xy_target_reward()
+                + 0.5 * self.follow_yaw_target_reward()
                 + 0.15 * self.height_reward()
                 + 0.05 * self.upright_reward()
                 + 0.05 * self.action_reward(a)
@@ -229,7 +233,10 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         if self.render_mode == "human":
             if self.startup_cooldown <= 0:
                 print("support flying reward: ", 0.1 * self.support_flying_reward())
-                print("follow target reward: ", 0.5 * self.follow_target_reward())
+                print("Follow xy target reward: ", 0.5 * self.follow_xy_target_reward())
+                print(
+                    "Follow yaw target reward: ", 0.5 * self.follow_yaw_target_reward()
+                )
                 print("Height reward: ", 0.15 * self.height_reward())
                 print("Upright reward: ", 0.05 * self.upright_reward())
                 print("Action reward: ", 0.05 * self.action_reward(a))
