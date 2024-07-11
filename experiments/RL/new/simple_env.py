@@ -217,8 +217,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
             reward = (
                 0.1 * self.support_flying_reward()
-                + 0.5 * self.follow_xy_target_reward()
-                + 0.5 * self.follow_yaw_target_reward()
+                + 0.15 * self.follow_xy_target_reward()
+                + 0.15 * self.follow_yaw_target_reward()
                 + 0.15 * self.height_reward()
                 + 0.05 * self.upright_reward()
                 + 0.05 * self.action_reward(a)
