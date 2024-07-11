@@ -84,7 +84,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         MujocoEnv.__init__(
             self,
-            "/home/antoine/MISC/mini_BDX/mini_bdx/robots/bdx/scene.xml",
+            "../../../mini_bdx/robots/bdx/scene.xml",
             FRAME_SKIP,
             observation_space=observation_space,
             **kwargs,
@@ -207,14 +207,14 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
             # Maybe use that too :)
             current_ctrl = self.data.ctrl.copy()
-            delta_max = 0.02
+            delta_max = 0.05
             a = np.clip(a, current_ctrl - delta_max, current_ctrl + delta_max)
 
             self.do_simulation(a, FRAME_SKIP)
 
             reward = (
                 0.1 * self.support_flying_reward()
-                + 0.3 * self.follow_target_reward()
+                + 0.5 * self.follow_target_reward()
                 + 0.15 * self.height_reward()
                 + 0.05 * self.upright_reward()
                 + 0.05 * self.action_reward(a)
@@ -229,7 +229,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         if self.render_mode == "human":
             if self.startup_cooldown <= 0:
                 print("support flying reward: ", 0.1 * self.support_flying_reward())
-                print("follow target reward: ", 0.3 * self.follow_target_reward())
+                print("follow target reward: ", 0.5 * self.follow_target_reward())
                 print("Height reward: ", 0.15 * self.height_reward())
                 print("Upright reward: ", 0.05 * self.upright_reward())
                 print("Action reward: ", 0.05 * self.action_reward(a))
