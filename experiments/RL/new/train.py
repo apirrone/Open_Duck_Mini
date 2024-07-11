@@ -91,7 +91,6 @@ def train(env, sb3_algo, model_dir, log_dir, pretrained=None, device="cuda"):
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(description="Train BDX")
     parser.add_argument(
         "-a",
@@ -116,7 +115,7 @@ if __name__ == "__main__":
 
     register(
         id="BDX_env",
-        entry_point="footsteps_env:BDXEnv",
+        entry_point="simple_env:BDXEnv",
         max_episode_steps=None,  # formerly 500
         autoreset=True,
     )

@@ -77,6 +77,13 @@ while True:
         T_world_rightFoot2 = T_world_body @ T_body_rightFoot
         draw_frame(T_world_rightFoot, 101)
 
+        angular_velocity = data.body("base").cvel[:3]
+        linear_velocity = data.body("base").cvel[3:]
+
+        print("angular velocity", angular_velocity)
+        print("linear velocity", linear_velocity)
+        print(")))")
+
     mujoco.mj_step(model, data, 4)  # 4 seems good
 
     viewer.render()
