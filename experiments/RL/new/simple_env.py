@@ -143,7 +143,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         yaw_velocity = self.data.body("base").cvel[:3][2]
         linear_velocity = self.data.body("base").cvel[3:][:2]  # xy
 
-        yaw_error = abs(self.target_velocities[2]) - abs(yaw_velocity)
+        yaw_error = abs(abs(self.target_velocities[2]) - abs(yaw_velocity))
         linear_error = np.linalg.norm(self.target_velocities[:2] - linear_velocity)
 
         return -((yaw_error + linear_error) ** 2)

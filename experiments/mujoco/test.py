@@ -43,6 +43,20 @@ def draw_frame(pose, i):
     )
 
 
+target_velocities = np.array([0.5, 0, 0])
+
+
+def follow_target_reward(self):
+    yaw_velocity = data.body("base").cvel[:3][2]
+    linear_velocity = data.body("base").cvel[3:][:2]  # xy
+
+    yaw_error = abs(abs(target_velocities[2]) - abs(yaw_velocity))
+    linear_error = np.linalg.norm(target_velocities[:2] - linear_velocity)
+
+    return -((yaw_error + linear_error) ** 2)
+
+
+model.opt.gravity[:] = [0, 0, 0]  # no gravity
 prev = data.time
 while True:
     t = data.time
@@ -77,12 +91,8 @@ while True:
         T_world_rightFoot2 = T_world_body @ T_body_rightFoot
         draw_frame(T_world_rightFoot, 101)
 
-        angular_velocity = data.body("base").cvel[:3]
-        linear_velocity = data.body("base").cvel[3:]
-
-        print("angular velocity", angular_velocity)
-        print("linear velocity", linear_velocity)
-        print(")))")
+        print("follow_target_reward", follow_target_reward(data))
+        # data.qvel[5] = 0
 
     mujoco.mj_step(model, data, 4)  # 4 seems good
 
