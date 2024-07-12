@@ -69,6 +69,14 @@ def train(env, sb3_algo, model_dir, log_dir, pretrained=None, device="cuda"):
                     device="cuda",
                     tensorboard_log=log_dir,
                 )
+            case "PPO":
+                model = PPO.load(
+                    pretrained,
+                    env=env,
+                    verbose=1,
+                    device="cuda",
+                    tensorboard_log=log_dir,
+                )
             case _:
                 print("Algorithm not found")
                 return
