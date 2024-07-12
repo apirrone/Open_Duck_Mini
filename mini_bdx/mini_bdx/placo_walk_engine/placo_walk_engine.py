@@ -16,7 +16,6 @@ class PlacoWalkEngine:
         model_filename: str = "../../robots/bdx/robot.urdf",
         ignore_feet_contact: bool = False,
     ) -> None:
-
         self.model_filename = model_filename
         self.ignore_feet_contact = ignore_feet_contact
 
@@ -39,7 +38,7 @@ class PlacoWalkEngine:
         # Posture parameters
         self.parameters.walk_com_height = 0.15  # Constant height for the CoM [m]
         self.parameters.walk_foot_height = (
-            0.025  # Height of foot rising while walking [m]
+            0.03  # Height of foot rising while walking [m]
         )
         self.parameters.walk_trunk_pitch = np.deg2rad(10)  # Trunk pitch angle [rad]
         # self.parameters.walk_trunk_pitch = np.deg2rad(0)  # Trunk pitch angle [rad]
@@ -47,7 +46,7 @@ class PlacoWalkEngine:
             0.2  # Time ratio for the foot swing plateau (0.0 to 1.0)
         )
         self.parameters.single_support_duration = (
-            0.5  # Duration of single support phase [s]
+            0.18  # Duration of single support phase [s]
         )
         self.parameters.single_support_timesteps = (
             10  # Number of planning timesteps per single support phase
@@ -158,7 +157,6 @@ class PlacoWalkEngine:
         )
 
     def get_angles(self):
-
         angles = {
             "right_hip_yaw": self.robot.get_joint("right_hip_yaw"),
             "right_hip_roll": self.robot.get_joint("right_hip_roll"),

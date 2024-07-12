@@ -237,22 +237,25 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
         if self.render_mode == "human":
             if self.startup_cooldown <= 0:
-                print("support flying reward: ", 0.1 * self.support_flying_reward())
-                print("Follow xy target reward: ", 0.5 * self.follow_xy_target_reward())
-                print(
-                    "Follow yaw target reward: ", 0.5 * self.follow_yaw_target_reward()
-                )
-                print("Height reward: ", 0.15 * self.height_reward())
-                print("Upright reward: ", 0.05 * self.upright_reward())
-                print("Action reward: ", 0.05 * self.action_reward(a))
-                print("Torque reward: ", 0.05 * self.torque_reward())
-                print("Feet spacing reward: ", 0.05 * self.feet_spacing_reward())
-                print(
-                    "Both feet on the ground reward: ",
-                    0.05 * self.both_feet_on_the_ground_reward(),
-                )
-                print("TARGET : ", self.target_velocities)
-                print("===")
+                # print("support flying reward: ", 0.1 * self.support_flying_reward())
+                # print(
+                #     "Follow xy target reward: ", 0.15 * self.follow_xy_target_reward()
+                # )
+                # print(
+                #     "Follow yaw target reward: ", 0.15 * self.follow_yaw_target_reward()
+                # )
+                # print("Height reward: ", 0.15 * self.height_reward())
+                # print("Upright reward: ", 0.05 * self.upright_reward())
+                # print("Action reward: ", 0.05 * self.action_reward(a))
+                # print("Torque reward: ", 0.05 * self.torque_reward())
+                # print("Feet spacing reward: ", 0.05 * self.feet_spacing_reward())
+                # print(
+                #     "Both feet on the ground penalty: ",
+                #     0.05 * self.both_feet_on_the_ground_penalty(),
+                # )
+                # print("TARGET : ", self.target_velocities)
+                # print("===")
+                pass
             self.render()
 
         self.prev_t = t
@@ -264,7 +267,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
     def reset_model(self):
         self.prev_t = self.data.time
         self.startup_cooldown = 1.0
-        print("CUMULATED REWARD: ", self.cumulated_reward)
+        # print("CUMULATED REWARD: ", self.cumulated_reward)
         self.cumulated_reward = 0.0
         self.last_time_both_feet_on_the_ground = self.data.time
 
@@ -284,7 +287,8 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
     def goto_init(self):
         self.data.qvel[:] = np.zeros(len(self.data.qvel[:]))
-        self.init_pos_noise = np.random.uniform(-0.01, 0.01, self.nb_dofs)
+        # self.init_pos_noise = np.random.uniform(-0.01, 0.01, self.nb_dofs)
+        self.init_pos_noise = np.zeros(self.nb_dofs)
         self.data.qpos[7 : 7 + self.nb_dofs] = self.init_pos + self.init_pos_noise
         self.data.qpos[2] = 0.15
         self.data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
