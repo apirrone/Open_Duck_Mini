@@ -103,10 +103,10 @@ def test(env, sb3_algo, path_to_model):
         case "TQC":
             model = TQC.load(path_to_model, env=env)
         case "PPO":
-            # model = PPO.load(path_to_model, env=env)
+            model = PPO.load(path_to_model, env=env)
 
-            model = PPO("MlpPolicy", env)
-            model.policy.load(path_to_model)
+            # model = PPO("MlpPolicy", env)
+            # model.policy.load(path_to_model)
         case _:
             print("Algorithm not found")
             return

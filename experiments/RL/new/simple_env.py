@@ -215,45 +215,43 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
             current_ctrl = self.data.ctrl.copy()
             delta_max = 0.05
             a = np.clip(a, current_ctrl - delta_max, current_ctrl + delta_max)
+            a[10:] = self.init_pos[10:]  # Only control the legs
 
             self.do_simulation(a, FRAME_SKIP)
 
             # IDEA : normalize reward by the episode length ?
             reward = (
-                0.1 * self.support_flying_reward()
-                + 0.15 * self.follow_xy_target_reward()
+                # 0.1 * self.support_flying_reward()
+                0.15 * self.follow_xy_target_reward()
                 + 0.15 * self.follow_yaw_target_reward()
-                + 0.15 * self.height_reward()
-                + 0.05 * self.upright_reward()
-                + 0.05 * self.action_reward(a)
+                # + 0.15 * self.height_reward()
+                # + 0.05 * self.upright_reward()
+                # + 0.05 * self.action_reward(a)
                 + 0.05 * self.torque_reward()
-                + 0.05 * self.feet_spacing_reward()
-                + 0.05 * self.both_feet_on_the_ground_penalty()
-            ) * 0.1
+                # + 0.05 * self.feet_spacing_reward()
+                # + 0.05 * self.both_feet_on_the_ground_penalty()
+            )
 
-            self.cumulated_reward += reward * 0.1
+            self.cumulated_reward += reward
 
         ob = self._get_obs()
 
         if self.render_mode == "human":
             if self.startup_cooldown <= 0:
-                print("support flying reward: ", 0.1 * self.support_flying_reward())
+                # print("support flying reward: ", 0.1 * self.support_flying_reward())
                 print(
                     "Follow xy target reward: ", 0.15 * self.follow_xy_target_reward()
                 )
                 print(
                     "Follow yaw target reward: ", 0.15 * self.follow_yaw_target_reward()
                 )
-                print("Height reward: ", 0.15 * self.height_reward())
-                print("Upright reward: ", 0.05 * self.upright_reward())
-                print("Action reward: ", 0.05 * self.action_reward(a))
+                # print("Height reward: ", 0.15 * self.height_reward())
+                # print("Upright reward: ", 0.05 * self.upright_reward())
+                # print("Action reward: ", 0.05 * self.action_reward(a))
                 print("Torque reward: ", 0.05 * self.torque_reward())
-                print("Feet spacing reward: ", 0.05 * self.feet_spacing_reward())
-                print(
-                    "Both feet on the ground penalty: ",
-                    0.05 * self.both_feet_on_the_ground_penalty(),
-                )
-                print("TARGET : ", self.target_velocities)
+                # print("Feet spacing reward: ", 0.05 * self.feet_spacing_reward())
+                # print(s
+                # print("TARGET : ", self.target_velocities)
                 print("===")
                 pass
             self.render()

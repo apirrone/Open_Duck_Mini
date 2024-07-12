@@ -62,6 +62,12 @@ def get_feet_contact():
     return right_contact, left_contact
 
 
+# joints_velocities_min = 1000
+# joints_velocities_max = -1000
+# angular_velocity_min = 1000
+# angular_velocity_max = -1000
+# linear_velocity_min = 1000
+# linear_velocity_max = -1000
 speed = 4  # 1 is slowest, 3 looks real time on my machine
 prev = data.time
 while True:
@@ -79,6 +85,29 @@ while True:
 
     angles = pwe.get_angles()
     data.ctrl[:] = list(angles.values())
+
+    # joints_velocities = data.qvel[6 : 6 + 15]
+    # angular_velocity = data.body("base").cvel[:3]
+    # linear_velocity = data.body("base").cvel[3:]
+    # # print(np.around(joints_velocities, 3))
+    # if np.min(joints_velocities) < joints_velocities_min:
+    #     joints_velocities_min = np.min(joints_velocities)
+    # if np.max(joints_velocities) > joints_velocities_max:
+    #     joints_velocities_max = np.max(joints_velocities)
+
+    # if np.min(angular_velocity) < angular_velocity_min:
+    #     angular_velocity_min = np.min(angular_velocity)
+    # if np.max(angular_velocity) > angular_velocity_max:
+    #     angular_velocity_max = np.max(angular_velocity)
+
+    # if np.min(linear_velocity) < linear_velocity_min:
+    #     linear_velocity_min = np.min(linear_velocity)
+    # if np.max(linear_velocity) > linear_velocity_max:
+    #     linear_velocity_max = np.max(linear_velocity)
+
+    # print("joints velocities amplitude", joints_velocities_min, joints_velocities_max)
+    # print("angular velocity amplitude", angular_velocity_min, angular_velocity_max)
+    # print("linear velocity amplitude", linear_velocity_min, linear_velocity_max)
 
     mujoco.mj_step(model, data, speed)  # 4 seems good
     viewer.sync()
