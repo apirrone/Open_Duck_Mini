@@ -14,11 +14,7 @@ def train(env, sb3_algo, model_dir, log_dir, pretrained=None, device="cuda"):
         match sb3_algo:
             case "SAC":
                 model = SAC(
-                    "MlpPolicy",
-                    env,
-                    verbose=1,
-                    device=device,
-                    tensorboard_log=log_dir,
+                    "MlpPolicy", env, verbose=1, device=device, tensorboard_log=log_dir
                 )
             case "TD3":
                 model = TD3(

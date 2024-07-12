@@ -181,9 +181,12 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         spacing = np.linalg.norm(left_pos - right_pos)
         return np.exp(-10 * (spacing - target_spacing) ** 2)
 
-    def both_feet_on_the_ground_reward(self):
+    def both_feet_on_the_ground_penalty(self):
         elapsed = self.data.time - self.last_time_both_feet_on_the_ground
-        return -(elapsed**2)
+        if elapsed > self.walk_period:
+            return -1
+        else:
+            return 0
 
     def step(self, a):
         t = self.data.time
@@ -215,6 +218,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
 
             self.do_simulation(a, FRAME_SKIP)
 
+            # IDEA : normalize reward by the episode length ?
             reward = (
                 0.1 * self.support_flying_reward()
                 + 0.15 * self.follow_xy_target_reward()
@@ -224,9 +228,10 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
                 + 0.05 * self.action_reward(a)
                 + 0.05 * self.torque_reward()
                 + 0.05 * self.feet_spacing_reward()
-                + 0.05 * self.both_feet_on_the_ground_reward()
-            )
-            self.cumulated_reward += reward
+                + 0.05 * self.both_feet_on_the_ground_penalty()
+            ) * 0.1
+
+            self.cumulated_reward += reward * 0.1
 
         ob = self._get_obs()
 
