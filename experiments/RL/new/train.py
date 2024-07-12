@@ -73,7 +73,7 @@ def train(env, sb3_algo, model_dir, log_dir, pretrained=None, device="cuda"):
                 model = PPO(
                     "MlpPolicy", env, verbose=1, device="cuda", tensorboard_log=log_dir
                 )
-                model.policy.load(path_to_model)
+                model.policy.load(pretrained)
                 # model = PPO.load(
                 #     pretrained,
                 #     env=env,
