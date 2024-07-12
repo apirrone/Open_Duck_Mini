@@ -73,7 +73,7 @@ gail_trainer = GAIL(
 
 print("train the learner and evaluate again")
 env.seed(SEED)
-gail_trainer.train(1000000)  # Train for 800_000 steps to match expert.
+gail_trainer.train(2000000)  # Train for 800_000 steps to match expert.
 
 # env.seed(SEED)
 # learner_rewards_after_training, _ = evaluate_policy(
