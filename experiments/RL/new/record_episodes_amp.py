@@ -52,6 +52,7 @@ def run(env):
         prev = env.data.time
         start = env.data.time
         last_record = env.data.time
+        pwe.set_traj(0.02, 0, 0.001)
         while not done:
             t = env.data.time
             dt = t - prev
@@ -97,16 +98,16 @@ def run(env):
                     joints_positions[2],
                     joints_positions[3],
                     joints_positions[4],
+                    joints_positions[10],
+                    joints_positions[11],
                     joints_positions[12],
                     joints_positions[13],
                     joints_positions[14],
-                    joints_positions[8],
-                    joints_positions[9],
                     joints_positions[5],
                     joints_positions[6],
                     joints_positions[7],
-                    joints_positions[10],
-                    joints_positions[11],
+                    joints_positions[8],
+                    joints_positions[9],
                 ]
 
                 current_episode["Frames"].append(

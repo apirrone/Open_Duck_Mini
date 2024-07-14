@@ -26,7 +26,7 @@ class PlacoWalkEngine:
         self.parameters = placo.HumanoidParameters()
 
         self.parameters.double_support_ratio = (
-            0.2  # Ratio of double support (0.0 to 1.0)
+            0.1  # Ratio of double support (0.0 to 1.0)
         )
         self.parameters.startend_double_support_ratio = (
             1.5  # Ratio duration of supports for starting and stopping walk
