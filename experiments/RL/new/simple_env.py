@@ -239,20 +239,20 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         if self.render_mode == "human":
             if self.startup_cooldown <= 0:
                 # print("support flying reward: ", 0.1 * self.support_flying_reward())
-                print(
-                    "Follow xy target reward: ", 0.15 * self.follow_xy_target_reward()
-                )
-                print(
-                    "Follow yaw target reward: ", 0.15 * self.follow_yaw_target_reward()
-                )
+                # print(
+                #     "Follow xy target reward: ", 0.15 * self.follow_xy_target_reward()
+                # )
+                # print(
+                #     "Follow yaw target reward: ", 0.15 * self.follow_yaw_target_reward()
+                # )
                 # print("Height reward: ", 0.15 * self.height_reward())
                 # print("Upright reward: ", 0.05 * self.upright_reward())
                 # print("Action reward: ", 0.05 * self.action_reward(a))
-                print("Torque reward: ", 0.05 * self.torque_reward())
+                # print("Torque reward: ", 0.05 * self.torque_reward())
                 # print("Feet spacing reward: ", 0.05 * self.feet_spacing_reward())
                 # print(s
                 # print("TARGET : ", self.target_velocities)
-                print("===")
+                # print("===")
                 pass
             self.render()
 
