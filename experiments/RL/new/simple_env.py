@@ -263,6 +263,7 @@ class BDXEnv(MujocoEnv, utils.EzPickle):
         return (ob, reward, self.is_terminated(), False, {})  # terminated  # truncated
 
     def reset_model(self):
+        # self.model.opt.gravity[:] = [0, 0, 0]  # no gravity
         self.prev_t = self.data.time
         self.startup_cooldown = 1.0
         print("CUMULATED REWARD: ", self.cumulated_reward)

@@ -60,7 +60,7 @@
     <exclude name="0" body1="body_module" body2="head"/>
   </contact> -->
   <worldbody>
-    <body name="base" pos="0 0 0.21">
+    <body name="base" pos="0 0 0.25">
       <!-- <body name="base" pos="0 -0.06 0.21"> -->
       <freejoint />
       <body name="body_module">
