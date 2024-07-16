@@ -1,3 +1,4 @@
+from glfw import init
 from mini_bdx.onnx_infer import OnnxInfer
 from scipy.spatial.transform import Rotation as R
 import time
@@ -12,11 +13,10 @@ parser.add_argument("-o", "--onnx_model_path", type=str, required=True)
 args = parser.parse_args()
 
 saved_obs = pickle.loads(open("saved_obs.pkl", "rb").read())
-# saved_obs = saved_obs[20:]
-# print(len(saved_obs))
-# for ob in saved_obs:
-#     print(ob)
-# exit()
+saved_actions = pickle.loads(open("saved_actions.pkl", "rb").read())
+
+saved_obs = saved_obs[10:]
+saved_actions = saved_actions[10:]
 
 # Params
 substeps = 4  # don't really know what this is
@@ -97,38 +97,30 @@ mujoco.mj_step(model, data)
 viewer = mujoco_viewer.MujocoViewer(model, data)
 # model.opt.gravity[:] = [0, 0, 0]  # no gravity
 
+# Confirmed identical to torch.jit.load
+# Confirmer identical to when running in isaac
 policy = OnnxInfer(args.onnx_model_path)
 
 
-def get_obs(data, mujoco_action, commands):
-    # base_lin_vel = data.qvel[3 : 3 + 3] * linearVelocityScale
-    base_ang_vel = data.qvel[:3] * angularVelocityScale
+def get_obs(data, isaac_action, commands):
+    base_lin_vel = (
+        data.sensor("linear-velocity").data.astype(np.double) * linearVelocityScale
+    )
+    # print(base_lin_vel / linearVelocityScale)
+    # print(data.qvel[:3])
+    # print("==")
+    base_ang_vel = (
+        data.sensor("angular-velocity").data.astype(np.double) * angularVelocityScale
+    )
 
-    # quat = data.qpos[3 : 3 + 4].astype(np.double)
-    # quat = data.sensor("orientation").data[[1, 2, 3, 0]].astype(np.double)
-    # r = R.from_quat(quat)
-    # base_lin_vel = (
-    #     r.apply(data.qvel[:3], inverse=True).astype(np.double) * linearVelocityScale
-    # )  # in the base frame
-
-    # base_ang_vel = (
-    #     r.apply(data.qvel[3 : 3 + 3], inverse=True).astype(np.double)
-    #     * angularVelocityScale
-    # )
-
-    base_lin_vel = data.body("base").cvel[3 : 3 + 3] * linearVelocityScale
-    base_ang_vel = data.body("base").cvel[:3] * angularVelocityScale
-
-    mujoco_dof_pos = data.qpos[7 : 7 + 15]
+    mujoco_dof_pos = data.qpos[7 : 7 + 15].copy()
     isaac_dof_pos = mujoco_to_isaac(mujoco_dof_pos)
 
     isaac_dof_pos_scaled = (isaac_dof_pos - isaac_init_pos) * dof_pos_scale
 
-    mujoco_dof_vel = data.qvel[6 : 6 + 15]
+    mujoco_dof_vel = data.qvel[6 : 6 + 15].copy()
     isaac_dof_vel = mujoco_to_isaac(mujoco_dof_vel)
     isaac_dof_vel_scaled = list(np.array(isaac_dof_vel) * dof_vel_scale)
-
-    isaac_action = mujoco_to_isaac(mujoco_action)
 
     obs = np.concatenate(
         [
@@ -139,7 +131,7 @@ def get_obs(data, mujoco_action, commands):
             isaac_action,
             commands,
         ]
-    ).astype(np.float32)
+    )
 
     return obs
 
@@ -149,16 +141,19 @@ def action_to_pd_targets(isaac_action):
     return isaac_action
 
 
-prev_mujoco_action = np.zeros(15)
-commands = [0.0, 0, 0]
+prev_isaac_action = np.zeros(15)
+commands = [0.0, 0.0, 0.0]
 prev = time.time()
 last_control = time.time()
-control_freq = 60  # hz
+control_freq = 30  # hz
 i = 0
-# data.qpos[3 : 3 + 4] = [1, 0, -0.02, 0]
-#
+data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
+data.qpos[7 : 7 + 15] = mujoco_init_pos
+data.ctrl[:] = mujoco_init_pos
+
 
 command_value = []
+count = 0
 try:
     while True:
         t = time.time()
@@ -166,34 +161,42 @@ try:
         if t - last_control >= 1 / control_freq:
             # print(t - last_control)
 
-            # TODO problem probably comes from get_obs.
-            isaac_obs = get_obs(data, prev_mujoco_action, commands)
-            # isaac_obs = saved_obs[i]
+            # TODO problem Definitely comes from get_obs.
+            isaac_obs = get_obs(data, prev_isaac_action, commands)
+            # isaac_obs = saved_obs[i] # works with saved obs
+            isaac_obs = np.clip(isaac_obs, obs_clip[0], obs_clip[1])  # order OK
 
-            # print(isaac_obs[3 : 3 + 3])
-            # print(isaac_obs_saved[3 : 3 + 3])
-            # print("====")
-            isaac_obs = np.clip(isaac_obs, obs_clip[0], obs_clip[1])
             isaac_action = policy.infer(isaac_obs)
-            isaac_action = np.clip(isaac_action, action_clip[0], action_clip[1])
-            # isaac_action = action_to_pd_targets(isaac_action)
-            isaac_action = isaac_init_pos - isaac_action
-            # print(isaac_action)
+
+            isaac_action = np.clip(
+                isaac_action, action_clip[0], action_clip[1]
+            )  # order OK
+
+            prev_isaac_action = isaac_action.copy()
+            isaac_action = action_to_pd_targets(isaac_action)  # order OK
 
             mujoco_action = isaac_to_mujoco(isaac_action)
-            mujoco_action = np.array(mujoco_action) * action_scale
-            prev_mujoco_action = mujoco_action.copy()
+
             last_control = t
             i += 1
-            # data.ctrl[:] = smujoco_init_pos
+
             data.ctrl[:] = mujoco_action.copy()
 
+            # tmp_action = saved_actions[i][0]
+            # tmp_action = action_to_pd_targets(tmp_action)
+            # tmp_action = isaac_to_mujoco(tmp_action)
+            # data.ctrl[:] = tmp_action.copy()
+            if i >= len(saved_obs) - 1:
+                i = 0
+
         command_value.append([data.ctrl.copy(), data.qpos[7:].copy()])
+        mujoco.mj_step(model, data, 5)  # 4 seems good
 
-        mujoco.mj_step(model, data, 4)  # 4 seems good
-
+        # data.qpos[0:3] = [0, 0, 0.5]
+        # data.qpos[0] = np.sin(time.time())
         viewer.render()
         prev = t
+        count += 1
 except KeyboardInterrupt:
     pickle.dump(command_value, open("command_value.pkl", "wb"))
     # time.sleep(1)

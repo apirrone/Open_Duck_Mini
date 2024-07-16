@@ -53,17 +53,17 @@
   <default>
     <!-- TODO tune damping, frictionloss and kp -->
     <geom contype="1" conaffinity="1" solref=".004 1" />
-    <joint damping="0.05" frictionloss="0.03"/>
-    <!-- <joint damping="0.01" frictionloss="0.05"/> -->
-    <position kp="10" forcerange="-0.58 0.58"/>
+    <joint damping="0.2" frictionloss="0.03"/> -->
+    <!-- <position kp="2" forcerange="-0.58 0.58"/>
+    <!-- <position kp="37.5" forcerange="-6 6" />
+    <joint damping="1.2" armature="0.02" frictionloss="0.10" /> -->
+
   </default>
-  <!-- <contact>
-    <exclude name="0" body1="body_module" body2="head"/>
-  </contact> -->
+
   <worldbody>
     <body name="base" pos="0 0 0.2">
-      <!-- <body name="base" pos="0 -0.06 0.21"> -->
       <freejoint />
+      <site name='imu' size='0.01' pos='0.0 0 0.0'/>
       <body name="body_module">
         <inertial pos="-0.0067568 -0.00663747 0.00787052" quat="0.424416 0.567509 0.572577 0.412263" mass="0.501861" diaginertia="0.00136049 0.00104215 0.000854271"/>
         <geom pos="-0.0498729 -0.114143 0.0150789" quat="0.707107 0 0 0.707107" type="mesh" rgba="0.647059 0.647059 0.647059 1" mesh="cage_bottom"/>
@@ -291,4 +291,9 @@
     <position name="left_antenna"    joint="left_antenna"    inheritrange="1"/>
     <position name="right_antenna"   joint="right_antenna"   inheritrange="1"/>
   </actuator>
+  <sensor>
+    <gyro          name='angular-velocity'    site='imu' noise='0.005' cutoff='34.9'/>
+    <velocimeter   name='linear-velocity'     site='imu' noise='0.001' cutoff='30'/>
+    <accelerometer name='linear-acceleration' site='imu' noise='0.005' cutoff='157'/>
+    </sensor>
 </mujoco>
