@@ -26,9 +26,10 @@ if __name__ == "__main__":
     inputs = np.random.uniform(size=54).astype(np.float32)
     inputs = np.arange(54).astype(np.float32)
     times = []
-    for i in range(1):
+    for i in range(1000):
         start = time.time()
         print(oi.infer(inputs))
         times.append(time.time() - start)
 
     print("Average time: ", sum(times) / len(times))
+    print("Average fps: ", 1 / (sum(times) / len(times)))

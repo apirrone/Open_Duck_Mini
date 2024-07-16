@@ -43,7 +43,7 @@ class PlacoWalkEngine:
         self.parameters.walk_trunk_pitch = np.deg2rad(10)  # Trunk pitch angle [rad]
         # self.parameters.walk_trunk_pitch = np.deg2rad(0)  # Trunk pitch angle [rad]
         self.parameters.walk_foot_rise_ratio = (
-            0.2  # Time ratio for the foot swing plateau (0.0 to 1.0)
+            0.3  # Time ratio for the foot swing plateau (0.0 to 1.0)
         )
         self.parameters.single_support_duration = (
             0.18  # Duration of single support phase [s]

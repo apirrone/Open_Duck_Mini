@@ -1,5 +1,4 @@
 import argparse
-from mini_bdx.utils.mujoco_utils import check_contact
 import mujoco_viewer
 import time
 from mini_bdx.utils.rl_utils import mujoco_to_isaac
@@ -15,9 +14,11 @@ import mujoco
 import numpy as np
 from mini_bdx.placo_walk_engine import PlacoWalkEngine
 
-pwe = PlacoWalkEngine("../../../mini_bdx/robots/bdx/robot.urdf")
+pwe = PlacoWalkEngine(
+    "../../../mini_bdx/robots/bdx/robot.urdf", ignore_feet_contact=True
+)
 
-EPISODE_LENGTH = 10
+EPISODE_LENGTH = 60
 NB_EPISODES_TO_RECORD = 1
 FPS = 60
 
@@ -41,13 +42,6 @@ data = mujoco.MjData(model)
 mujoco.mj_step(model, data)
 viewer = mujoco_viewer.MujocoViewer(model, data)
 
-
-def get_feet_contact():
-    right_contact = check_contact(data, model, "foot_module", "floor")
-    left_contact = check_contact(data, model, "foot_module_2", "floor")
-    return right_contact, left_contact
-
-
 while True:
     if len(episodes) >= NB_EPISODES_TO_RECORD:
         print("DONE, RECORDED", NB_EPISODES_TO_RECORD, "EPISODES")
@@ -66,13 +60,12 @@ while True:
         # qpos[2] = 0.15
         # env.data.qpos[:3] = qpos
         # if pwe.t <= 0: # for stand
-        right_contact, left_contact = get_feet_contact()
-        pwe.tick(dt, left_contact, right_contact)
+        pwe.tick(dt)
         angles = pwe.get_angles()
         action = list(angles.values())
         action = np.array(action)
         data.ctrl[:] = action
-        mujoco.mj_step(model, data, 7)  # 4 seems good
+        mujoco.mj_step(model, data, 10)  # 4 seems good
 
         if pwe.t <= 0:
             start = time.time()
