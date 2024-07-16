@@ -94,23 +94,6 @@ while True:
 
             joints_positions = list(np.around(data.qpos[7 : 7 + 15], 3))
 
-            # joints_positions = [
-            #     joints_positions[0],
-            #     joints_positions[1],
-            #     joints_positions[2],
-            #     joints_positions[3],
-            #     joints_positions[4],
-            #     joints_positions[10],
-            #     joints_positions[11],
-            #     joints_positions[12],
-            #     joints_positions[13],
-            #     joints_positions[14],
-            #     joints_positions[5],
-            #     joints_positions[6],
-            #     joints_positions[7],
-            #     joints_positions[8],
-            #     joints_positions[9],
-            # ]
             joints_positions = mujoco_to_isaac(joints_positions)
 
             current_episode["Frames"].append(
