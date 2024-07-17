@@ -34,6 +34,8 @@ model_filename = "../../mini_bdx/robots/bdx/robot.urdf"
 
 # Loading the robot
 robot = placo.HumanoidRobot(model_filename)
+robot.set_joint_limits("left_knee", -2, -0.01)
+robot.set_joint_limits("right_knee", -2, -0.01)
 
 # Walk parameters - if double_support_ratio is not set to 0, should be greater than replan_frequency
 parameters = placo.HumanoidParameters()
@@ -137,7 +139,7 @@ print("Initial position reached")
 
 # Creating the FootstepsPlanner
 repetitive_footsteps_planner = placo.FootstepsPlannerRepetitive(parameters)
-d_x = 0.0
+d_x = 0.1
 d_y = 0.0
 d_theta = 0.0
 nb_steps = 5
@@ -185,7 +187,7 @@ else:
 
 # Timestamps
 start_t = time.time()
-initial_delay = -3.0
+initial_delay = -1.0
 t = initial_delay
 last_display = time.time()
 last_replan = 0
@@ -254,15 +256,16 @@ while True:
             last_display = time.time()
             viz.display(robot.state.q)
 
-            frame_viz("left_foot_target", trajectory.get_T_world_left(t))
-            frame_viz("right_foot_target", trajectory.get_T_world_right(t))
-            robot_frame_viz(robot, "left_foot")
-            robot_frame_viz(robot, "right_foot")
+            # frame_viz("left_foot_target", trajectory.get_T_world_left(t))
+            # frame_viz("right_foot_target", trajectory.get_T_world_right(t))
+            # robot_frame_viz(robot, "left_foot")
+            # robot_frame_viz(robot, "right_foot")
 
             T_world_trunk = np.eye(4)
             T_world_trunk[:3, :3] = trajectory.get_R_world_trunk(t)
             T_world_trunk[:3, 3] = trajectory.get_p_world_CoM(t)
             frame_viz("trunk_target", T_world_trunk)
+            # footsteps_viz(trajectory.get_supports())
 
     if args.robot or args.mujoco:
         angles = {
@@ -316,4 +319,4 @@ while True:
     t += DT
     # print(t)
     while time.time() < start_t + t:
-        time.sleep(1e-3)
+        time.sleep(1e-5)

@@ -26,7 +26,7 @@ class PlacoWalkEngine:
         self.parameters = placo.HumanoidParameters()
 
         self.parameters.double_support_ratio = (
-            0.1  # Ratio of double support (0.0 to 1.0)
+            0.2  # Ratio of double support (0.0 to 1.0)
         )
         self.parameters.startend_double_support_ratio = (
             1.5  # Ratio duration of supports for starting and stopping walk
@@ -38,15 +38,15 @@ class PlacoWalkEngine:
         # Posture parameters
         self.parameters.walk_com_height = 0.15  # Constant height for the CoM [m]
         self.parameters.walk_foot_height = (
-            0.03  # Height of foot rising while walking [m]
+            0.006  # Height of foot rising while walking [m]
         )
         self.parameters.walk_trunk_pitch = np.deg2rad(10)  # Trunk pitch angle [rad]
         # self.parameters.walk_trunk_pitch = np.deg2rad(0)  # Trunk pitch angle [rad]
         self.parameters.walk_foot_rise_ratio = (
-            0.3  # Time ratio for the foot swing plateau (0.0 to 1.0)
+            0.2  # Time ratio for the foot swing plateau (0.0 to 1.0)
         )
         self.parameters.single_support_duration = (
-            0.18  # Duration of single support phase [s]
+            0.2  # Duration of single support phase [s]
         )
         self.parameters.single_support_timesteps = (
             10  # Number of planning timesteps per single support phase
@@ -74,6 +74,7 @@ class PlacoWalkEngine:
         self.solver = placo.KinematicsSolver(self.robot)
         self.solver.enable_velocity_limits(True)
         self.robot.set_velocity_limits(12.0)
+        self.solver.enable_joint_limits(False)
         self.solver.dt = DT / REFINE
 
         self.robot.set_joint_limits("left_knee", -2, -0.01)
