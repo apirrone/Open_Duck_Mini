@@ -28,7 +28,6 @@ def dxl_to_current(value, model):
 
 
 def degree_to_dxl(value, model):
-
     pos = int(round((max_pos - 1) * ((max_deg / 2 + float(value)) / max_deg), 0))
     pos = min(max(pos, 0), max_pos - 1)
 
@@ -116,6 +115,10 @@ controls = {
         "length": 1,
         "dxl_to_si": conv.dxl_to_control_mode,
         "si_to_dxl": conv.control_mode_to_dxl,
+    },
+    "operating mode": {
+        "address": 0xB,
+        "length": 1,
     },
     "highest temperature limit": {
         "address": 0x1F,
@@ -291,7 +294,6 @@ def _add_control(
     getter_name=None,
     setter_name=None,
 ):
-
     control = _DxlControl(
         name,
         address,

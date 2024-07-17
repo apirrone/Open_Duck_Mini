@@ -4,6 +4,45 @@
 # ['right_hip_yaw', 'right_hip_roll', 'right_hip_pitch', 'right_knee', 'right_ankle', 'left_hip_yaw', 'left_hip_roll', 'left_hip_pitch', 'left_knee', 'left_ankle', 'neck_pitch', 'head_pitch', 'head_yaw', 'left_antenna', 'right_antenna']
 #
 # We need to reorder the joints to match the IsaacGymEnvs order
+#
+
+mujoco_joints_order = [
+    "right_hip_yaw",
+    "right_hip_roll",
+    "right_hip_pitch",
+    "right_knee",
+    "right_ankle",
+    "left_hip_yaw",
+    "left_hip_roll",
+    "left_hip_pitch",
+    "left_knee",
+    "left_ankle",
+    "neck_pitch",
+    "head_pitch",
+    "head_yaw",
+    "left_antenna",
+    "right_antenna",
+]
+
+isaac_joints_order = [
+    "left_hip_yaw",
+    "left_hip_roll",
+    "left_hip_pitch",
+    "left_knee",
+    "left_ankle",
+    "neck_pitch",
+    "head_pitch",
+    "head_yaw",
+    "left_antenna",
+    "right_antenna",
+    "right_hip_yaw",
+    "right_hip_roll",
+    "right_hip_pitch",
+    "right_knee",
+    "right_ankle",
+]
+
+
 def isaac_to_mujoco(joints):
     new_joints = [
         # right leg
@@ -53,41 +92,5 @@ def mujoco_to_isaac(joints):
     return new_joints
 
 
-if __name__ == "__main__":
-    mujoco_joints = [
-        "left_hip_yaw",
-        "left_hip_roll",
-        "left_hip_pitch",
-        "left_knee",
-        "left_ankle",
-        "right_hip_yaw",
-        "right_hip_roll",
-        "right_hip_pitch",
-        "right_knee",
-        "right_ankle",
-        "neck_pitch",
-        "head_pitch",
-        "head_yaw",
-        "left_antenna",
-        "right_antenna",
-    ]
-    isaac_joints = [
-        "left_hip_yaw",
-        "left_hip_roll",
-        "left_hip_pitch",
-        "left_knee",
-        "left_ankle",
-        "neck_pitch",
-        "head_pitch",
-        "head_yaw",
-        "left_antenna",
-        "right_antenna",
-        "right_hip_yaw",
-        "right_hip_roll",
-        "right_hip_pitch",
-        "right_knee",
-        "right_ankle",
-    ]
-
-    print(mujoco_to_isaac(mujoco_joints))
-    print(isaac_to_mujoco(isaac_joints))
+def action_to_pd_targets(action, pd_action_offset, pd_action_scale):
+    return pd_action_offset + pd_action_scale * action

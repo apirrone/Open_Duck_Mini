@@ -82,7 +82,6 @@ def get_imu():
 hwi.turn_on()
 time.sleep(1)
 # hwi.goto_init()
-
 # exit()
 gyro = [0, 0.0, 0]
 accelerometer = [0, 0, 0]
