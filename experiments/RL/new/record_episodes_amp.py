@@ -57,7 +57,7 @@ while True:
     prev = time.time()
     start = time.time()
     last_record = time.time()
-    pwe.set_traj(0.02, 0.0, 0.001)
+    pwe.set_traj(0.0, -0.02, 0.0)
     while not done:
         t = time.time()
         dt = t - prev
