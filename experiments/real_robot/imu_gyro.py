@@ -1,14 +1,19 @@
+import argparse
 import pickle
-import numpy as np
 import time
-from FramesViewer.viewer import Viewer
+
 import FramesViewer.utils as fv_utils
+import numpy as np
+from FramesViewer.viewer import Viewer
 from scipy.spatial.transform import Rotation as R
 
+parser = argparse.ArgumentParser()
+parser.add_argument("-d", "--data", type=str, required=True)
+args = parser.parse_args()
 # from utils import ImuFilter
 
 FPS = 30
-gyro_data = pickle.load(open("gyro_data_bak.pkl", "rb"))
+gyro_data = pickle.load(open(args.data, "rb"))
 fv = Viewer()
 fv.start()
 

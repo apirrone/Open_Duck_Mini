@@ -1,9 +1,13 @@
+import argparse
 import pickle
-import matplotlib.pyplot as plt
 
+import matplotlib.pyplot as plt
 import numpy as np
 
-command_value = pickle.load(open("command_value.pkl", "rb"))
+parser = argparse.ArgumentParser()
+parser.add_argument("-d", "--data", type=str, required=True)
+args = parser.parse_args()
+command_value = pickle.load(open(args.data, "rb"))
 
 dofs = {
     0: "right_hip_yaw",
@@ -41,4 +45,6 @@ for i in range(4):
         dof_id += 1
 
 
+name = args.data.split("/")[-1].split(".")[0]
+fig.suptitle(name)
 plt.show()
