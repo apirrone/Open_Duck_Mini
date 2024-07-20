@@ -8,24 +8,36 @@ from scipy.spatial.transform import Rotation as R
 # from utils import ImuFilter
 
 FPS = 30
-euler_ang_vels = pickle.load(open("euler_ang_vel.pkl", "rb"))
+gyro_data = pickle.load(open("gyro_data_bak.pkl", "rb"))
 fv = Viewer()
 fv.start()
 
 pose_euler = fv_utils.make_pose([0.1, 0.1, 0.1], [0, 0, 0])
-pose_ang_vel = fv_utils.make_pose([0.2, 0.1, 0.1], [0, 0, 0])
 
+quat = gyro_data[0][0]
+quat = [quat[3], quat[0], quat[1], quat[2]]
+rot = R.from_quat(quat).as_matrix()
+rot = np.array([[1, 0, 0], [0, -1, 0], [0, 0, -1]]) @ rot
+pose_euler[:3, :3] = rot
+pose_euler = fv_utils.rotateInSelf(pose_euler, [0, 0, 90])
+initial_pose = pose_euler.copy()
+initial_pose = fv_utils.translateAbsolute(initial_pose, [0.1, 0.1, 0])
 
-i = 0
+pose_ang_vel = initial_pose.copy()
+i = 1
 while True:
-    quat = euler_ang_vels[i][0]
-    ang_vel = euler_ang_vels[i][1]
+    quat = gyro_data[i][0]
+    ang_vel = gyro_data[i][1]
+    ang_vel = [-ang_vel[1], ang_vel[0], ang_vel[2]]
 
     quat = [quat[3], quat[0], quat[1], quat[2]]
     rot = R.from_quat(quat).as_matrix()
-    # rot = R.from_euler("xyz", euler, degrees=True).as_matrix()
-    # rot = R.from_euler("zyx", euler, degrees=True).as_matrix()
-    pose_euler[:3, :3] = np.linalg.inv(rot)
+
+    rot = np.array([[1, 0, 0], [0, -1, 0], [0, 0, -1]]) @ rot
+
+    pose_euler[:3, :3] = rot
+
+    pose_euler = fv_utils.rotateInSelf(pose_euler, [0, 0, 90])
 
     rot_euler = R.from_matrix(pose_ang_vel[:3, :3]).as_euler("xyz", degrees=False)
     new_rot_euler = np.array(rot_euler) + (np.array(ang_vel) * (1 / FPS))
@@ -36,9 +48,11 @@ while True:
     fv.pushFrame(pose_ang_vel, "ang_vel")
     time.sleep(1 / FPS)
     i += 1
-    if i >= len(euler_ang_vels) - 1:
-        # pose_ang_vel = fv_utils.make_pose([0.2, 0.1, 0.1], [0, 0, 0])
-        i -= 1
+    if i >= len(gyro_data) - 1:
+        print("end, looping ")
+        time.sleep(2)
+        pose_ang_vel = initial_pose.copy()
+        i = 0
 
 
 # imu_filter = ImuFilter(window_size=100)

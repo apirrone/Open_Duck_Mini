@@ -1,16 +1,21 @@
-from glfw import init
-from mini_bdx.onnx_infer import OnnxInfer
-from scipy.spatial.transform import Rotation as R
+import argparse
+import pickle
 import time
+
+import FramesViewer.utils as fv_utils
+import mujoco
+import mujoco_viewer
+import numpy as np
+from FramesViewer.viewer import Viewer
+from glfw import init
+from scipy.spatial.transform import Rotation as R
+
+from mini_bdx.onnx_infer import OnnxInfer
 from mini_bdx.utils.rl_utils import (
+    action_to_pd_targets,
     isaac_to_mujoco,
     mujoco_to_isaac,
-    action_to_pd_targets,
 )
-import argparse
-import numpy as np
-import mujoco, mujoco_viewer
-import pickle
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-o", "--onnx_model_path", type=str, required=True)
@@ -19,8 +24,11 @@ args = parser.parse_args()
 saved_obs = pickle.loads(open("saved_obs.pkl", "rb").read())
 saved_actions = pickle.loads(open("saved_actions.pkl", "rb").read())
 
-saved_obs = saved_obs[10:]
-saved_actions = saved_actions[10:]
+saved_obs = saved_obs[100:]
+saved_actions = saved_actions[100:]
+
+fv = Viewer()
+fv.start()
 
 # Params
 substeps = 4  # don't really know what this is
@@ -107,17 +115,38 @@ viewer = mujoco_viewer.MujocoViewer(model, data)
 # Confirmer identical to when running in isaac
 policy = OnnxInfer(args.onnx_model_path)
 
+ang_vel_pose = np.eye(4)
+ang_vel_pose[:3, 3] = [0.1, 0.2, 0.1]
+ang_vel = [0, 0, 0]
+
 
 def get_obs(data, isaac_action, commands):
-    base_lin_vel = (
-        data.sensor("linear-velocity").data.astype(np.double) * linearVelocityScale
-    )
+    global ang_vel
+    # base_lin_vel = (
+    #     data.sensor("linear-velocity").data.astype(np.double) * linearVelocityScale
+    # )
     # print(base_lin_vel / linearVelocityScale)
     # print(data.qvel[:3])
     # print("==")
+
+    base_quat = data.qpos[3 : 3 + 4].copy()
+    base_quat = [base_quat[1], base_quat[2], base_quat[3], -base_quat[0]]
+    rot_mat = R.from_quat(base_quat).as_matrix()
+    tmp = np.eye(4)
+    tmp[:3, :3] = rot_mat
+    final_orientation_mat = tmp[:3, :3]
+    base_quat = R.from_matrix(final_orientation_mat).as_quat()
+    tmp[:3, :3] = tmp[:3, :3].T
+    tmp[:3, 3] = [0.1, 0.1, 0.1]
+    fv.pushFrame(tmp, "aze", color=[255, 0, 0])
+
     base_ang_vel = (
         data.sensor("angular-velocity").data.astype(np.double) * angularVelocityScale
     )
+
+    ang_vel += base_ang_vel
+    ang_vel_pose[:3, :3] = R.from_euler("xyz", ang_vel, degrees=True).as_matrix()
+    fv.pushFrame(ang_vel_pose, "abc")
 
     mujoco_dof_pos = data.qpos[7 : 7 + 15].copy()
     isaac_dof_pos = mujoco_to_isaac(mujoco_dof_pos)
@@ -130,7 +159,8 @@ def get_obs(data, isaac_action, commands):
 
     obs = np.concatenate(
         [
-            base_lin_vel,
+            base_quat,
+            # base_lin_vel,
             base_ang_vel,
             isaac_dof_pos_scaled,
             isaac_dof_vel_scaled,
@@ -143,15 +173,14 @@ def get_obs(data, isaac_action, commands):
 
 
 prev_isaac_action = np.zeros(15)
-commands = [0.0, 0.0, 0.0]
+commands = [0.02, 0.0, 0.0]
 prev = time.time()
 last_control = time.time()
 control_freq = 30  # hz
 i = 0
-# data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
+data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
 data.qpos[7 : 7 + 15] = mujoco_init_pos
 data.ctrl[:] = mujoco_init_pos
-
 
 command_value = []
 count = 0
@@ -168,14 +197,14 @@ try:
             isaac_obs = np.clip(isaac_obs, obs_clip[0], obs_clip[1])  # order OK
 
             isaac_action = policy.infer(isaac_obs)
-
-            isaac_action = np.clip(
-                isaac_action, action_clip[0], action_clip[1]
-            )  # order OK
-
+            # isaac_action = saved_actions[i][0]
             prev_isaac_action = isaac_action.copy()
             isaac_action = action_to_pd_targets(
                 isaac_action, pd_action_offset, pd_action_scale
+            )  # order OK
+            # isaac_action = isaac_action + isaac_init_pos
+            isaac_action = np.clip(
+                isaac_action, action_clip[0], action_clip[1]
             )  # order OK
 
             mujoco_action = isaac_to_mujoco(isaac_action)
