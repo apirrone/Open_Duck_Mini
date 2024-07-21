@@ -1,23 +1,24 @@
 import argparse
-from mini_bdx.utils.mujoco_utils import check_contact
-import mujoco_viewer
-import time
-from mini_bdx.utils.rl_utils import mujoco_to_isaac
 import json
-from imitation.data.types import Trajectory
-from scipy.spatial.transform import Rotation as R
 import os
+import time
 from glob import glob
 
 import cv2
 import FramesViewer.utils as fv_utils
 import mujoco
+import mujoco_viewer
 import numpy as np
+from imitation.data.types import Trajectory
+from scipy.spatial.transform import Rotation as R
+
 from mini_bdx.placo_walk_engine import PlacoWalkEngine
+from mini_bdx.utils.mujoco_utils import check_contact
+from mini_bdx.utils.rl_utils import mujoco_to_isaac
 
 pwe = PlacoWalkEngine("../../../mini_bdx/robots/bdx/robot.urdf")
 
-EPISODE_LENGTH = 10
+EPISODE_LENGTH = 5
 NB_EPISODES_TO_RECORD = 1
 FPS = 60
 
@@ -48,6 +49,33 @@ def get_feet_contact():
     return right_contact, left_contact
 
 
+mujoco_init_pos = np.array(
+    [
+        # right_leg
+        -0.014,
+        0.08,
+        0.53,
+        -1.62,
+        0.91,
+        # left leg
+        0.013,
+        0.077,
+        0.59,
+        -1.63,
+        0.86,
+        # head
+        -0.17,
+        -0.17,
+        0.0,
+        0.0,
+        0.0,
+    ]
+)
+
+data.qpos[3 : 3 + 4] = [1, 0, 0.08, 1]
+data.qpos[7 : 7 + 15] = mujoco_init_pos
+data.ctrl[:] = mujoco_init_pos
+
 while True:
     if len(episodes) >= NB_EPISODES_TO_RECORD:
         print("DONE, RECORDED", NB_EPISODES_TO_RECORD, "EPISODES")
@@ -67,6 +95,7 @@ while True:
         # env.data.qpos[:3] = qpos
         # if pwe.t <= 0: # for stand
         right_contact, left_contact = get_feet_contact()
+
         pwe.tick(dt, left_contact, right_contact)
         angles = pwe.get_angles()
         action = list(angles.values())
@@ -78,6 +107,7 @@ while True:
             start = time.time()
             print("waiting ...")
             prev = t
+            viewer.render()
             continue
 
         if t - last_record >= 1 / FPS:

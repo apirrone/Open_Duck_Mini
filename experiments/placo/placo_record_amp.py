@@ -1,22 +1,21 @@
-from os.path import join
-import json
-from threading import current_thread
-from scipy.spatial.transform import Rotation as R
-import time
-from mini_bdx.utils.rl_utils import mujoco_to_isaac
 import argparse
-
+import json
+import os
+import time
+from os.path import join
+from threading import current_thread
 
 import numpy as np
 import placo
-
 from placo_utils.visualization import footsteps_viz, robot_frame_viz, robot_viz
-
+from scipy.spatial.transform import Rotation as R
 
 from mini_bdx.placo_walk_engine import PlacoWalkEngine
+from mini_bdx.utils.rl_utils import mujoco_to_isaac
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", "--name", type=str, required=True)
+parser.add_argument("-o", "--output_dir", type=str, default="recordings")
 parser.add_argument("--dx", type=float, required=True)
 parser.add_argument("--dy", type=float, required=True)
 parser.add_argument("--dtheta", type=float, required=True)
@@ -94,6 +93,8 @@ while True:
 
 print("recorded", len(episode["Frames"]), "frames")
 file_name = args.name + str(".txt")
+file_path = os.path.join(args.output_dir, file_name)
+os.makedirs(args.output_dir, exist_ok=True)
 print("DONE, saving", file_name)
-with open(file_name, "w") as f:
+with open(file_path, "w") as f:
     json.dump(episode, f)

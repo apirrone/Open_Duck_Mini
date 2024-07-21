@@ -1,5 +1,6 @@
 <mujoco model="bdx">
   <compiler angle="radian"/>
+  <option integrator="implicit"/>
   <asset>
     <mesh name="cage_bottom" file="cage_bottom.stl"/>
     <mesh name="power_switch" file="power_switch.stl"/>
@@ -53,16 +54,18 @@
   <default>
     <!-- TODO tune damping, frictionloss and kp -->
     <geom contype="1" conaffinity="1" solref=".004 1" />
-    <!-- <joint damping="0.05" frictionloss="0.03"/>
-    <position kp="1" forcerange="-0.6 0.6"/> -->
-    <!-- <joint damping="0.05"/>
-    <position kp="1" forcerange="-0.6 0.6"/> -->
-    <!-- For recording episodes -->
-    <joint damping="0.5" frictionloss="0.03"/>
-    <position kp="10" forcerange="-0.58 0.58"/>
+    <!-- GOOD WALK.onnx -->
+    <!-- <joint damping="0.2" frictionloss="0.03"/>
+    <position kp="2" forcerange="-0.6 0.6"/> -->
+    <!-- DONT TOUCH ABOVE-->
+    <!-- <joint damping="0.07" frictionloss="0.0"/>
+    <position kp="10" forcerange="-0.6 0.6"/> -->
+    <!-- CHECKPOINT BELOW FOR ONNX-->
+    <joint damping="0.1" frictionloss="0.03"/>
+    <position kp="8" kv="0.5" forcerange="-0.6 0.6"/>
   </default>
   <worldbody>
-    <body name="base" pos="0 0 0.2">
+    <body name="base" pos="0 0 0.17">
       <freejoint />
       <site name='imu' size='0.01' pos='0.0 0 0.0'/>
       <body name="body_module">

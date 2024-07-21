@@ -38,7 +38,7 @@ class PlacoWalkEngine:
         # Posture parameters
         self.parameters.walk_com_height = 0.15  # Constant height for the CoM [m]
         self.parameters.walk_foot_height = (
-            0.006  # Height of foot rising while walking [m]
+            0.03  # Height of foot rising while walking [m]
         )
         self.parameters.walk_trunk_pitch = np.deg2rad(10)  # Trunk pitch angle [rad]
         # self.parameters.walk_trunk_pitch = np.deg2rad(0)  # Trunk pitch angle [rad]

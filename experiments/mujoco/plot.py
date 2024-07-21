@@ -7,7 +7,27 @@ import numpy as np
 parser = argparse.ArgumentParser()
 parser.add_argument("-d", "--data", type=str, required=True)
 args = parser.parse_args()
-command_value = pickle.load(open(args.data, "rb"))
+data = pickle.load(open(args.data, "rb"))
+if "robot" in data and "mujoco" in data:
+    res = None
+    while res is None or res not in ["1", "2"]:
+        res = input("plot robot (1) or mujoco (2) ? ")
+    if res == "1":
+        command_value = data["robot"]
+        title = "Robot"
+    else:
+        command_value = data["mujoco"]
+        title = "Mujoco"
+elif "mujoco" in data:
+    command_value = data["mujoco"]
+    title = "Mujoco"
+elif "robot" in data:
+    command_value = data["robot"]
+    title = "Robot"
+else:
+    print("NO DATA")
+    exit()
+
 
 dofs = {
     0: "right_hip_yaw",
@@ -33,6 +53,7 @@ for i in range(4):
     for j in range(4):
         if i == 3 and j == 3:
             break
+        print(4 * i + j)
         command = []
         value = []
         for k in range(len(command_value)):
@@ -46,5 +67,5 @@ for i in range(4):
 
 
 name = args.data.split("/")[-1].split(".")[0]
-fig.suptitle(name)
+fig.suptitle(title)
 plt.show()
