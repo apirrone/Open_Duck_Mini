@@ -1,5 +1,7 @@
 # Mini BDX Droid
 
+![Capture d’écran du 2024-07-22 18-15-29](https://github.com/user-attachments/assets/41876cb7-b4f2-4c68-8ef9-f92f2eb45044)
+
 I'm making a miniature version of the BDX Droid by Disney. It will be about 35 centimeters tall with its legs extended.
 
 https://github.com/apirrone/mini_BDX/assets/6552564/56cb1919-2f20-4a5c-a4fe-0855db1080ac
@@ -17,10 +19,6 @@ Start button to start the walk, left joystick to translate in x/y, right joystic
 
 Right now I use the keyboard inputs to tune the walk engine's hyperparameters.
 
-**UPDATE** : I started building the robot :) Here is a sneak peek
-![Capture d’écran du 2024-07-02 23-14-59](https://github.com/apirrone/mini_BDX/assets/6552564/0f89aa13-471b-4cb6-be48-ccadd3eb23f7)
-
-
 ## CAD
 
 https://cad.onshape.com/documents/a18ff8cc622a533762a3a6f5/w/27ef6089ad5fe9ba396b6036/e/9ce9b71d7a21eb04415b067f
@@ -29,11 +27,6 @@ See [this document](docs/prepare_robot.md) for getting from a onshape design to 
 
 ## Install
 
-### Installation on robot
-```bash
-$ pip install -e .[robot]
-```
-
 ### Install everything (simulation, rl etc)
 ```bash
 $ pip install -e .[all]
@@ -41,44 +34,22 @@ $ pip install -e .[all]
 
 ## RL stuff
 
-TODO lots of things changed, update this section
+I switched to Isaac Gym for reinforcement learning. My fork of IsaacGymEnvs is here https://github.com/apirrone/IsaacGymEnvs
 
-For now, I my greatest achievement in RL is making a breakdancing robot :)
+This is the best walk I got so far using IsaacGymEnv's implementation of AMP (https://xbpeng.github.io/projects/AMP/index.html)
 
+https://github.com/user-attachments/assets/833c86b8-c889-4985-8325-34d4058953bc
 
-https://github.com/apirrone/mini_BDX/assets/6552564/43433948-8dc9-4330-9efd-b5d781792eef
-
-This is a mess right now, I'm new to RL and I am experimenting :)
-
-### There is a known bug with mujoco when trying to render the environment
-
-https://github.com/Farama-Foundation/Gymnasium/issues/749
-
-To fix
-
-in `<venv_path>gymnasium/envs/mujoco/mujoco_rendering.py` line 592 change solver_iter to solver_niter
-
-### Train
-
-```bash
-$ python train.py -a <algo> -n <experiment_name> -p <[optional]path_to_pretrained_model>
-```
-
-#### To Monitor during training
-
-```bash
-$ tensorboard --logdir=logs
-```
-
-### Infer
-
-```bash
-$ python test.py -a <algo> -p <path_to_model>
-```
 
 # BOM
 
+https://docs.google.com/spreadsheets/d/18hrYgjaE9uL2pnrnq5pNUzFLZcI4Rg0AvSc9sqwE680/edit?usp=sharing
+
+# Assembly Guide 
+
 TODO
+
+The current version (alpha) is not very easy to build, has some mechanical problems (too much play at some joints). After everything works on this version of the robot, I will redesign it from the ground up, trying to make it more accessible and better mechanically designed !
 
 # Interesting papers and resources
 - https://www.nature.com/articles/s41598-023-38259-7.pdf
