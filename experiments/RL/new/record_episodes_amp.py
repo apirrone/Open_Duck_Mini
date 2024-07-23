@@ -93,10 +93,10 @@ while True:
         # qpos = env.data.qpos[:3].copy()
         # qpos[2] = 0.15
         # env.data.qpos[:3] = qpos
-        # if pwe.t <= 0: # for stand
         right_contact, left_contact = get_feet_contact()
 
-        pwe.tick(dt, left_contact, right_contact)
+        if pwe.t < 0:  # for stand
+            pwe.tick(dt, left_contact, right_contact)
         angles = pwe.get_angles()
         action = list(angles.values())
         action = np.array(action)

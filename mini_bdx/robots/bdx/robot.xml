@@ -54,18 +54,14 @@
   <default>
     <!-- TODO tune damping, frictionloss and kp -->
     <geom contype="1" conaffinity="1" solref=".004 1" />
-    <!-- GOOD WALK.onnx -->
-    <!-- <joint damping="0.2" frictionloss="0.03"/>
-    <position kp="2" forcerange="-0.6 0.6"/> -->
-    <!-- DONT TOUCH ABOVE-->
-    <!-- <joint damping="0.07" frictionloss="0.0"/>
-    <position kp="10" forcerange="-0.6 0.6"/> -->
+    <joint damping="0.1" frictionloss="0.01"/>
+    <position kp="4" kv="0.1" forcerange="-0.6 0.6"/>
     <!-- CHECKPOINT BELOW FOR ONNX-->
-    <joint damping="0.1" frictionloss="0.03"/>
-    <position kp="8" kv="0.5" forcerange="-0.6 0.6"/>
+    <!-- <joint damping="0.11" frictionloss="0.01"/>
+    <position kp="2.1" kv="0" forcerange="-0.6 0.6"/> -->
   </default>
   <worldbody>
-    <body name="base" pos="0 0 0.17">
+    <body name="base" pos="0 0 0.16">
       <freejoint />
       <site name='imu' size='0.01' pos='0.0 0 0.0'/>
       <body name="body_module">

@@ -39,13 +39,15 @@ mujoco_init_pos = np.array(
         -0.014,
         0.08,
         0.53,
-        -1.62,
+        -1.32,
+        # -1.52,
         0.91,
         # left leg
         0.013,
         0.077,
         0.59,
-        -1.63,
+        -1.33,
+        # -1.53,
         0.86,
         # head
         -0.17,
@@ -84,6 +86,10 @@ def get_obs(data, isaac_action, commands):
     final_orientation_mat = tmp[:3, :3]
     base_quat = R.from_matrix(final_orientation_mat).as_quat()
 
+    rot_euler = R.from_quat(base_quat).as_euler("xyz", degrees=False)
+    rot_euler[2] = 0
+    base_quat = R.from_euler("xyz", rot_euler, degrees=False).as_quat()
+
     base_ang_vel = (
         data.sensor("angular-velocity").data.astype(np.double) * angularVelocityScale
     )
@@ -118,7 +124,16 @@ prev = time.time()
 last_control = time.time()
 control_freq = 30  # hz
 i = 0
-data.qpos[3 : 3 + 4] = [1, 0, 0.08, np.pi / 2]
+# data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
+
+# init_rot = [np.pi * 2, -0.2, 0]
+init_rot = [0, -0.0, 0]
+init_quat = R.from_euler("xyz", init_rot, degrees=False).as_quat()
+data.qpos[3 : 3 + 4] = init_quat
+# data.qpos[3 : 3 + 4] = [init_quat[3], init_quat[1], init_quat[2], init_quat[0]]
+# data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
+
+
 data.qpos[7 : 7 + 15] = mujoco_init_pos
 data.ctrl[:] = mujoco_init_pos
 
@@ -126,11 +141,13 @@ mujoco_saved_obs = []
 mujoco_saved_actions = []
 command_value = []
 count = 0
+start_timeout = 0
 try:
     while True:
         t = time.time()
         dt = t - prev
-        if t - last_control >= 1 / control_freq:
+        start_timeout -= dt
+        if t - last_control >= 1 / control_freq and start_timeout <= 0:
 
             isaac_obs = get_obs(data, prev_isaac_action, commands)
             mujoco_saved_obs.append(isaac_obs)
@@ -153,6 +170,9 @@ try:
             i += 1
 
             data.ctrl[:] = mujoco_action.copy()
+            # euler_rot = [np.sin(2 * np.pi * 0.5 * t), 0, 0]
+            # quat = R.from_euler("xyz", euler_rot, degrees=False).as_quat()
+            # data.qpos[3 : 3 + 4] = quat
             mujoco_saved_actions.append(mujoco_action)
 
             command_value.append([data.ctrl.copy(), data.qpos[7:].copy()])

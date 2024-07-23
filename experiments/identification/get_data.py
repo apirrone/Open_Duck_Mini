@@ -49,9 +49,10 @@ mujoco_command_value = []
 hwi = HWI(usb_port="/dev/ttyUSB0")
 time.sleep(1)
 hwi.turn_on()
-pid = [100, 0, 8]
-# pid = [1000, 0, 500]
+
+pid = [300, 0, 100]
 hwi.set_pid_all(pid)
+time.sleep(3)
 robot_command_value = []
 
 
@@ -69,7 +70,7 @@ while True:
         if args.saved_actions is None:
             last_target = (
                 mujoco_init_pos[dof_to_id[args.dof]]
-                + np.sin(args.move_freq * t) * args.move_amp
+                + np.sin(2 * np.pi * args.move_freq * t) * args.move_amp
             )
             data.ctrl[dof_to_id[args.dof]] = last_target
             hwi.set_position(args.dof, last_target)
@@ -89,8 +90,11 @@ while True:
                 data.qpos[:].copy(),
             ]
         )
-        last_robot_command = np.zeros(15)
-        last_robot_command[dof_to_id[args.dof]] = last_target
+        if args.saved_actions is None:
+            last_robot_command = np.zeros(15)
+            last_robot_command[dof_to_id[args.dof]] = last_target
+        else:
+            last_robot_command = last_target
         robot_command_value.append(
             [
                 last_robot_command,
