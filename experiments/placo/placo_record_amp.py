@@ -52,7 +52,7 @@ start = time.time()
 last_record = 0
 last_meshcat_display = 0
 while True:
-    # print("t", pwe.t)
+    print("t", pwe.t)
     pwe.tick(DT)
     if pwe.t <= 0:
         # print("waiting ")
@@ -87,6 +87,7 @@ while True:
     if DISPLAY_MESHCAT and pwe.t - last_meshcat_display >= 1 / MESHCAT_FPS:
         last_meshcat_display = pwe.t
         viz.display(pwe.robot.state.q)
+        footsteps_viz(pwe.trajectory.get_supports())
 
     if pwe.t - start > args.length:
         break

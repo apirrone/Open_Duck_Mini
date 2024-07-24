@@ -23,7 +23,7 @@ if args.saved_actions is not None:
 
 
 # Params
-dt = 0.001
+dt = 0.0001
 linearVelocityScale = 2.0
 angularVelocityScale = 0.25
 dof_pos_scale = 1.0
@@ -72,20 +72,38 @@ viewer = mujoco_viewer.MujocoViewer(model, data)
 policy = OnnxInfer(args.onnx_model_path)
 
 
-def get_obs(data, isaac_action, commands):
+class ImuDelaySimulator:
+    def __init__(self, delay_ms):
+        self.delay_ms = delay_ms
+        self.rot = []
+        self.ang_rot = []
+        self.t0 = None
+
+    def push(self, rot, ang_rot, t):
+        self.rot.append(rot)
+        self.ang_rot.append(ang_rot)
+        if self.t0 is None:
+            self.t0 = t
+
+    def get(self):
+        if time.time() - self.t0 < self.delay_ms / 1000:
+            return [0, 0, 0, 0], [0, 0, 0]
+        rot = self.rot.pop(0)
+        ang_rot = self.ang_rot.pop(0)
+
+        return rot, ang_rot
+
+
+def get_obs(data, isaac_action, commands, imu_delay_simulator: ImuDelaySimulator):
 
     base_lin_vel = (
         data.sensor("linear-velocity").data.astype(np.double) * linearVelocityScale
     )
 
     base_quat = data.qpos[3 : 3 + 4].copy()
-    base_quat = [base_quat[1], base_quat[2], base_quat[3], -base_quat[0]]
-    rot_mat = R.from_quat(base_quat).as_matrix()
-    tmp = np.eye(4)
-    tmp[:3, :3] = rot_mat
-    final_orientation_mat = tmp[:3, :3]
-    base_quat = R.from_matrix(final_orientation_mat).as_quat()
+    base_quat = [base_quat[1], base_quat[2], base_quat[3], base_quat[0]]
 
+    # Remove yaw component
     rot_euler = R.from_quat(base_quat).as_euler("xyz", degrees=False)
     rot_euler[2] = 0
     base_quat = R.from_euler("xyz", rot_euler, degrees=False).as_quat()
@@ -103,6 +121,9 @@ def get_obs(data, isaac_action, commands):
     isaac_dof_vel = mujoco_to_isaac(mujoco_dof_vel)
     isaac_dof_vel_scaled = list(np.array(isaac_dof_vel) * dof_vel_scale)
 
+    imu_delay_simulator.push(base_quat, base_ang_vel, time.time())
+    base_quat, base_ang_vel = imu_delay_simulator.get()
+
     obs = np.concatenate(
         [
             base_quat,
@@ -119,19 +140,21 @@ def get_obs(data, isaac_action, commands):
 
 
 prev_isaac_action = np.zeros(15)
-commands = [0.1, 0.0, 0.0]
-prev = time.time()
-last_control = time.time()
+commands = [0.0, 0.0, 0.0]
+# prev = time.time()
+# last_control = time.time()
+prev = data.time
+last_control = data.time
 control_freq = 30  # hz
 i = 0
 # data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
 
-# init_rot = [np.pi * 2, -0.2, 0]
-init_rot = [0, -0.0, 0]
+init_rot = [0, -0.1, 0]
+init_rot = [0, 0, 0]
 init_quat = R.from_euler("xyz", init_rot, degrees=False).as_quat()
 data.qpos[3 : 3 + 4] = init_quat
 # data.qpos[3 : 3 + 4] = [init_quat[3], init_quat[1], init_quat[2], init_quat[0]]
-# data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
+data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
 
 
 data.qpos[7 : 7 + 15] = mujoco_init_pos
@@ -140,16 +163,15 @@ data.ctrl[:] = mujoco_init_pos
 mujoco_saved_obs = []
 mujoco_saved_actions = []
 command_value = []
-count = 0
-start_timeout = 0
+imu_delay_simulator = ImuDelaySimulator(0)
 try:
+    start = time.time()
     while True:
-        t = time.time()
-        dt = t - prev
-        start_timeout -= dt
-        if t - last_control >= 1 / control_freq and start_timeout <= 0:
+        # t = time.time()
+        t = data.time
+        if t - last_control >= 1 / control_freq:
 
-            isaac_obs = get_obs(data, prev_isaac_action, commands)
+            isaac_obs = get_obs(data, prev_isaac_action, commands, imu_delay_simulator)
             mujoco_saved_obs.append(isaac_obs)
 
             if args.saved_obs is not None:
@@ -170,17 +192,17 @@ try:
             i += 1
 
             data.ctrl[:] = mujoco_action.copy()
+            # data.ctrl[:] = mujoco_init_pos
             # euler_rot = [np.sin(2 * np.pi * 0.5 * t), 0, 0]
             # quat = R.from_euler("xyz", euler_rot, degrees=False).as_quat()
             # data.qpos[3 : 3 + 4] = quat
             mujoco_saved_actions.append(mujoco_action)
 
             command_value.append([data.ctrl.copy(), data.qpos[7:].copy()])
-        mujoco.mj_step(model, data, 5)
+        mujoco.mj_step(model, data, 50)
 
         viewer.render()
         prev = t
-        count += 1
 except KeyboardInterrupt:
     data = {
         "config": {},

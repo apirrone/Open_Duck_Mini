@@ -10,7 +10,11 @@ import mujoco
 import mujoco_viewer
 import numpy as np
 from mini_bdx_runtime.hwi import HWI
-from mini_bdx_runtime.rl_utils import make_action_dict, mujoco_joints_order
+from mini_bdx_runtime.rl_utils import (
+    ActionFilter,
+    make_action_dict,
+    mujoco_joints_order,
+)
 from utils import dof_to_id, id_to_dof, mujoco_init_pos
 
 parser = argparse.ArgumentParser()
@@ -50,17 +54,22 @@ hwi = HWI(usb_port="/dev/ttyUSB0")
 time.sleep(1)
 hwi.turn_on()
 
-pid = [300, 0, 100]
+pid = [500, 0, 500]
 hwi.set_pid_all(pid)
 time.sleep(3)
 robot_command_value = []
+
+action_filter = ActionFilter(window_size=10)
 
 
 prev = time.time()
 last_control = time.time()
 last_sample = time.time()
 start = time.time()
-last_target = np.zeros(15)
+if args.saved_actions is None:
+    last_target = 0
+else:
+    last_target = np.zeros(15)
 i = 0
 while True:
     t = time.time()
@@ -73,7 +82,10 @@ while True:
                 + np.sin(2 * np.pi * args.move_freq * t) * args.move_amp
             )
             data.ctrl[dof_to_id[args.dof]] = last_target
-            hwi.set_position(args.dof, last_target)
+
+            action_filter.push(last_target)
+            filtered_action = action_filter.get_filtered_action()
+            hwi.set_position(args.dof, filtered_action)
         else:
             last_target = saved_actions[i]
             data.ctrl[:] = last_target
@@ -92,6 +104,7 @@ while True:
         )
         if args.saved_actions is None:
             last_robot_command = np.zeros(15)
+            print(last_target)
             last_robot_command[dof_to_id[args.dof]] = last_target
         else:
             last_robot_command = last_target
