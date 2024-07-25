@@ -52,7 +52,7 @@ start = time.time()
 last_record = 0
 last_meshcat_display = 0
 while True:
-    print("t", pwe.t)
+    # print("t", pwe.t)
     pwe.tick(DT)
     if pwe.t <= 0:
         # print("waiting ")

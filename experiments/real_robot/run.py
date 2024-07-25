@@ -4,8 +4,9 @@ import time
 import cv2
 import numpy as np
 import placo
+from mini_bdx_runtime.hwi import HWI
 
-from mini_bdx.hwi import HWI
+# from mini_bdx.hwi import HWI
 from mini_bdx.utils.xbox_controller import XboxController
 from mini_bdx.walk_engine import WalkEngine
 

@@ -3,7 +3,6 @@ import time
 
 import numpy as np
 import placo
-
 from placo_utils.visualization import footsteps_viz, robot_frame_viz, robot_viz
 
 from mini_bdx.placo_walk_engine import PlacoWalkEngine
@@ -21,7 +20,7 @@ d_y = 0
 d_theta = 0.2
 
 
-pwe = PlacoWalkEngine("../../mini_bdx/robots/bdx/robot.urdf")
+pwe = PlacoWalkEngine("../../mini_bdx/robots/bdx/robot.urdf", ignore_feet_contact=True)
 
 pwe.set_traj(d_x, d_y, d_theta)
 viz = robot_viz(pwe.robot)
