@@ -5,37 +5,43 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
+isaac_joints_order = [
+    "left_hip_yaw",
+    "left_hip_roll",
+    "left_hip_pitch",
+    "left_knee",
+    "left_ankle",
+    "neck_pitch",
+    "head_pitch",
+    "head_yaw",
+    "left_antenna",
+    "right_antenna",
+    "right_hip_yaw",
+    "right_hip_roll",
+    "right_hip_pitch",
+    "right_knee",
+    "right_ankle",
+]
+
 parser = argparse.ArgumentParser()
-parser.add_argument("--mujoco_obs", type=str, required=True)
 parser.add_argument("--robot_obs", type=str, required=True)
 args = parser.parse_args()
 
-mujoco_obs = pickle.load(open(args.mujoco_obs, "rb"))
 robot_obs = pickle.load(open(args.robot_obs, "rb"))
 
-
-mujoco_channels = []
 robot_channels = []
 
+
 # convert quat to euler for easier reading by a simple human
-for i in range(min(len(mujoco_obs), len(robot_obs))):
-    mujoco_quat = mujoco_obs[i][:4]
-    mujoco_euler = R.from_quat(mujoco_quat).as_euler("xyz")
+for i in range(len(robot_obs)):
 
     robot_quat = robot_obs[i][:4]
     robot_euler = R.from_quat(robot_quat).as_euler("xyz")
 
-    mujoco_obs[i] = mujoco_obs[i][1:]
     robot_obs[i] = robot_obs[i][1:]
 
-    mujoco_obs[i][:3] = mujoco_euler
     robot_obs[i][:3] = robot_euler
 
-nb_channels = len(mujoco_obs[0])
-
-for i in range(nb_channels):
-    mujoco_channels.append([obs[i] for obs in mujoco_obs])
-    robot_channels.append([obs[i] for obs in robot_obs])
 
 channels = [
     "base_roll",
@@ -94,24 +100,32 @@ channels = [
     "commands[2]",
 ]
 
-# one sub plot per channel, robot vs mujoco
-# arrange as an array of sqrt(nb_channels) x sqrt(nb_channels)
+nb_channels = len(robot_obs[0])
+dof_poses = []
+prev_actions = []
 
-nb_rows = int(np.sqrt(nb_channels))
-nb_cols = int(np.ceil(nb_channels / nb_rows))
+# select dof_pos and prev_action
+for i in range(nb_channels):
+    if "dof_pos" in channels[i]:
+        dof_poses.append([obs[i] for obs in robot_obs])
+    elif "prev_action" in channels[i]:
+        prev_actions.append([obs[i] for obs in robot_obs])
+
+
+# plot prev action vs dof pos
+
+nb_dofs = len(dof_poses)
+nb_rows = int(np.sqrt(nb_dofs))
+nb_cols = int(np.ceil(nb_dofs / nb_rows))
 
 fig, axs = plt.subplots(nb_rows, nb_cols, sharex=True, sharey=True)
 for i in range(nb_rows):
     for j in range(nb_cols):
-        if i * nb_cols + j >= nb_channels:
+        if i * nb_cols + j >= nb_dofs:
             break
-        axs[i, j].plot(mujoco_channels[i * nb_cols + j], label="mujoco")
-        axs[i, j].plot(robot_channels[i * nb_cols + j], label="robot")
+        axs[i, j].plot(prev_actions[i * nb_cols + j], label="command")
+        axs[i, j].plot(dof_poses[i * nb_cols + j], label="value")
         axs[i, j].legend()
-        axs[i, j].set_title(f"{channels[i * nb_cols + j]}")
+        axs[i, j].set_title(f"{isaac_joints_order[i * nb_cols + j]}")
 
-
-fig.suptitle("Mujoco vs Robot")
-# tight layout
-# plt.tight_layout()
 plt.show()

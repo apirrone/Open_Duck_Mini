@@ -163,7 +163,7 @@ data.ctrl[:] = mujoco_init_pos
 mujoco_saved_obs = []
 mujoco_saved_actions = []
 command_value = []
-imu_delay_simulator = ImuDelaySimulator(0)
+imu_delay_simulator = ImuDelaySimulator(1)
 try:
     start = time.time()
     while True:
