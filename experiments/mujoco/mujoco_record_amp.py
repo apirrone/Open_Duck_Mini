@@ -6,19 +6,19 @@ from glob import glob
 
 import cv2
 import FramesViewer.utils as fv_utils
+import mujoco
 import mujoco_viewer
 import numpy as np
 from imitation.data.types import Trajectory
+from scipy.spatial.transform import Rotation as R
+
 from mini_bdx.placo_walk_engine import PlacoWalkEngine
 from mini_bdx.utils.mujoco_utils import check_contact
 from mini_bdx.utils.rl_utils import mujoco_to_isaac
-from scipy.spatial.transform import Rotation as R
 
-import mujoco
+pwe = PlacoWalkEngine("../../mini_bdx/robots/bdx/robot.urdf")
 
-pwe = PlacoWalkEngine("../../../mini_bdx/robots/bdx/robot.urdf")
-
-EPISODE_LENGTH = 100
+EPISODE_LENGTH = 10
 NB_EPISODES_TO_RECORD = 1
 FPS = 60
 
@@ -36,7 +36,7 @@ current_episode = {
     "Frames": [],
 }
 
-model = mujoco.MjModel.from_xml_path("../../../mini_bdx/robots/bdx/scene.xml")
+model = mujoco.MjModel.from_xml_path("../../mini_bdx/robots/bdx/scene.xml")
 model.opt.timestep = 0.001
 data = mujoco.MjData(model)
 mujoco.mj_step(model, data)
@@ -72,10 +72,10 @@ mujoco_init_pos = np.array(
     ]
 )
 
-data.qpos[3 : 3 + 4] = [1, 0, 0.08, 1]
+data.qpos[3 : 3 + 4] = [1, 0, 0.05, 0]
 data.qpos[7 : 7 + 15] = mujoco_init_pos
 data.ctrl[:] = mujoco_init_pos
-
+x_qvels = []
 while True:
     if len(episodes) >= NB_EPISODES_TO_RECORD:
         print("DONE, RECORDED", NB_EPISODES_TO_RECORD, "EPISODES")
@@ -89,7 +89,8 @@ while True:
     while not done:
         t = time.time()
         dt = t - prev
-
+        x_qvels.append(data.qvel[0].copy())
+        print(np.around(np.mean(x_qvels[-30:]), 3))
         # qpos = env.data.qpos[:3].copy()
         # qpos[2] = 0.15
         # env.data.qpos[:3] = qpos

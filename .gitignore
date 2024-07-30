@@ -8,3 +8,4 @@ experiments/RL/new/sac/
 experiments/RL/new/ppo/
 print/
 *.zip
+*.txt

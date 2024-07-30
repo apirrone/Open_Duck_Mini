@@ -8,7 +8,11 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 
 from mini_bdx.onnx_infer import OnnxInfer
-from mini_bdx.utils.rl_utils import isaac_to_mujoco, mujoco_to_isaac
+from mini_bdx.utils.rl_utils import (
+    action_to_pd_targets,
+    isaac_to_mujoco,
+    mujoco_to_isaac,
+)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-o", "--onnx_model_path", type=str, required=True)
@@ -61,23 +65,59 @@ action_scale = 1.0
 # Higher
 mujoco_init_pos = np.array(
     [
-        -0.03624976502864328,
-        -0.030487325306535976,
-        0.2680420987834846,
-        -0.8597523079921773,
-        0.5923669552154145,
-        -0.03626380039794039,
-        0.05183131941573333,
-        0.21064045281267854,
-        -0.7046338428321195,
-        0.4946507135822463,
+        -0.03676731090962078,
+        -0.030315211140564333,
+        0.4065815100399598,
+        -1.0864064934571644,
+        0.5932324840794684,
+        -0.03485756878823724,
+        0.052286054888550475,
+        0.36623601032755765,
+        -0.964204465274923,
+        0.5112970996901808,
         -0.17453292519943295,
         -0.17453292519943295,
         0,
-        0,
-        0,
+        0.0,
+        0.0,
     ]
 )
+
+pd_action_offset = [
+    0.0000,
+    -0.5672,
+    0.5236,
+    0.0000,
+    0.0000,
+    -0.5672,
+    0.0000,
+    0.0000,
+    0.4800,
+    -0.4800,
+    0.0000,
+    -0.5672,
+    0.5236,
+    0.0000,
+    0.0000,
+]
+
+pd_action_scale = [
+    0.9774,
+    1.4050,
+    1.4661,
+    2.9322,
+    2.1991,
+    1.0385,
+    0.9774,
+    2.9322,
+    2.2602,
+    2.2602,
+    0.9774,
+    1.4050,
+    1.4661,
+    2.9322,
+    2.1991,
+]
 
 
 isaac_init_pos = np.array(mujoco_to_isaac(mujoco_init_pos))
@@ -161,21 +201,21 @@ def get_obs(data, isaac_action, commands, imu_delay_simulator: ImuDelaySimulator
 
 
 prev_isaac_action = np.zeros(15)
-commands = [0.0, 0.0, 0.0]
+commands = [0.1, 0.0, 0.0]
 # prev = time.time()
 # last_control = time.time()
 prev = data.time
 last_control = data.time
-control_freq = 30  # hz
+control_freq = 60  # hz
 i = 0
 # data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
 
-init_rot = [0, -0.1, 0]
-init_rot = [0, 0, 0]
-init_quat = R.from_euler("xyz", init_rot, degrees=False).as_quat()
-data.qpos[3 : 3 + 4] = init_quat
+# init_rot = [0, -0.1, 0]
+# init_rot = [0, 0, 0]
+# init_quat = R.from_euler("xyz", init_rot, degrees=False).as_quat()
+# data.qpos[3 : 3 + 4] = init_quat
 # data.qpos[3 : 3 + 4] = [init_quat[3], init_quat[1], init_quat[2], init_quat[0]]
-data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
+data.qpos[3 : 3 + 4] = [1, 0, 0.13, 0]
 
 
 data.qpos[7 : 7 + 15] = mujoco_init_pos
@@ -205,6 +245,11 @@ try:
                 isaac_action = saved_actions[i][0]
             isaac_action = np.clip(isaac_action, action_clip[0], action_clip[1])
             prev_isaac_action = isaac_action.copy()
+
+            # isaac_action = action_to_pd_targets(
+            #     isaac_action, pd_action_offset, pd_action_scale
+            # )
+
             isaac_action = isaac_init_pos + isaac_action
 
             mujoco_action = isaac_to_mujoco(isaac_action)

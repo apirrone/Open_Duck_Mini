@@ -17,19 +17,19 @@ robot_obs = pickle.load(open(args.robot_obs, "rb"))
 mujoco_channels = []
 robot_channels = []
 
-# convert quat to euler for easier reading by a simple human
-for i in range(min(len(mujoco_obs), len(robot_obs))):
-    mujoco_quat = mujoco_obs[i][:4]
-    mujoco_euler = R.from_quat(mujoco_quat).as_euler("xyz")
+# # convert quat to euler for easier reading by a simple human
+# for i in range(min(len(mujoco_obs), len(robot_obs))):
+#     mujoco_quat = mujoco_obs[i][:4]
+#     mujoco_euler = R.from_quat(mujoco_quat).as_euler("xyz")
 
-    robot_quat = robot_obs[i][:4]
-    robot_euler = R.from_quat(robot_quat).as_euler("xyz")
+#     robot_quat = robot_obs[i][:4]
+#     robot_euler = R.from_quat(robot_quat).as_euler("xyz")
 
-    mujoco_obs[i] = mujoco_obs[i][1:]
-    robot_obs[i] = robot_obs[i][1:]
+#     mujoco_obs[i] = mujoco_obs[i][1:]
+#     robot_obs[i] = robot_obs[i][1:]
 
-    mujoco_obs[i][:3] = mujoco_euler
-    robot_obs[i][:3] = robot_euler
+#     mujoco_obs[i][:3] = mujoco_euler
+#     robot_obs[i][:3] = robot_euler
 
 nb_channels = len(mujoco_obs[0])
 
@@ -41,6 +41,10 @@ channels = [
     "base_roll",
     "base_pitch",
     "base_yaw",
+    "base_quat[0]",
+    "base_quat[1]",
+    "base_quat[2]",
+    "base_quat[3]",
     "base_ang_vel[0]",
     "base_ang_vel[1]",
     "base_ang_vel[2]",

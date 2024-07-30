@@ -36,17 +36,18 @@ class PlacoWalkEngine:
         # parameters.zmp_reference_weight = 1e-6
 
         # Posture parameters
-        self.parameters.walk_com_height = 0.15  # Constant height for the CoM [m]
+        self.parameters.walk_com_height = 0.175  # Constant height for the CoM [m]
+        # self.parameters.walk_com_height = 0.18  # Constant height for the CoM [m]
         self.parameters.walk_foot_height = (
             0.03  # Height of foot rising while walking [m]
         )
-        self.parameters.walk_trunk_pitch = np.deg2rad(10)  # Trunk pitch angle [rad]
-        # self.parameters.walk_trunk_pitch = np.deg2rad(0)  # Trunk pitch angle [rad]
+        # self.parameters.walk_trunk_pitch = 0  # Trunk pitch angle [rad]
+        self.parameters.walk_trunk_pitch = np.deg2rad(5)  # Trunk pitch angle [rad]
         self.parameters.walk_foot_rise_ratio = (
             0.2  # Time ratio for the foot swing plateau (0.0 to 1.0)
         )
         self.parameters.single_support_duration = (
-            0.2  # Duration of single support phase [s]
+            0.22  # Duration of single support phase [s]
         )
         self.parameters.single_support_timesteps = (
             10  # Number of planning timesteps per single support phase
@@ -55,7 +56,7 @@ class PlacoWalkEngine:
         # Feet parameters
         self.parameters.foot_length = 0.06  # Foot length [m]
         # self.parameters.foot_width = 0.006  # Foot width [m]
-        self.parameters.feet_spacing = 0.12  # Lateral feet spacing [m] # 12
+        self.parameters.feet_spacing = 0.14  # Lateral feet spacing [m] # 12
         self.parameters.zmp_margin = 0.00  # ZMP margin [m]
         self.parameters.foot_zmp_target_x = (
             0.0  # Reference target ZMP position in the foot [m]
@@ -83,7 +84,8 @@ class PlacoWalkEngine:
         # Creating the walk QP tasks
         self.tasks = placo.WalkTasks()
         # tasks.trunk_mode = True
-        # tasks.com_x = 0.04
+        # self.tasks.com_x = -0.015
+        self.tasks.com_x = 0.0
         self.tasks.initialize_tasks(self.solver, self.robot)
         self.tasks.left_foot_task.orientation().mask.set_axises("yz", "local")
         self.tasks.right_foot_task.orientation().mask.set_axises("yz", "local")
@@ -115,6 +117,9 @@ class PlacoWalkEngine:
             self.parameters.walk_trunk_pitch,
         )
         print("Initial position reached")
+
+        print(self.get_angles())
+        # exit()
 
         # Creating the FootstepsPlanner
         self.repetitive_footsteps_planner = placo.FootstepsPlannerRepetitive(

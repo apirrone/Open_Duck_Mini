@@ -55,16 +55,21 @@
     <!-- TODO tune damping, frictionloss and kp -->
     <!-- <geom contype="1" conaffinity="1" solref=".004 1" /> -->
     <geom contype="1" conaffinity="1"/>
-    <!-- <joint damping="0.05" frictionloss="0.01"/>
-    <position kp="50" kv="20" forcerange="-0.6 0.6"/> -->
-    <joint damping="0.1" frictionloss="0.1"/>
-    <position kp="5" kv="0.2" forcerange="-0.58 0.58"/>
+    <!-- BAK BELOW -->
+    <!-- <joint damping="0.1" frictionloss="0.1"/>
+    <position kp="5" kv="0.2" forcerange="-0.58 0.58"/> -->
+    <!-- BAK UP -->
+    <!-- ALMOST OK WALK -->
+    <joint damping="0.1" frictionloss="0.01"/>
+    <position kp="5" kv="0.1" forcerange="-0.52 0.52"/>
+    <!-- <joint damping="0.05" frictionloss="0.1"/>
+    <position kp="10" kv="0.5" forcerange="-0.52 0.52"/> -->
   </default>
   <contact>
     <exclude name="exclude1" body1="head_assembly" body2="head_link"/>
   </contact>
   <worldbody>
-    <body name="base" pos="0 0 0.16">
+    <body name="base" pos="0 0 0.17">
       <freejoint />
       <site name='imu' size='0.01' pos='0.0 0 0.0'/>
       <body name="body_module">
