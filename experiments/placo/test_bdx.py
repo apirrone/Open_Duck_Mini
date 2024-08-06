@@ -28,6 +28,14 @@ T_world_trunk = fv_utils.rotateInSelf(T_world_trunk, [0, -2, 0])
 trunk_task = solver.add_frame_task("trunk", T_world_trunk)
 trunk_task.configure("trunk", "hard")
 
+T_world_head = np.eye(4)
+T_world_head[:3, 3][2] = 0.1
+head_task = solver.add_frame_task(
+    "head",
+    T_world_head,
+)
+head_task.configure("head", "soft")
+
 robot.update_kinematics()
 
 move = []
@@ -46,6 +54,9 @@ while True:  # some main loop
         [-0.005, -0.12 / 2, -0.17 + z_offset]
     )
 
+    head_task.T_world_frame = tf.translation_matrix(
+        [0.05 * np.sin(2 * np.pi * 2 * time.time()), 0, 0.1]
+    )
     # Solve the IK
     solver.solve(True)
 

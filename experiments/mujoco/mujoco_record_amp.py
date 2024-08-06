@@ -22,9 +22,15 @@ EPISODE_LENGTH = 10
 NB_EPISODES_TO_RECORD = 1
 FPS = 60
 
+# For IsaacGymEnvs
 # [root position, root orientation, joint poses (e.g. rotations)]
 # [x, y, z, qw, qx, qy, qz, j1, j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, j14, j15]
 
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--hardware", action="store_true", help="use AMP_for_hardware format"
+)
+args = parser.parse_args()
 
 episodes = []
 

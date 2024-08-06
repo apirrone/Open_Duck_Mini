@@ -201,7 +201,8 @@ def get_obs(data, isaac_action, commands, imu_delay_simulator: ImuDelaySimulator
 
 
 prev_isaac_action = np.zeros(15)
-commands = [0.1, 0.0, 0.0]
+# commands = [0.1, 0.0, 0.0]
+commands = [0.0, 0.0, 0.0]
 # prev = time.time()
 # last_control = time.time()
 prev = data.time
@@ -215,7 +216,7 @@ i = 0
 # init_quat = R.from_euler("xyz", init_rot, degrees=False).as_quat()
 # data.qpos[3 : 3 + 4] = init_quat
 # data.qpos[3 : 3 + 4] = [init_quat[3], init_quat[1], init_quat[2], init_quat[0]]
-data.qpos[3 : 3 + 4] = [1, 0, 0.13, 0]
+# data.qpos[3 : 3 + 4] = [1, 0, 0.13, 0]
 
 
 data.qpos[7 : 7 + 15] = mujoco_init_pos
