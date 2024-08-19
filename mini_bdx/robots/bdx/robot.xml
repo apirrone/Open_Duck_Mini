@@ -61,7 +61,7 @@
     <!-- BAK UP -->
     <!-- ALMOST OK WALK -->
     <joint damping="0.1" frictionloss="0.01"/>
-    <position kp="5" kv="0.1" forcerange="-0.52 0.52"/>
+    <position kp="10" kv="6" forcerange="-0.6 0.6"/>
     <!-- <joint damping="0.05" frictionloss="0.1"/>
     <position kp="10" kv="0.05" forcerange="-0.52 0.52"/> -->
   </default>

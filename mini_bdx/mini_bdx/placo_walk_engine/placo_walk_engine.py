@@ -39,7 +39,7 @@ class PlacoWalkEngine:
         self.parameters.walk_com_height = 0.175  # Constant height for the CoM [m]
         # self.parameters.walk_com_height = 0.18  # Constant height for the CoM [m]
         self.parameters.walk_foot_height = (
-            0.03  # Height of foot rising while walking [m]
+            0.04  # Height of foot rising while walking [m] # 3
         )
         # self.parameters.walk_trunk_pitch = 0  # Trunk pitch angle [rad]
         self.parameters.walk_trunk_pitch = np.deg2rad(5)  # Trunk pitch angle [rad]
@@ -47,7 +47,7 @@ class PlacoWalkEngine:
             0.2  # Time ratio for the foot swing plateau (0.0 to 1.0)
         )
         self.parameters.single_support_duration = (
-            0.22  # Duration of single support phase [s]
+            0.25  # Duration of single support phase [s]
         )
         self.parameters.single_support_timesteps = (
             10  # Number of planning timesteps per single support phase
@@ -164,11 +164,6 @@ class PlacoWalkEngine:
 
     def get_angles(self):
         angles = {
-            "right_hip_yaw": self.robot.get_joint("right_hip_yaw"),
-            "right_hip_roll": self.robot.get_joint("right_hip_roll"),
-            "right_hip_pitch": self.robot.get_joint("right_hip_pitch"),
-            "right_knee": self.robot.get_joint("right_knee"),
-            "right_ankle": self.robot.get_joint("right_ankle"),
             "left_hip_yaw": self.robot.get_joint("left_hip_yaw"),
             "left_hip_roll": self.robot.get_joint("left_hip_roll"),
             "left_hip_pitch": self.robot.get_joint("left_hip_pitch"),
@@ -179,6 +174,11 @@ class PlacoWalkEngine:
             "head_yaw": self.robot.get_joint("head_yaw"),
             "left_antenna": self.robot.get_joint("left_antenna"),
             "right_antenna": self.robot.get_joint("right_antenna"),
+            "right_hip_yaw": self.robot.get_joint("right_hip_yaw"),
+            "right_hip_roll": self.robot.get_joint("right_hip_roll"),
+            "right_hip_pitch": self.robot.get_joint("right_hip_pitch"),
+            "right_knee": self.robot.get_joint("right_knee"),
+            "right_ankle": self.robot.get_joint("right_ankle"),
         }
 
         return angles

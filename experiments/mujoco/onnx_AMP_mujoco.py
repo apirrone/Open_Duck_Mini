@@ -156,7 +156,6 @@ class ImuDelaySimulator:
 
 
 def get_obs(data, isaac_action, commands, imu_delay_simulator: ImuDelaySimulator):
-
     base_lin_vel = (
         data.sensor("linear-velocity").data.astype(np.double) * linearVelocityScale
     )
@@ -201,8 +200,8 @@ def get_obs(data, isaac_action, commands, imu_delay_simulator: ImuDelaySimulator
 
 
 prev_isaac_action = np.zeros(15)
-# commands = [0.1, 0.0, 0.0]
-commands = [0.0, 0.0, 0.0]
+commands = [0.15, 0.0, 0.0]
+# commands = [0.0, 0.0, 0.0]
 # prev = time.time()
 # last_control = time.time()
 prev = data.time
@@ -232,7 +231,6 @@ try:
         # t = time.time()
         t = data.time
         if t - last_control >= 1 / control_freq:
-
             isaac_obs = get_obs(data, prev_isaac_action, commands, imu_delay_simulator)
             mujoco_saved_obs.append(isaac_obs)
 

@@ -11,7 +11,7 @@ from placo_utils.visualization import footsteps_viz, robot_frame_viz, robot_viz
 from scipy.spatial.transform import Rotation as R
 
 from mini_bdx.placo_walk_engine import PlacoWalkEngine
-from mini_bdx.utils.rl_utils import mujoco_to_isaac
+from mini_bdx.utils.rl_utils import mujoco_to_isaac, test
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", "--name", type=str, required=True)
@@ -21,6 +21,13 @@ parser.add_argument("--dy", type=float, required=True)
 parser.add_argument("--dtheta", type=float, required=True)
 parser.add_argument("-l", "--length", type=int, default=10)
 parser.add_argument("-m", "--meshcat_viz", action="store_true", default=False)
+parser.add_argument(
+    "-s",
+    "--skip_warmup",
+    action="store_true",
+    default=False,
+    help="don't record warmup motion",
+)
 parser.add_argument(
     "--hardware",
     action="store_true",
@@ -71,7 +78,7 @@ prev_initialized = False
 while True:
     # print("t", pwe.t)
     pwe.tick(DT)
-    if pwe.t <= 0:
+    if pwe.t <= 0 + args.skip_warmup * 1:
         # print("waiting ")
         start = pwe.t
         last_record = pwe.t + 1 / FPS
@@ -84,7 +91,9 @@ while True:
         T_world_fbase = pwe.robot.get_T_world_fbase()
         root_position = list(T_world_fbase[:3, 3])
         root_orientation_quat = list(R.from_matrix(T_world_fbase[:3, :3]).as_quat())
-        joints_positions = mujoco_to_isaac(list(pwe.get_angles().values()))
+        # joints_positions = mujoco_to_isaac(list(pwe.get_angles().values()))
+        # joints_positions = test(list(pwe.get_angles().values()))
+        joints_positions = list(pwe.get_angles().values())
 
         T_world_leftFoot = pwe.robot.get_T_world_left()
         T_world_rightFoot = pwe.robot.get_T_world_right()
@@ -92,39 +101,34 @@ while True:
         T_body_leftFoot = np.linalg.inv(T_world_fbase) @ T_world_leftFoot
         T_body_rightFoot = np.linalg.inv(T_world_fbase) @ T_world_rightFoot
 
-        # left_foot_pose = pwe.robot.get_T_world_left()
-        # right_foot_pose = pwe.robot.get_T_world_right()
-
         left_toe_pos = list(T_body_leftFoot[:3, 3])
         right_toe_pos = list(T_body_rightFoot[:3, 3])
 
         world_linear_vel = list(
-            (np.array(root_position) - np.array(prev_root_position)) / (1 / FPS)
+            (np.array(root_position) - np.array(prev_root_position)) * (1 / FPS)
         )
         body_rot_mat = T_world_fbase[:3, :3]
         body_linear_vel = list(body_rot_mat.T @ world_linear_vel)
-        # print("world linear vel", world_linear_vel)
-        # print("body linear vel", body_linear_vel)
 
         world_angular_vel = list(
             (
                 R.from_quat(root_orientation_quat).as_euler("xyz")
                 - prev_root_orientation_euler
             )
-            / (1 / FPS)
+            * (1 / FPS)
         )
         body_angular_vel = list(body_rot_mat.T @ world_angular_vel)
         # print("world angular vel", world_angular_vel)
         # print("body angular vel", body_angular_vel)
 
         joints_vel = list(
-            (np.array(joints_positions) - np.array(prev_joints_positions)) / (1 / FPS)
+            (np.array(joints_positions) - np.array(prev_joints_positions)) * (1 / FPS)
         )
         left_toe_vel = list(
-            (np.array(left_toe_pos) - np.array(prev_left_toe_pos)) / (1 / FPS)
+            (np.array(left_toe_pos) - np.array(prev_left_toe_pos)) * (1 / FPS)
         )
         right_toe_vel = list(
-            (np.array(right_toe_pos) - np.array(prev_right_toe_pos)) / (1 / FPS)
+            (np.array(right_toe_pos) - np.array(prev_right_toe_pos)) * (1 / FPS)
         )
 
         if prev_initialized:
