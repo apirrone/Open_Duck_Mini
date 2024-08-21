@@ -6,6 +6,7 @@ from os.path import join
 from threading import current_thread
 
 import numpy as np
+from numpy.ma.extras import average
 import placo
 from placo_utils.visualization import footsteps_viz, robot_frame_viz, robot_viz
 from scipy.spatial.transform import Rotation as R
@@ -60,6 +61,9 @@ episode = {
 
 pwe = PlacoWalkEngine("../../mini_bdx/robots/bdx/robot.urdf", ignore_feet_contact=True)
 
+# pwe.parameters.single_support_duration = 0.25  # slow
+pwe.parameters.single_support_duration = 0.20  # normal
+
 pwe.set_traj(args.dx, args.dy, args.dtheta + 0.001)
 if DISPLAY_MESHCAT:
     viz = robot_viz(pwe.robot)
@@ -75,6 +79,7 @@ prev_right_toe_pos = [0, 0, 0]
 prev_joints_positions = [0] * 15
 i = 0
 prev_initialized = False
+avg_x_lin_vel = []
 while True:
     # print("t", pwe.t)
     pwe.tick(DT)
@@ -105,8 +110,9 @@ while True:
         right_toe_pos = list(T_body_rightFoot[:3, 3])
 
         world_linear_vel = list(
-            (np.array(root_position) - np.array(prev_root_position)) * (1 / FPS)
+            (np.array(root_position) - np.array(prev_root_position)) / (1 / FPS)
         )
+        avg_x_lin_vel.append(world_linear_vel[0])
         body_rot_mat = T_world_fbase[:3, :3]
         body_linear_vel = list(body_rot_mat.T @ world_linear_vel)
 
@@ -115,20 +121,20 @@ while True:
                 R.from_quat(root_orientation_quat).as_euler("xyz")
                 - prev_root_orientation_euler
             )
-            * (1 / FPS)
+            / (1 / FPS)
         )
         body_angular_vel = list(body_rot_mat.T @ world_angular_vel)
         # print("world angular vel", world_angular_vel)
         # print("body angular vel", body_angular_vel)
 
         joints_vel = list(
-            (np.array(joints_positions) - np.array(prev_joints_positions)) * (1 / FPS)
+            (np.array(joints_positions) - np.array(prev_joints_positions)) / (1 / FPS)
         )
         left_toe_vel = list(
-            (np.array(left_toe_pos) - np.array(prev_left_toe_pos)) * (1 / FPS)
+            (np.array(left_toe_pos) - np.array(prev_left_toe_pos)) / (1 / FPS)
         )
         right_toe_vel = list(
-            (np.array(right_toe_pos) - np.array(prev_right_toe_pos)) * (1 / FPS)
+            (np.array(right_toe_pos) - np.array(prev_right_toe_pos)) / (1 / FPS)
         )
 
         if prev_initialized:
@@ -164,6 +170,8 @@ while True:
         prev_right_toe_pos = right_toe_pos.copy()
         prev_joints_positions = joints_positions.copy()
         prev_initialized = True
+
+        print(np.mean(avg_x_lin_vel[-50:]))
 
         last_record = pwe.t
         print("saved frame")

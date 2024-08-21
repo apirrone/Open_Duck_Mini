@@ -181,9 +181,9 @@ for i in range(nb_channels):
     elif "action" in channels[i]:
         prev_actions.append([obs[i] for obs in robot_obs])
 
-print(len(dof_poses))
-print(len(prev_actions))
-exit()
+# print(len(dof_poses))
+# print(len(prev_actions))
+# exit()
 
 # plot prev action vs dof pos
 
