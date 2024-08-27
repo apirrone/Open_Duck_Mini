@@ -9,8 +9,10 @@ class OnnxInfer:
         )
 
     def infer(self, inputs):
-        outputs = self.ort_session.run(None, {"obs": [inputs]})
-        return outputs[0][0]
+        # outputs = self.ort_session.run(None, {"obs": [inputs]})
+        # return outputs[0][0]
+        outputs = self.ort_session.run(None, {"obs": inputs.astype("float32")})
+        return outputs[0]
 
 
 if __name__ == "__main__":

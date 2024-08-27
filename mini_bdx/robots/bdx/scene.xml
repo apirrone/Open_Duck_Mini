@@ -6,7 +6,7 @@
 	<default>
 		<!-- sliding friction, torsional friction, rolling friction -->
 		<!-- <geom friction="3.0 0.1 0.006"/> -->
-		<!-- <geom friction="0.3 0.01 0.0006"/> -->
+		<!-- <geom friction="1.0 0.01 0.0006"/> -->
 	</default>
 	<visual>
 		<headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0" />

@@ -30,6 +30,12 @@ parser.add_argument(
     help="don't record warmup motion",
 )
 parser.add_argument(
+    "--stand",
+    action="store_true",
+    default=False,
+    help="hack to record a standing pose",
+)
+parser.add_argument(
     "--hardware",
     action="store_true",
     help="use AMP_for_hardware format. If false, use IsaacGymEnvs format",
@@ -60,6 +66,11 @@ episode = {
 
 
 pwe = PlacoWalkEngine("../../mini_bdx/robots/bdx/robot.urdf", ignore_feet_contact=True)
+first_joints_positions = list(pwe.get_angles().values())
+first_T_world_fbase = pwe.robot.get_T_world_fbase()
+first_T_world_leftFoot = pwe.robot.get_T_world_left()
+first_T_world_rightFoot = pwe.robot.get_T_world_right()
+
 
 # pwe.parameters.single_support_duration = 0.25  # slow
 pwe.parameters.single_support_duration = 0.20  # normal
@@ -93,15 +104,24 @@ while True:
     # print(np.around(pwe.robot.get_T_world_fbase()[:3, 3], 3))
 
     if pwe.t - last_record >= 1 / FPS:
-        T_world_fbase = pwe.robot.get_T_world_fbase()
+        if args.stand:
+            T_world_fbase = first_T_world_fbase
+        else:
+            T_world_fbase = pwe.robot.get_T_world_fbase()
         root_position = list(T_world_fbase[:3, 3])
         root_orientation_quat = list(R.from_matrix(T_world_fbase[:3, :3]).as_quat())
-        # joints_positions = mujoco_to_isaac(list(pwe.get_angles().values()))
-        # joints_positions = test(list(pwe.get_angles().values()))
-        joints_positions = list(pwe.get_angles().values())
 
-        T_world_leftFoot = pwe.robot.get_T_world_left()
-        T_world_rightFoot = pwe.robot.get_T_world_right()
+        if args.stand:
+            joints_positions = first_joints_positions
+        else:
+            joints_positions = list(pwe.get_angles().values())
+
+        if args.stand:
+            T_world_leftFoot = first_T_world_leftFoot
+            T_world_rightFoot = first_T_world_rightFoot
+        else:
+            T_world_leftFoot = pwe.robot.get_T_world_left()
+            T_world_rightFoot = pwe.robot.get_T_world_right()
 
         T_body_leftFoot = np.linalg.inv(T_world_fbase) @ T_world_leftFoot
         T_body_rightFoot = np.linalg.inv(T_world_fbase) @ T_world_rightFoot
