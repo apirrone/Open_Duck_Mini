@@ -5,6 +5,7 @@ import time
 import mujoco
 import mujoco_viewer
 import numpy as np
+import pygame
 from scipy.spatial.transform import Rotation as R
 
 from mini_bdx.onnx_infer import OnnxInfer
@@ -19,12 +20,19 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-o", "--onnx_model_path", type=str, required=True)
 parser.add_argument("--saved_obs", type=str, required=False)
 parser.add_argument("--saved_actions", type=str, required=False)
+parser.add_argument("-k", action="store_true", default=False)
 args = parser.parse_args()
 
 if args.saved_obs is not None:
     saved_obs = pickle.loads(open("saved_obs.pkl", "rb").read())
 if args.saved_actions is not None:
     saved_actions = pickle.loads(open("saved_actions.pkl", "rb").read())
+
+if args.k:
+    pygame.init()
+    # open a blank pygame window
+    screen = pygame.display.set_mode((100, 100))
+    pygame.display.set_caption("Press arrow keys to move robot")
 
 
 # Params
@@ -175,7 +183,7 @@ commands = [0.15, 0.0, 0.0]
 # last_control = time.time()
 prev = data.time
 last_control = data.time
-control_freq = 85  # hz
+control_freq = 60  # hz
 i = 0
 data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
 cutoff_frequency = 20
@@ -242,6 +250,26 @@ try:
             mujoco_saved_actions.append(mujoco_action)
 
             command_value.append([data.ctrl.copy(), data.qpos[7:].copy()])
+
+            if args.k:
+                keys = pygame.key.get_pressed()
+                lin_vel_x = 0
+                lin_vel_y = 0
+                ang_vel = 0
+                if keys[pygame.K_z]:
+                    lin_vel_x = 0.15
+                if keys[pygame.K_s]:
+                    lin_vel_x = 0
+                if keys[pygame.K_q]:
+                    ang_vel = 0.3
+                if keys[pygame.K_d]:
+                    ang_vel = -0.3
+
+                commands[0] = lin_vel_x
+                commands[1] = lin_vel_y
+                commands[2] = ang_vel
+                print(commands)
+                pygame.event.pump()  # process event queue
         mujoco.mj_step(model, data, 50)
 
         viewer.render()

@@ -62,8 +62,8 @@
     <!-- ALMOST OK WALK -->
     <!-- <joint damping="0.1" frictionloss="0.1"/>
     <position kp="5" kv="0.1" forcerange="-0.6 0.6"/> -->
-    <joint damping="0.1" frictionloss="0.1"/>
-    <position kp="8" kv="0.05" forcerange="-0.4 0.4"/>
+    <joint damping="0.04" frictionloss="0.01"/>
+    <position kp="10" kv="0.02" forcerange="-0.93 0.93"/>
   </default>
   <contact>
     <exclude name="exclude1" body1="head_assembly" body2="head_link"/>

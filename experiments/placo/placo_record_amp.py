@@ -73,7 +73,8 @@ first_T_world_rightFoot = pwe.robot.get_T_world_right()
 
 
 # pwe.parameters.single_support_duration = 0.25  # slow
-pwe.parameters.single_support_duration = 0.20  # normal
+# pwe.parameters.single_support_duration = 0.20  # normal
+pwe.parameters.single_support_duration = 0.2  # Fast ?
 
 pwe.set_traj(args.dx, args.dy, args.dtheta + 0.001)
 if DISPLAY_MESHCAT:
@@ -91,6 +92,7 @@ prev_joints_positions = [0] * 15
 i = 0
 prev_initialized = False
 avg_x_lin_vel = []
+avg_yaw_vel = []
 while True:
     # print("t", pwe.t)
     pwe.tick(DT)
@@ -143,6 +145,7 @@ while True:
             )
             / (1 / FPS)
         )
+        avg_yaw_vel.append(world_angular_vel[2])
         body_angular_vel = list(body_rot_mat.T @ world_angular_vel)
         # print("world angular vel", world_angular_vel)
         # print("body angular vel", body_angular_vel)
@@ -191,10 +194,12 @@ while True:
         prev_joints_positions = joints_positions.copy()
         prev_initialized = True
 
-        print(np.mean(avg_x_lin_vel[-50:]))
+        print("avg x vel", np.mean(avg_x_lin_vel[-50:]))
+        print("avg yaw vel", np.mean(avg_yaw_vel[-50:]))
+        print("=")
 
         last_record = pwe.t
-        print("saved frame")
+        # print("saved frame")
 
     if DISPLAY_MESHCAT and pwe.t - last_meshcat_display >= 1 / MESHCAT_FPS:
         last_meshcat_display = pwe.t
