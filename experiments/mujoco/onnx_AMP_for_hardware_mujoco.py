@@ -257,7 +257,7 @@ try:
                 lin_vel_y = 0
                 ang_vel = 0
                 if keys[pygame.K_z]:
-                    lin_vel_x = 0.15
+                    lin_vel_x = 0.4
                 if keys[pygame.K_s]:
                     lin_vel_x = 0
                 if keys[pygame.K_q]:
