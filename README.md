@@ -4,44 +4,33 @@
 
 I'm making a miniature version of the BDX Droid by Disney. It will be about 35 centimeters tall with its legs extended.
 
-https://github.com/apirrone/mini_BDX/assets/6552564/56cb1919-2f20-4a5c-a4fe-0855db1080ac
+https://github.com/user-attachments/assets/f2b3efac-9300-4959-95ae-06420a2d1517
 
-This is with a custom walk engine based an [old Rhoban walk](https://github.com/Rhoban/walk_engine/tree/master) and the IK is based on [placo](https://github.com/Rhoban/placo)
+This is a policy trained in Isaac Gym with [Amp_for_hardware](https://github.com/apirrone/AMP_for_hardware/tree/bdx) running in Mujoco. 
 
-If you have a xbox controller, you can control the robot with it in MuJoCo (after installing the package, see Install section):
+# This repo
 
-```bash
-$ cd experiments/mujoco
-$ python3 mujoco_walk_engine.py -x
-```
+This is kind of a hub where I centralize all resources related to this project. This is a working repo, so there are a lot of undocumented scripts :) I'll try to clean things up at some point.
 
-Start button to start the walk, left joystick to translate in x/y, right joystick to rotate. By pressing the left trigger, you control the head pitch and yaw with the right joystick, and the head height with the right trigger.
-
-Right now I use the keyboard inputs to tune the walk engine's hyperparameters.
-
-## CAD
+# CAD
 
 https://cad.onshape.com/documents/a18ff8cc622a533762a3a6f5/w/27ef6089ad5fe9ba396b6036/e/9ce9b71d7a21eb04415b067f
 
 See [this document](docs/prepare_robot.md) for getting from a onshape design to a simulated robot in MuJoCo
 
-## Install
+# RL stuff
 
-### Install everything (simulation, rl etc)
-```bash
-$ pip install -e .[all]
-```
+The RL method used to learn to walk is [Adversarial Motion Priors Make Good Substitutes for Complex Reward Functions](https://sites.google.com/berkeley.edu/amp-in-real/home). 
 
-## RL stuff
+My fork of the original repo is [there](https://github.com/apirrone/AMP_for_hardware/tree/bdx)
 
-I switched to Isaac Gym for reinforcement learning. My fork of IsaacGymEnvs is here https://github.com/apirrone/IsaacGymEnvs
+This is the current policy running in Isaac Gym. It can be controlled to walk forward and to turn left or right.
 
-This is the best walk I got so far using IsaacGymEnv's implementation of AMP (https://xbpeng.github.io/projects/AMP/index.html)
-
-https://github.com/user-attachments/assets/833c86b8-c889-4985-8325-34d4058953bc
-
+https://github.com/user-attachments/assets/c37d9bfc-67e1-4b21-a9dc-a1310bdf3016
 
 # BOM
+
+Note : I switched to using `xc330-M288-T` servomotors instead of `xl330-M288-T` for the legs. They are more expensive, but way more powerful. Maybe we'll try to go back to xl330 servos once everything is working properly with the xc330.
 
 https://docs.google.com/spreadsheets/d/18hrYgjaE9uL2pnrnq5pNUzFLZcI4Rg0AvSc9sqwE680/edit?usp=sharing
 
@@ -51,14 +40,17 @@ TODO
 
 The current version (alpha) is not very easy to build, has some mechanical problems (too much play at some joints). After everything works on this version of the robot, I will redesign it from the ground up, trying to make it more accessible and better mechanically designed !
 
-# Interesting papers and resources
+
+# Resources
+
+## Interesting papers and resources
 - https://www.nature.com/articles/s41598-023-38259-7.pdf
 - https://arxiv.org/pdf/2304.13653
 - https://arxiv.org/pdf/2401.16889
 - https://arxiv.org/pdf/1801.01290
 - First comment of this video explains the reward https://www.youtube.com/watch?v=L_4BPjLBF4E
 
-# Directly BDX related (from disney)
+## Directly BDX related (from disney)
 - https://www.nvidia.com/en-us/on-demand/session/gtc24-s63374/
 - https://la.disneyresearch.com/publication/design-and-control-of-a-bipedal-robotic-character/
 
