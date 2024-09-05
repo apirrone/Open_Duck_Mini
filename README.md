@@ -1,5 +1,7 @@
 # Mini BDX Droid
 
+This project is still a work in progress !
+
 ![Capture d’écran du 2024-07-22 18-15-29](https://github.com/user-attachments/assets/41876cb7-b4f2-4c68-8ef9-f92f2eb45044)
 
 I'm making a miniature version of the BDX Droid by Disney. It will be about 35 centimeters tall with its legs extended.
