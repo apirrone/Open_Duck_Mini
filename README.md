@@ -8,6 +8,11 @@ https://github.com/user-attachments/assets/f2b3efac-9300-4959-95ae-06420a2d1517
 
 This is a policy trained in Isaac Gym with [Amp_for_hardware](https://github.com/apirrone/AMP_for_hardware/tree/bdx) running in Mujoco. 
 
+https://github.com/user-attachments/assets/6a742583-223a-43f7-8489-4a4fffeaaef6
+
+This is an attempt at running the policy on the real robot. Still some work to do :)
+
+
 # This repo
 
 This is kind of a hub where I centralize all resources related to this project. This is a working repo, so there are a lot of undocumented scripts :) I'll try to clean things up at some point.
