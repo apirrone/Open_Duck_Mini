@@ -257,17 +257,27 @@ try:
                 lin_vel_y = 0
                 ang_vel = 0
                 if keys[pygame.K_z]:
-                    lin_vel_x = 0.4
+                    lin_vel_x = 0.15
                 if keys[pygame.K_s]:
                     lin_vel_x = 0
                 if keys[pygame.K_q]:
-                    ang_vel = 0.3
+                    ang_vel = 0.7
                 if keys[pygame.K_d]:
-                    ang_vel = -0.3
+                    ang_vel = -0.7
 
                 commands[0] = lin_vel_x
                 commands[1] = lin_vel_y
                 commands[2] = ang_vel
+                commands = list(
+                    np.array(commands)
+                    * np.array(
+                        [
+                            linearVelocityScale,
+                            linearVelocityScale,
+                            angularVelocityScale,
+                        ]
+                    )
+                )
                 print(commands)
                 pygame.event.pump()  # process event queue
         mujoco.mj_step(model, data, 50)

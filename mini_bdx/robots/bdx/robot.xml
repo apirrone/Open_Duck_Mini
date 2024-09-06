@@ -55,9 +55,9 @@
     <!-- TODO tune damping, frictionloss and kp -->
     <!-- <geom contype="1" conaffinity="1" solref=".004 1" /> -->
     <geom contype="1" conaffinity="1"/>
+    <!-- BAK -->
     <!-- <joint damping="0.05" frictionloss="0.01"/>
-    <position kp="10" kv="0.03" forcerange="-0.93 0.93"/> -->
-
+    <position kp="10" kv="0.05" forcerange="-0.93 0.93"/> -->
     <joint damping="0.05" frictionloss="0.01"/>
     <position kp="10" kv="0.05" forcerange="-0.93 0.93"/>
   </default>
