@@ -48,27 +48,49 @@ action_scale = 0.25
 
 
 # Higher
-mujoco_init_pos = np.array(
+# isaac_init_pos = np.array(
+#     [
+#         -0.03485757,
+#         0.05228605,
+#         0.36623601,
+#         -0.96420447,
+#         0.5112971,
+#         -0.17453293,
+#         -0.17453293,
+#         0.0,
+#         0.0,
+#         0.0,
+#         -0.03676731,
+#         -0.03031521,
+#         0.40658151,
+#         -1.08640649,
+#         0.59323248,
+#     ]
+# )
+
+
+isaac_init_pos = np.array(
     [
-        -0.03676731090962078,
-        -0.030315211140564333,
-        0.4065815100399598,
-        -1.0864064934571644,
-        0.5932324840794684,
-        -0.03485756878823724,
-        0.052286054888550475,
-        0.36623601032755765,
-        -0.964204465274923,
-        0.5112970996901808,
+        -0.002853397830292128,
+        0.01626303761810685,
+        1.0105624704499077,
+        -1.4865015965817336,
+        0.6504953719748071,
         -0.17453292519943295,
         -0.17453292519943295,
         0,
-        0.0,
-        0.0,
+        0,
+        0,
+        0.001171696610228082,
+        0.006726989242258406,
+        1.0129772861831692,
+        -1.4829304760981399,
+        0.6444901047812701,
     ]
 )
 
-isaac_init_pos = np.array(mujoco_to_isaac(mujoco_init_pos))
+
+mujoco_init_pos = np.array(isaac_to_mujoco(isaac_init_pos))
 
 
 model = mujoco.MjModel.from_xml_path("../../mini_bdx/robots/bdx/scene.xml")
@@ -177,7 +199,7 @@ def get_obs(data, isaac_action, commands, imu_delay_simulator: ImuDelaySimulator
 
 
 prev_isaac_action = np.zeros(15)
-commands = [0.15, 0.0, 0.0]
+commands = [0.1, 0.0, 0.0]
 # commands = [0.0, 0.0, 0.0]
 # prev = time.time()
 # last_control = time.time()
@@ -185,7 +207,7 @@ prev = data.time
 last_control = data.time
 control_freq = 60  # hz
 i = 0
-data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
+data.qpos[3 : 3 + 4] = [1, 0, -0.08, 0]
 cutoff_frequency = 20
 
 # init_rot = [0, -0.1, 0]
@@ -257,13 +279,13 @@ try:
                 lin_vel_y = 0
                 ang_vel = 0
                 if keys[pygame.K_z]:
-                    lin_vel_x = 0.15
+                    lin_vel_x = 0.12
                 if keys[pygame.K_s]:
                     lin_vel_x = 0
                 if keys[pygame.K_q]:
-                    ang_vel = 0.7
+                    ang_vel = 0.4
                 if keys[pygame.K_d]:
-                    ang_vel = -0.7
+                    ang_vel = -0.4
 
                 commands[0] = lin_vel_x
                 commands[1] = lin_vel_y
