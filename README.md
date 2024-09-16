@@ -1,4 +1,4 @@
-# Mini BDX Droid
+# Open Duck Mini
 
 This project is still a work in progress !
 
