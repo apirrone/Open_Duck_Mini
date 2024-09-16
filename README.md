@@ -84,3 +84,6 @@ This repo contains the code to run the policies on the onboard computer (Raspber
 -
 ## MPC
 - https://github.com/google-deepmind/mujoco_mpc
+
+
+Thanks a lot to HuggingFace for sponsoring this project !
