@@ -52,6 +52,10 @@ TODO
 The current version (alpha) is not very easy to build, has some mechanical problems (too much play at some joints). After everything works on this version of the robot, I will redesign it from the ground up, trying to make it more accessible and better mechanically designed !
 
 
+# Embedded runtime 
+
+This repo contains the code to run the policies on the onboard computer (Raspberry pi zero 2w) https://github.com/apirrone/Open_Duck_Mini_Runtime
+
 # Resources
 
 ## Interesting papers and resources
