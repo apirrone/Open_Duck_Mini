@@ -10,9 +10,13 @@ https://github.com/user-attachments/assets/f2b3efac-9300-4959-95ae-06420a2d1517
 
 This is a policy trained in Isaac Gym with [Amp_for_hardware](https://github.com/apirrone/AMP_for_hardware/tree/bdx) running in Mujoco. 
 
+https://github.com/user-attachments/assets/4e03fe2b-371c-4bd5-a462-8fa0ee84efa2
+
+This is a policy trained in Isaac Gym for standing up while being robust to perturbations.
+
 https://github.com/user-attachments/assets/6a742583-223a-43f7-8489-4a4fffeaaef6
 
-This is an attempt at running the policy on the real robot. Still some work to do :)
+This is an attempt at running the walking policy on the real robot. Still some work to do :)
 
 
 # This repo
