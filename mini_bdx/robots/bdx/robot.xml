@@ -58,8 +58,9 @@
     <!-- BAK -->
     <!-- <joint damping="0.05" frictionloss="0.01"/>
     <position kp="10" kv="0.05" forcerange="-0.93 0.93"/> -->
-    <joint damping="0.03" frictionloss="0.01"/>
-    <position kp="10" kv="0.03" forcerange="-0.93 0.93"/>
+    <!-- BAK -->
+    <joint damping="0.1" frictionloss="0.01"/>
+    <position kp="3" kv="0.1" forcerange="-0.93 0.93"/>
   </default>
   <contact>
     <exclude name="exclude1" body1="head_assembly" body2="head_link"/>

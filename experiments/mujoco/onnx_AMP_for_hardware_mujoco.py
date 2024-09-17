@@ -47,62 +47,23 @@ obs_clip = (-5, 5)
 action_scale = 0.25
 
 
-# Higher
-# isaac_init_pos = np.array(
-#     [
-#         -0.03485757,
-#         0.05228605,
-#         0.36623601,
-#         -0.96420447,
-#         0.5112971,
-#         -0.17453293,
-#         -0.17453293,
-#         0.0,
-#         0.0,
-#         0.0,
-#         -0.03676731,
-#         -0.03031521,
-#         0.40658151,
-#         -1.08640649,
-#         0.59323248,
-#     ]
-# )
-
-# default_joint_angles = {
-#     "left_hip_yaw": -0.03455234018541292,
-#     "left_hip_roll": 0.055730747490168285,
-#     "left_hip_pitch": 0.5397158397618105,
-#     "left_knee": -1.3152788306721914,
-#     "left_ankle": 0.6888361815639528,
-#     "neck_pitch": -0.1745314896173976,
-#     "head_pitch": -0.17453429522668937,
-#     "head_yaw": 0,
-#     "left_antenna": 0,
-#     "right_antenna": 0,
-#     "right_hip_yaw": -0.03646051060835733,
-#     "right_hip_roll": -0.03358034284950263,
-#     "right_hip_pitch": 0.5216150220237578,
-#     "right_knee": -1.326235199315616,
-#     "right_ankle": 0.7179857110436013,
-# }
-
 isaac_init_pos = np.array(
     [
-        -0.03455234018541292,
-        0.055730747490168285,
-        0.5397158397618105,
-        -1.3152788306721914,
-        0.6888361815639528,
-        -0.1745314896173976,
-        -0.17453429522668937,
+        -0.0285397830292128,
+        0.01626303761810685,
+        1.0105624704499077,
+        -1.4865015965817336,
+        0.6504953719748071,
+        -0.17453292519943295,
+        -0.17453292519943295,
         0,
         0,
         0,
-        -0.03646051060835733,
-        -0.03358034284950263,
-        0.5216150220237578,
-        -1.326235199315616,
-        0.7179857110436013,
+        0.001171696610228082,
+        0.006726989242258406,
+        1.0129772861831692,
+        -1.4829304760981399,
+        0.6444901047812701,
     ]
 )
 
@@ -180,9 +141,9 @@ def get_obs(data, isaac_action, commands, imu_delay_simulator: ImuDelaySimulator
     base_quat = [base_quat[1], base_quat[2], base_quat[3], base_quat[0]]
 
     # # Remove yaw component
-    rot_euler = R.from_quat(base_quat).as_euler("xyz", degrees=False)
-    rot_euler[1] += np.deg2rad(-10)
-    base_quat = R.from_euler("xyz", rot_euler, degrees=False).as_quat()
+    # rot_euler = R.from_quat(base_quat).as_euler("xyz", degrees=False)
+    # rot_euler[1] += np.deg2rad(-15)
+    # base_quat = R.from_euler("xyz", rot_euler, degrees=False).as_quat()
 
     base_ang_vel = (
         data.sensor("angular-velocity").data.astype(np.double) * angularVelocityScale
@@ -222,9 +183,9 @@ commands = [0.1, 0.0, 0.0]
 # last_control = time.time()
 prev = data.time
 last_control = data.time
-control_freq = 60  # hz
+control_freq = 30  # hz
 i = 0
-data.qpos[3 : 3 + 4] = [1, 0, 0.04, 0]
+data.qpos[3 : 3 + 4] = [1, 0, 0.0, 0]
 cutoff_frequency = 20
 
 # init_rot = [0, -0.1, 0]
@@ -296,13 +257,13 @@ try:
                 lin_vel_y = 0
                 ang_vel = 0
                 if keys[pygame.K_z]:
-                    lin_vel_x = 0.1
+                    lin_vel_x = 0.12
                 if keys[pygame.K_s]:
                     lin_vel_x = 0
                 if keys[pygame.K_q]:
-                    ang_vel = 0.4
+                    ang_vel = 0.7
                 if keys[pygame.K_d]:
-                    ang_vel = -0.4
+                    ang_vel = -0.7
 
                 commands[0] = lin_vel_x
                 commands[1] = lin_vel_y
