@@ -257,12 +257,16 @@ try:
                 lin_vel_y = 0
                 ang_vel = 0
                 if keys[pygame.K_z]:
-                    lin_vel_x = 0.12
+                    lin_vel_x = 0.16
                 if keys[pygame.K_s]:
                     lin_vel_x = 0
                 if keys[pygame.K_q]:
-                    ang_vel = 0.7
+                    lin_vel_y = 0.1
                 if keys[pygame.K_d]:
+                    lin_vel_y = -0.1
+                if keys[pygame.K_a]:
+                    ang_vel = 0.7
+                if keys[pygame.K_e]:
                     ang_vel = -0.7
 
                 commands[0] = lin_vel_x

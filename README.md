@@ -8,7 +8,7 @@ I'm making a miniature version of the BDX Droid by Disney. It will be about 35 c
 
 https://github.com/user-attachments/assets/f2b3efac-9300-4959-95ae-06420a2d1517
 
-This is a policy trained in Isaac Gym with [Amp_for_hardware](https://github.com/apirrone/AMP_for_hardware/tree/bdx) running in Mujoco. 
+This is a policy trained in Isaac Gym with [Amp_for_hardware](https://github.com/apirrone/AMP_for_hardware/tree/bdx) running in Mujoco.
 
 https://github.com/user-attachments/assets/4e03fe2b-371c-4bd5-a462-8fa0ee84efa2
 
@@ -31,7 +31,7 @@ See [this document](docs/prepare_robot.md) for getting from a onshape design to 
 
 # RL stuff
 
-The RL method used to learn to walk is [Adversarial Motion Priors Make Good Substitutes for Complex Reward Functions](https://sites.google.com/berkeley.edu/amp-in-real/home). 
+The RL method used to learn to walk is [Adversarial Motion Priors Make Good Substitutes for Complex Reward Functions](https://sites.google.com/berkeley.edu/amp-in-real/home).
 
 My fork of the original repo is [there](https://github.com/apirrone/AMP_for_hardware/tree/bdx)
 
@@ -45,14 +45,14 @@ Note : I switched to using `xc330-M288-T` servomotors instead of `xl330-M288-T` 
 
 https://docs.google.com/spreadsheets/d/18hrYgjaE9uL2pnrnq5pNUzFLZcI4Rg0AvSc9sqwE680/edit?usp=sharing
 
-# Assembly Guide 
+# Assembly Guide
 
 TODO
 
 The current version (alpha) is not very easy to build, has some mechanical problems (too much play at some joints). After everything works on this version of the robot, I will redesign it from the ground up, trying to make it more accessible and better mechanically designed !
 
 
-# Embedded runtime 
+# Embedded runtime
 
 This repo contains the code to run the policies on the onboard computer (Raspberry pi zero 2w) https://github.com/apirrone/Open_Duck_Mini_Runtime
 
@@ -64,6 +64,7 @@ This repo contains the code to run the policies on the onboard computer (Raspber
 - https://arxiv.org/pdf/2401.16889
 - https://arxiv.org/pdf/1801.01290
 - First comment of this video explains the reward https://www.youtube.com/watch?v=L_4BPjLBF4E
+- https://www.haonanyu.blog/post/sim2real/
 
 ## Directly BDX related (from disney)
 - https://www.nvidia.com/en-us/on-demand/session/gtc24-s63374/

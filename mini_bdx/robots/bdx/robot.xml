@@ -59,7 +59,7 @@
     <!-- <joint damping="0.05" frictionloss="0.01"/>
     <position kp="10" kv="0.05" forcerange="-0.93 0.93"/> -->
     <!-- BAK -->
-    <joint damping="0.1" frictionloss="0.01"/>
+    <joint damping="0.05" frictionloss="0.01" armature="0.001"/>
     <position kp="3" kv="0.1" forcerange="-0.93 0.93"/>
   </default>
   <contact>
