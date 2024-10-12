@@ -6,9 +6,13 @@ This project is still a work in progress !
 
 I'm making a miniature version of the BDX Droid by Disney. It will be about 35 centimeters tall with its legs extended.
 
-https://github.com/user-attachments/assets/f2b3efac-9300-4959-95ae-06420a2d1517
+https://github.com/user-attachments/assets/9072d20d-6a6c-49be-8bfc-e947a4c3eb76
 
-This is a policy trained in Isaac Gym with [Amp_for_hardware](https://github.com/apirrone/AMP_for_hardware/tree/bdx) running in Mujoco.
+This is a policy trained in Isaac Gym with [Amp_for_hardware](https://github.com/apirrone/AMP_for_hardware/tree/bdx).
+
+https://github.com/user-attachments/assets/50c76252-7b52-4111-ba29-e0c4bffc3f62
+
+This is the same policy, running in Mujoco
 
 https://github.com/user-attachments/assets/4e03fe2b-371c-4bd5-a462-8fa0ee84efa2
 
@@ -34,10 +38,6 @@ See [this document](docs/prepare_robot.md) for getting from a onshape design to 
 The RL method used to learn to walk is [Adversarial Motion Priors Make Good Substitutes for Complex Reward Functions](https://sites.google.com/berkeley.edu/amp-in-real/home).
 
 My fork of the original repo is [there](https://github.com/apirrone/AMP_for_hardware/tree/bdx)
-
-This is the current policy running in Isaac Gym. It can be controlled to walk forward and to turn left or right.
-
-https://github.com/user-attachments/assets/c37d9bfc-67e1-4b21-a9dc-a1310bdf3016
 
 # BOM
 
