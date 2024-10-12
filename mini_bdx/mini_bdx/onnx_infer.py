@@ -2,16 +2,19 @@ import onnxruntime
 
 
 class OnnxInfer:
-    def __init__(self, onnx_model_path):
+    def __init__(self, onnx_model_path, input_name="obs"):
         self.onnx_model_path = onnx_model_path
         self.ort_session = onnxruntime.InferenceSession(
             self.onnx_model_path, providers=["CPUExecutionProvider"]
         )
+        self.input_name = input_name
 
     def infer(self, inputs):
         # outputs = self.ort_session.run(None, {"obs": [inputs]})
         # return outputs[0][0]
-        outputs = self.ort_session.run(None, {"obs": inputs.astype("float32")})
+        outputs = self.ort_session.run(
+            None, {self.input_name: inputs.astype("float32")}
+        )
         return outputs[0]
 
 
