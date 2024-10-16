@@ -33,6 +33,15 @@ def torque_to_current(torque: float) -> float:
     return min(current_limit, max(-current_limit, current))
 
 
+def torque_to_current2(torque: float) -> float:
+    """
+    Input torque in Nm
+    Output current in A
+    """
+    kt = 2.73
+    return torque / kt
+
+
 joints = {
     "right_hip_yaw": 10,
     "right_hip_roll": 11,
@@ -66,33 +75,39 @@ for joint, position in right_leg_position.items():
 #     viz.display(robot.state.q)
 #     time.sleep(1 / 20)
 # exit()
+def get_target_current():
+    target_torques = robot.static_gravity_compensation_torques_dict("trunk")
+    right_leg_target_torques = {}
+    for joint, torque in target_torques.items():
+        if joint in list(joints.keys()):
+            right_leg_target_torques[joint] = torque
 
-target_torques = robot.static_gravity_compensation_torques_dict("trunk")
-right_leg_target_torques = {}
-for joint, torque in target_torques.items():
-    if joint in list(joints.keys()):
-        right_leg_target_torques[joint] = torque
+    print("target torque", right_leg_target_torques)
 
-print("target torque", right_leg_target_torques)
+    right_leg_target_current = {}
+    for joint, torque in right_leg_target_torques.items():
+        right_leg_target_current[joint] = -torque_to_current2(torque) * 1000
 
-right_leg_target_current = {}
-for joint, torque in right_leg_target_torques.items():
-    right_leg_target_current[joint] = -torque_to_current(torque) * 1000
+    print("target current", right_leg_target_current)
+    right_leg_target_current_id = {
+        joints[joint]: round(current)
+        for joint, current in right_leg_target_current.items()
+    }
+    print("target current id", right_leg_target_current_id)
+    return right_leg_target_current_id
 
-print("target current", right_leg_target_current)
-right_leg_target_current_id = {
-    joints[joint]: current for joint, current in right_leg_target_current.items()
-}
-print("target current id", right_leg_target_current_id)
 
 time.sleep(1)
 input("press enter to set torques")
 # exit()
 dxl_io.enable_torque(joints.values())
-dxl_io.set_goal_current(right_leg_target_current_id)
+dxl_io.set_goal_current(get_target_current())
 try:
     while True:
-        # dxl_io.set_goal_current(right_leg_target_current_id)
+        right_leg_position = get_right_leg_position()
+        for joint, position in right_leg_position.items():
+            robot.set_joint(joint, position)
+        dxl_io.set_goal_current(get_target_current())
         print("running")
         time.sleep(1.0)
 except KeyboardInterrupt:

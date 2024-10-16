@@ -20,7 +20,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-o", "--onnx_model_path", type=str, required=True)
 parser.add_argument("-k", action="store_true", default=False)
 parser.add_argument("--rma", action="store_true", default=False)
+parser.add_argument("--awd", action="store_true", default=False)
 parser.add_argument("--adaptation_module_path", type=str, required=False)
+parser.add_argument("--replay_obs", type=str, required=False, default=None)
 args = parser.parse_args()
 
 if args.k:
@@ -30,17 +32,23 @@ if args.k:
     pygame.display.set_caption("Press arrow keys to move robot")
 
 
+if args.replay_obs is not None:
+    path = args.replay_obs
+    path = path[: -len("obs.pkl")]
+    actions_path = path + "actions.pkl"
+    replay_obs = pickle.load(open(args.replay_obs, "rb"))
+    replay_actions = pickle.load(open(actions_path, "rb"))
+replay_index = 0
+
 # Params
-# dt = 0.002
 dt = 0.0001
-linearVelocityScale = 2.0
+linearVelocityScale = 2.0 if not args.awd else 0.5
 angularVelocityScale = 0.25
 dof_pos_scale = 1.0
 dof_vel_scale = 0.05
 action_clip = (-1, 1)
 obs_clip = (-5, 5)
-action_scale = 0.25
-# action_scale = 1.0
+action_scale = 0.25 if not args.awd else 1.0
 
 
 isaac_init_pos = np.array(
@@ -76,7 +84,7 @@ viewer = mujoco_viewer.MujocoViewer(model, data)
 
 NUM_OBS = 51
 
-policy = OnnxInfer(args.onnx_model_path)
+policy = OnnxInfer(args.onnx_model_path, awd=args.awd)
 if args.rma:
     adaptation_module = OnnxInfer(args.adaptation_module_path, "obs_history")
     obs_history_size = 15
@@ -116,6 +124,11 @@ def quat_rotate_inverse(q, v):
 
 
 def get_obs(data, prev_isaac_action, commands):
+    global replay_index
+    if args.replay_obs is not None:
+        obs = replay_obs[replay_index]
+        return obs
+
     base_lin_vel = (
         data.sensor("linear-velocity").data.astype(np.double) * linearVelocityScale
     )
@@ -143,24 +156,31 @@ def get_obs(data, prev_isaac_action, commands):
 
     projected_gravity = quat_rotate_inverse(base_quat, [0, 0, -1])
 
-    obs = np.concatenate(
-        [
-            projected_gravity,
-            commands,
-            isaac_dof_pos_scaled,
-            isaac_dof_vel_scaled,
-            prev_isaac_action,
-        ]
-    )
-
+    if not args.awd:
+        obs = np.concatenate(
+            [
+                projected_gravity,
+                commands,
+                isaac_dof_pos_scaled,
+                isaac_dof_vel_scaled,
+                prev_isaac_action,
+            ]
+        )
+    else:
+        obs = np.concatenate(
+            [
+                projected_gravity,
+                isaac_dof_pos,
+                isaac_dof_vel,
+                prev_isaac_action,
+                commands,
+            ]
+        )
     return obs
 
 
 prev_isaac_action = np.zeros(15)
 commands = [0.14 * 2, 0.0, 0.0]
-# commands = [0.0, 0.0, 0.0]
-# prev = time.time()
-# last_control = time.time()
 prev = data.time
 last_control = data.time
 control_freq = 30  # hz
@@ -172,13 +192,6 @@ i = 0
 data.qpos[3 : 3 + 4] = [1, 0, 0.0, 0]
 cutoff_frequency = 40
 
-# init_rot = [0, -0.1, 0]
-# init_rot = [0, 0, 0]
-# init_quat = R.from_euler("xyz", init_rot, degrees=False).as_quat()
-# data.qpos[3 : 3 + 4] = init_quat
-# data.qpos[3 : 3 + 4] = [init_quat[3], init_quat[1], init_quat[2], init_quat[0]]
-# data.qpos[3 : 3 + 4] = [1, 0, 0.13, 0]
-
 
 data.qpos[7 : 7 + 15] = mujoco_init_pos
 data.ctrl[:] = mujoco_init_pos
@@ -188,8 +201,6 @@ action_filter = LowPassActionFilter(
 )
 
 mujoco_saved_obs = []
-mujoco_saved_actions = []
-command_value = []
 # obs_delay_simulator = ObsDelaySimulator(0)
 start = time.time()
 saved_latent = []
@@ -222,8 +233,14 @@ try:
             else:
                 isaac_action = policy.infer(isaac_obs)
 
-            action_filter.push(isaac_action)
-            isaac_action = action_filter.get_filtered_action()
+            if args.replay_obs:
+                replayed_action = replay_actions[replay_index]
+                print("infered action", np.around(isaac_action, 3))
+                print("replayed action", np.around(replayed_action, 3))
+                print("diff", np.around(isaac_action - replayed_action, 3))
+                print("==")
+            # action_filter.push(isaac_action)
+            # isaac_action = action_filter.get_filtered_action()
 
             prev_isaac_action = isaac_action.copy()  # * action_scale
 
@@ -233,11 +250,8 @@ try:
 
             data.ctrl[:] = mujoco_action.copy()
 
-            mujoco_saved_actions.append(mujoco_action)
             last_control = t
             i += 1
-
-            command_value.append([data.ctrl.copy(), data.qpos[7:].copy()])
 
             if args.k:
                 keys = pygame.key.get_pressed()
@@ -247,41 +261,38 @@ try:
                 if keys[pygame.K_z]:
                     lin_vel_x = 0.14
                 if keys[pygame.K_s]:
-                    lin_vel_x = 0
+                    lin_vel_x = -0.14
                 if keys[pygame.K_q]:
                     lin_vel_y = 0.1
                 if keys[pygame.K_d]:
                     lin_vel_y = -0.1
                 if keys[pygame.K_a]:
-                    ang_vel = 0.4
+                    ang_vel = 0.3
                 if keys[pygame.K_e]:
-                    ang_vel = -0.4
+                    ang_vel = -0.3
 
                 commands[0] = lin_vel_x
                 commands[1] = lin_vel_y
                 commands[2] = ang_vel
-                commands = list(
-                    np.array(commands)
-                    * np.array(
-                        [
-                            linearVelocityScale,
-                            linearVelocityScale,
-                            angularVelocityScale,
-                        ]
+
+                if not args.awd:
+                    commands = list(
+                        np.array(commands)
+                        * np.array(
+                            [
+                                linearVelocityScale,
+                                linearVelocityScale,
+                                angularVelocityScale,
+                            ]
+                        )
                     )
-                )
-                print(commands)
                 pygame.event.pump()  # process event queue
+            replay_index += 1
+            print(commands)
         mujoco.mj_step(model, data, 50)
 
         viewer.render()
         prev = t
 except KeyboardInterrupt:
-    data = {
-        "config": {},
-        "mujoco": command_value,
-    }
-    # pickle.dump(data, open("mujoco_command_value.pkl", "wb"))
     pickle.dump(mujoco_saved_obs, open("mujoco_saved_obs.pkl", "wb"))
-    # pickle.dump(mujoco_saved_actions, open("mujoco_saved_actions.pkl", "wb"))
     pickle.dump(saved_latent, open("mujoco_saved_latent.pkl", "wb"))

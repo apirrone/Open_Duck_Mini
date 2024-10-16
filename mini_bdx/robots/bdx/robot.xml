@@ -56,10 +56,10 @@
     <!-- <geom contype="1" conaffinity="1" solref=".004 1" /> -->
     <geom contype="1" conaffinity="1"/>
 
-    <!-- <joint damping="0.095" frictionloss="0.058" armature="0.0018"/>
-    <position kp="2.54" kv="0.0" forcerange="-0.8 0.8"/> -->
     <joint damping="0.095" frictionloss="0.058" armature="0.0018"/>
-    <position kp="5.77" kv="0.0" forcerange="-0.8 0.8"/>
+    <position kp="2.54" kv="0.0" forcerange="-0.8 0.8"/>
+    <!-- <joint damping="0.095" frictionloss="0.058" armature="0.0018"/>
+    <position kp="5.77" kv="0.0" forcerange="-0.8 0.8"/> -->
 
   </default>
   <contact>

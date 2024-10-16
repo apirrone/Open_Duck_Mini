@@ -37,9 +37,9 @@ class PlacoWalkEngine:
 
         # Posture parameters
         # self.parameters.walk_com_height = 0.16  # Constant height for the CoM [m]
-        self.parameters.walk_com_height = 0.18  # Constant height for the CoM [m]
+        self.parameters.walk_com_height = 0.165  # Constant height for the CoM [m]
         self.parameters.walk_foot_height = (
-            0.03  # Height of foot rising while walking [m] # 3
+            0.025  # Height of foot rising while walking [m] # 3
         )
         # self.parameters.walk_trunk_pitch = 0  # Trunk pitch angle [rad]
         self.parameters.walk_trunk_pitch = np.deg2rad(-5)  # Trunk pitch angle [rad]
@@ -184,7 +184,7 @@ class PlacoWalkEngine:
         return angles
 
     def reset(self):
-        self.t = 0
+        self.t = self.initial_delay
         self.start = None
         self.last_replan = 0
         self.time_since_last_right_contact = 0.0
