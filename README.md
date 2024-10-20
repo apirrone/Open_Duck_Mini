@@ -33,6 +33,8 @@ https://cad.onshape.com/documents/a18ff8cc622a533762a3a6f5/w/27ef6089ad5fe9ba396
 
 See [this document](docs/prepare_robot.md) for getting from a onshape design to a simulated robot in MuJoCo
 
+Idler cap https://cad.onshape.com/documents/be101dee8170780f05a04bfa/w/c49eb6dbb859e081d7ac252c/e/935d77385a5196902c262118
+
 # RL stuff
 
 The RL method used to learn to walk is [Adversarial Motion Priors Make Good Substitutes for Complex Reward Functions](https://sites.google.com/berkeley.edu/amp-in-real/home).
