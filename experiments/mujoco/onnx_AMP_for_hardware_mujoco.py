@@ -275,17 +275,16 @@ try:
                 commands[1] = lin_vel_y
                 commands[2] = ang_vel
 
-                if not args.awd:
-                    commands = list(
-                        np.array(commands)
-                        * np.array(
-                            [
-                                linearVelocityScale,
-                                linearVelocityScale,
-                                angularVelocityScale,
-                            ]
-                        )
+                commands = list(
+                    np.array(commands)
+                    * np.array(
+                        [
+                            linearVelocityScale,
+                            linearVelocityScale,
+                            angularVelocityScale,
+                        ]
                     )
+                )
                 pygame.event.pump()  # process event queue
             replay_index += 1
             print(commands)

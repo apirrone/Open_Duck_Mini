@@ -12,7 +12,7 @@ class OnnxInfer:
 
     def infer(self, inputs):
         if self.awd:
-            outputs = self.ort_session.run(None, {"obs": [inputs]})
+            outputs = self.ort_session.run(None, {self.input_name: [inputs]})
             return outputs[0][0]
         else:
             outputs = self.ort_session.run(
