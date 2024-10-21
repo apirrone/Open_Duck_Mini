@@ -37,9 +37,7 @@ Idler cap https://cad.onshape.com/documents/be101dee8170780f05a04bfa/w/c49eb6dbb
 
 # RL stuff
 
-The RL method used to learn to walk is [Adversarial Motion Priors Make Good Substitutes for Complex Reward Functions](https://sites.google.com/berkeley.edu/amp-in-real/home).
-
-My fork of the original repo is [there](https://github.com/apirrone/AMP_for_hardware/tree/bdx)
+We now use [AWD](https://github.com/rimim/AWD)
 
 # BOM
 
