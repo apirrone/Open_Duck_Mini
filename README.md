@@ -41,6 +41,10 @@ Idler cap https://cad.onshape.com/documents/be101dee8170780f05a04bfa/w/c49eb6dbb
 
 We now use [AWD](https://github.com/rimim/AWD)
 
+## Actuator identification 
+
+We used Rhoban's [BAM](https://github.com/Rhoban/bam)
+
 # BOM
 
 Note : I switched to using `xc330-M288-T` servomotors instead of `xl330-M288-T` for the legs. They are more expensive, but way more powerful. Maybe we'll try to go back to xl330 servos once everything is working properly with the xc330.
