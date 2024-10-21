@@ -4,23 +4,25 @@ This project is still a work in progress !
 
 ![Capture d’écran du 2024-07-22 18-15-29](https://github.com/user-attachments/assets/41876cb7-b4f2-4c68-8ef9-f92f2eb45044)
 
-I'm making a miniature version of the BDX Droid by Disney. It will be about 35 centimeters tall with its legs extended.
+I'm making a miniature version of the BDX Droid by Disney. It is about 35 centimeters tall with its legs extended.
 
-https://github.com/user-attachments/assets/9072d20d-6a6c-49be-8bfc-e947a4c3eb76
+This is a policy trained in Isaac Gym with [AWD](https://github.com/rimim/AWD).
 
-This is a policy trained in Isaac Gym with [Amp_for_hardware](https://github.com/apirrone/AMP_for_hardware/tree/bdx).
+https://github.com/user-attachments/assets/bbb0f181-659d-4227-af8a-83866aa6278a
 
-https://github.com/user-attachments/assets/50c76252-7b52-4111-ba29-e0c4bffc3f62
+Sim2Sim from Isaac to Mujoco
 
-This is the same policy, running in Mujoco
-
-https://github.com/user-attachments/assets/4e03fe2b-371c-4bd5-a462-8fa0ee84efa2
+https://github.com/user-attachments/assets/94ffe9a0-739e-4083-810a-541e25db2fb9
 
 This is a policy trained in Isaac Gym for standing up while being robust to perturbations.
 
-https://github.com/user-attachments/assets/6a742583-223a-43f7-8489-4a4fffeaaef6
+https://github.com/user-attachments/assets/4e03fe2b-371c-4bd5-a462-8fa0ee84efa2
 
-This is an attempt at running the walking policy on the real robot. Still some work to do :)
+Sim2Real walking is starting to work !
+
+https://github.com/user-attachments/assets/15f329b8-af58-42c1-bdef-b7eebd7a5fba
+
+
 
 
 # This repo
