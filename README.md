@@ -2,6 +2,8 @@
 
 This project is still a work in progress !
 
+Note : we'll start working on a v2 of this robot soon (December 2024). The v2 should be cheaper (aiming for ~$500), better designed, easier to build and more capable ! I would advise waiting for the v2 if you want to build this robot :)
+
 ![Capture d’écran du 2024-07-22 18-15-29](https://github.com/user-attachments/assets/41876cb7-b4f2-4c68-8ef9-f92f2eb45044)
 
 I'm making a miniature version of the BDX Droid by Disney. It is about 35 centimeters tall with its legs extended.
