@@ -52,15 +52,24 @@
     <mesh name="antenna_holder_right" file="antenna_holder_right.stl"/>
   </asset>
   <default>
+    <!-- TODO tune damping, frictionloss and kp -->
     <!-- <geom contype="1" conaffinity="1" solref=".004 1" /> -->
     <geom contype="1" conaffinity="1"/>
 
-    <!-- <joint damping="0.095" frictionloss="0.0058" armature="0.0018"/>
-    <position kp="2.54" kv="0.0" forcerange="-0.8 0.8"/> -->
-    <joint damping="0.11" frictionloss="0.002" armature="0.0018"/>
-    <position kp="3.52" kv="0.0" forcerange="-1.1 1.1"/>
+    <joint damping="0.095" frictionloss="0.058" armature="0.0018"/>
+    <position kp="2.54" kv="0.0" forcerange="-0.8 0.8"/>
+    <!-- <joint damping="0.0475" frictionloss="0.058" armature="0.0018"/>
+    <position kp="1.25" kv="0.0" forcerange="-0.8 0.8"/> -->
 
   </default>
+
+  <default>
+    <default class="xc330m288t">
+        <joint armature="1." />
+    </default>
+    <!-- <geom conaffinity="2" /> -->
+  </default>
+
   <contact>
     <exclude name="exclude1" body1="head_assembly" body2="head_link"/>
   </contact>
@@ -280,21 +289,21 @@
     </body>
   </worldbody>
   <actuator>
-    <position name="right_hip_yaw"   joint="right_hip_yaw"   inheritrange="1"/>
-    <position name="right_hip_roll"  joint="right_hip_roll"  inheritrange="1"/>
-    <position name="right_hip_pitch" joint="right_hip_pitch" inheritrange="1"/>
-    <position name="right_knee"      joint="right_knee"      inheritrange="1"/>
-    <position name="right_ankle"     joint="right_ankle"     inheritrange="1"/>
-    <position name="left_hip_yaw"    joint="left_hip_yaw"    inheritrange="1"/>
-    <position name="left_hip_roll"   joint="left_hip_roll"   inheritrange="1"/>
-    <position name="left_hip_pitch"  joint="left_hip_pitch"  inheritrange="1"/>
-    <position name="left_knee"       joint="left_knee"       inheritrange="1"/>
-    <position name="left_ankle"      joint="left_ankle"      inheritrange="1"/>
-    <position name="neck_pitch"      joint="neck_pitch"      inheritrange="1"/>
-    <position name="head_pitch"      joint="head_pitch"      inheritrange="1"/>
-    <position name="head_yaw"        joint="head_yaw"        inheritrange="1"/>
-    <position name="left_antenna"    joint="left_antenna"    inheritrange="1"/>
-    <position name="right_antenna"   joint="right_antenna"   inheritrange="1"/>
+    <motor class="xc330m288t" name="right_hip_yaw"   joint="right_hip_yaw"  />
+    <motor class="xc330m288t" name="right_hip_roll"  joint="right_hip_roll" />
+    <motor class="xc330m288t" name="right_hip_pitch" joint="right_hip_pitch"/>
+    <motor class="xc330m288t" name="right_knee"      joint="right_knee"     />
+    <motor class="xc330m288t" name="right_ankle"     joint="right_ankle"    />
+    <motor class="xc330m288t" name="left_hip_yaw"    joint="left_hip_yaw"   />
+    <motor class="xc330m288t" name="left_hip_roll"   joint="left_hip_roll"  />
+    <motor class="xc330m288t" name="left_hip_pitch"  joint="left_hip_pitch" />
+    <motor class="xc330m288t" name="left_knee"       joint="left_knee"      />
+    <motor class="xc330m288t" name="left_ankle"      joint="left_ankle"     />
+    <motor class="xc330m288t" name="neck_pitch"      joint="neck_pitch"     />
+    <motor class="xc330m288t" name="head_pitch"      joint="head_pitch"     />
+    <motor class="xc330m288t" name="head_yaw"        joint="head_yaw"       />
+    <motor class="xc330m288t" name="left_antenna"    joint="left_antenna"   />
+    <motor class="xc330m288t" name="right_antenna"   joint="right_antenna"  />
   </actuator>
   <sensor>
     <gyro          name='angular-velocity'    site='imu' noise='0.005' cutoff='34.9'/>
