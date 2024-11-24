@@ -1,10 +1,13 @@
 # V2 ROADMAP
 
+First make the placo walk work with foot sensors -> This validate the design, the motors are powerful enough and urdf is close to the real thing
+
 ## CAD
 
 ### Notes :
 - Plan mounting holes for aesthetic stuff later ?
 - Plan to hide the cables somehow
+- Integrate feet contact sensors (switchs, not fsr I think)
 
 ### TODO
   - [] Full redesign using feetech motors.
