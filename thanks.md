@@ -2,6 +2,7 @@ People involved in the project. (I'll try to update this list when I think of a 
 
 - Mimir Reynisson
 - Grégoire Passault
+- Augustin Crampette
 - Michel Aractingi
 - Mankaran Singh
 - Thomas Wolf
