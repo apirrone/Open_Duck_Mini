@@ -42,7 +42,7 @@ class PlacoWalkEngine:
         self.solver.enable_joint_limits(False)
         self.solver.dt = DT / REFINE
 
-        self.robot.set_joint_limits("left_knee", -2, -0.01)
+        self.robot.set_joint_limits("left_knee", 2, 0.01)
         self.robot.set_joint_limits("right_knee", -2, -0.01)
 
         # Creating the walk QP tasks
@@ -59,13 +59,13 @@ class PlacoWalkEngine:
 
         # # Creating a joint task to assign DoF values for upper body
         self.joints = self.parameters.joints
-        joint_degrees = self.parameters.joint_angles
-        joint_radians = {
-            joint: np.deg2rad(degrees) for joint, degrees in joint_degrees.items()
-        }
-        self.joints_task = self.solver.add_joints_task()
-        self.joints_task.set_joints(joint_radians)
-        self.joints_task.configure("joints", "soft", 1.0)
+        # joint_degrees = self.parameters.joint_angles
+        # joint_radians = {
+        #     joint: np.deg2rad(degrees) for joint, degrees in joint_degrees.items()
+        # }
+        # self.joints_task = self.solver.add_joints_task()
+        # self.joints_task.set_joints(joint_radians)
+        # self.joints_task.configure("joints", "soft", 1.0)
 
         # Placing the robot in the initial position
         print("Placing the robot in the initial position...")
