@@ -1,8 +1,10 @@
 import time
 import warnings
+import json
 
 import numpy as np
 import placo
+import os
 
 warnings.filterwarnings("ignore")
 
@@ -13,63 +15,25 @@ REFINE = 10
 class PlacoWalkEngine:
     def __init__(
         self,
-        model_filename: str = "../../robots/bdx/robot.urdf",
+        asset_path: str = "",
+        model_filename: str = "go_bdx.urdf",
+        init_params: dict = {},
         ignore_feet_contact: bool = False,
     ) -> None:
+        model_filename = os.path.join(asset_path, model_filename)
+        self.asset_path = asset_path
         self.model_filename = model_filename
         self.ignore_feet_contact = ignore_feet_contact
 
         # Loading the robot
         self.robot = placo.HumanoidRobot(model_filename)
 
-        # Walk parameters - if double_support_ratio is not set to 0, should be greater than replan_frequency
         self.parameters = placo.HumanoidParameters()
-
-        self.parameters.double_support_ratio = (
-            0.2  # Ratio of double support (0.0 to 1.0)
-        )
-        self.parameters.startend_double_support_ratio = (
-            1.5  # Ratio duration of supports for starting and stopping walk
-        )
-        self.parameters.planned_timesteps = 48  # Number of timesteps planned ahead
-        self.parameters.replan_timesteps = 10  # Replanning each n timesteps
-        # parameters.zmp_reference_weight = 1e-6
-
-        # Posture parameters
-        # self.parameters.walk_com_height = 0.16  # Constant height for the CoM [m]
-        self.parameters.walk_com_height = 0.165  # Constant height for the CoM [m]
-        self.parameters.walk_foot_height = (
-            0.025  # Height of foot rising while walking [m] # 3
-        )
-        # self.parameters.walk_trunk_pitch = 0  # Trunk pitch angle [rad]
-        self.parameters.walk_trunk_pitch = np.deg2rad(-5)  # Trunk pitch angle [rad]
-        self.parameters.walk_foot_rise_ratio = (
-            0.2  # Time ratio for the foot swing plateau (0.0 to 1.0)
-        )
-        self.parameters.single_support_duration = (
-            0.3  # Duration of single support phase [s]
-        )
-        self.parameters.single_support_timesteps = (
-            10  # Number of planning timesteps per single support phase
-        )
-
-        # Feet parameters
-        self.parameters.foot_length = 0.06  # Foot length [m]
-        # self.parameters.foot_width = 0.006  # Foot width [m]
-        self.parameters.feet_spacing = 0.14  # Lateral feet spacing [m] # 12
-        self.parameters.zmp_margin = 0.00  # ZMP margin [m]
-        self.parameters.foot_zmp_target_x = (
-            0.0  # Reference target ZMP position in the foot [m]
-        )
-        self.parameters.foot_zmp_target_y = (
-            0.0  # Reference target ZMP position in the foot [m]
-        )
-
-        # Limit parameters
-        self.parameters.walk_max_dtheta = 1  # Maximum dtheta per step [rad]
-        self.parameters.walk_max_dy = 0.1  # Maximum dy per step [m]
-        self.parameters.walk_max_dx_forward = 0.08  # Maximum dx per step forward [m]
-        self.parameters.walk_max_dx_backward = 0.03  # Maximum dx per step backward [m]
+        if init_params is not None:
+            self.load_parameters(init_params)
+        else:
+            defaults_filename = os.path.join(asset_path, "placo_defaults.json")
+            self.load_defaults(defaults_filename)
 
         # Creating the kinematics solver
         self.solver = placo.KinematicsSolver(self.robot)
@@ -83,8 +47,8 @@ class PlacoWalkEngine:
 
         # Creating the walk QP tasks
         self.tasks = placo.WalkTasks()
-        # tasks.trunk_mode = True
-        # self.tasks.com_x = -0.015
+        if hasattr(self.parameters, "trunk_mode"):
+            self.tasks.trunk_mode = self.parameters.trunk_mode
         self.tasks.com_x = 0.0
         self.tasks.initialize_tasks(self.solver, self.robot)
         self.tasks.left_foot_task.orientation().mask.set_axises("yz", "local")
@@ -94,18 +58,13 @@ class PlacoWalkEngine:
         # tasks.right_foot_task.orientation().configure("right_foot_orientation", "soft", 1e-6)
 
         # # Creating a joint task to assign DoF values for upper body
+        self.joints = self.parameters.joints
+        joint_degrees = self.parameters.joint_angles
+        joint_radians = {
+            joint: np.deg2rad(degrees) for joint, degrees in joint_degrees.items()
+        }
         self.joints_task = self.solver.add_joints_task()
-        self.joints_task.set_joints(
-            {
-                "head_pitch": np.deg2rad(-10),
-                "head_yaw": 0.0,
-                "neck_pitch": np.deg2rad(-10),
-                "left_antenna": np.deg2rad(0),
-                "right_antenna": np.deg2rad(0),
-                # "right_knee": np.deg2rad(-10),
-                # "left_knee": np.deg2rad(-10),
-            }
-        )
+        self.joints_task.set_joints(joint_radians)
         self.joints_task.configure("joints", "soft", 1.0)
 
         # Placing the robot in the initial position
@@ -162,25 +121,62 @@ class PlacoWalkEngine:
             + 2 * self.parameters.double_support_duration()
         )
 
-    def get_angles(self):
-        angles = {
-            "left_hip_yaw": self.robot.get_joint("left_hip_yaw"),
-            "left_hip_roll": self.robot.get_joint("left_hip_roll"),
-            "left_hip_pitch": self.robot.get_joint("left_hip_pitch"),
-            "left_knee": self.robot.get_joint("left_knee"),
-            "left_ankle": self.robot.get_joint("left_ankle"),
-            "neck_pitch": self.robot.get_joint("neck_pitch"),
-            "head_pitch": self.robot.get_joint("head_pitch"),
-            "head_yaw": self.robot.get_joint("head_yaw"),
-            "left_antenna": self.robot.get_joint("left_antenna"),
-            "right_antenna": self.robot.get_joint("right_antenna"),
-            "right_hip_yaw": self.robot.get_joint("right_hip_yaw"),
-            "right_hip_roll": self.robot.get_joint("right_hip_roll"),
-            "right_hip_pitch": self.robot.get_joint("right_hip_pitch"),
-            "right_knee": self.robot.get_joint("right_knee"),
-            "right_ankle": self.robot.get_joint("right_ankle"),
-        }
+    def load_defaults(self, filename):
+        with open(filename, "r") as f:
+            data = json.load(f)
+        params = self.parameters
+        load_parameters(data)
 
+    def load_parameters(self, data):
+        params = self.parameters
+        params.double_support_ratio = data.get(
+            "double_support_ratio", params.double_support_ratio
+        )
+        params.startend_double_support_ratio = data.get(
+            "startend_double_support_ratio", params.startend_double_support_ratio
+        )
+        params.planned_timesteps = data.get(
+            "planned_timesteps", params.planned_timesteps
+        )
+        params.replan_timesteps = data.get("replan_timesteps", params.replan_timesteps)
+        params.walk_com_height = data.get("walk_com_height", params.walk_com_height)
+        params.walk_foot_height = data.get("walk_foot_height", params.walk_foot_height)
+        params.walk_trunk_pitch = np.deg2rad(
+            data.get("walk_trunk_pitch", np.rad2deg(params.walk_trunk_pitch))
+        )
+        params.walk_foot_rise_ratio = data.get(
+            "walk_foot_rise_ratio", params.walk_foot_rise_ratio
+        )
+        params.single_support_duration = data.get(
+            "single_support_duration", params.single_support_duration
+        )
+        params.single_support_timesteps = data.get(
+            "single_support_timesteps", params.single_support_timesteps
+        )
+        params.foot_length = data.get("foot_length", params.foot_length)
+        params.feet_spacing = data.get("feet_spacing", params.feet_spacing)
+        params.zmp_margin = data.get("zmp_margin", params.zmp_margin)
+        params.foot_zmp_target_x = data.get(
+            "foot_zmp_target_x", params.foot_zmp_target_x
+        )
+        params.foot_zmp_target_y = data.get(
+            "foot_zmp_target_y", params.foot_zmp_target_y
+        )
+        params.walk_max_dtheta = data.get("walk_max_dtheta", params.walk_max_dtheta)
+        params.walk_max_dy = data.get("walk_max_dy", params.walk_max_dy)
+        params.walk_max_dx_forward = data.get(
+            "walk_max_dx_forward", params.walk_max_dx_forward
+        )
+        params.walk_max_dx_backward = data.get(
+            "walk_max_dx_backward", params.walk_max_dx_backward
+        )
+        params.joints = data.get("joints", [])
+        params.joint_angles = data.get("joint_angles", [])
+        if "trunk_mode" in data:
+            params.trunk_mode = data.get("trunk_mode")
+
+    def get_angles(self):
+        angles = {joint: self.robot.get_joint(joint) for joint in self.joints}
         return angles
 
     def reset(self):

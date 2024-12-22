@@ -1,0 +1,1408 @@
+<robot name="onshape">
+<link name="trunk_assembly">
+<visual>
+<origin xyz="0 -2.7755575615628913511e-16 0" rpy="0 -0 0" />
+<geometry>
+<mesh filename="package:///yaw_motor_support.stl"/>
+</geometry>
+<material name="yaw_motor_support_material">
+<color rgba="0.61568627450980395466 0.81176470588235294379 0.92941176470588238168 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 -2.7755575615628913511e-16 0" rpy="0 -0 0" />
+<geometry>
+<mesh filename="package:///yaw_motor_support.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0 -0.11000000000000026423 -0.00020000000000001266764" rpy="0 -0 0" />
+<geometry>
+<mesh filename="package:///roll_bearing.stl"/>
+</geometry>
+<material name="roll_bearing_material">
+<color rgba="0.2313725490196078538 0.38039215686274507888 0.7058823529411765163 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 -0.11000000000000026423 -0.00020000000000001266764" rpy="0 -0 0" />
+<geometry>
+<mesh filename="package:///roll_bearing.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0 -2.7755575615628913511e-16 -0.00020000000000001266764" rpy="0 -0 0" />
+<geometry>
+<mesh filename="package:///roll_bearing.stl"/>
+</geometry>
+<material name="roll_bearing_material">
+<color rgba="0.2313725490196078538 0.38039215686274507888 0.7058823529411765163 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 -2.7755575615628913511e-16 -0.00020000000000001266764" rpy="0 -0 0" />
+<geometry>
+<mesh filename="package:///roll_bearing.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.7347234759768070944e-17 -0.029496000000000272001 -0.0095999999999999904854" rpy="-1.570796326794896558 2.773339119917619081e-32 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+<material name="wj-wk00-0123middlecase_56_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.7347234759768070944e-17 -0.029496000000000272001 -0.0095999999999999904854" rpy="-1.570796326794896558 2.773339119917619081e-32 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.7347234759768070944e-17 -0.029496000000000272001 -0.0095999999999999904854" rpy="-1.570796326794896558 2.773339119917619081e-32 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+<material name="drive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.7347234759768070944e-17 -0.029496000000000272001 -0.0095999999999999904854" rpy="-1.570796326794896558 2.773339119917619081e-32 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.7347234759768070944e-17 -0.029496000000000272001 -0.0095999999999999904854" rpy="-1.570796326794896558 2.773339119917619081e-32 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+<material name="wj-wk00-0124bottomcase_45_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.7347234759768070944e-17 -0.029496000000000272001 -0.0095999999999999904854" rpy="-1.570796326794896558 2.773339119917619081e-32 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.7347234759768070944e-17 -0.029496000000000272001 -0.0095999999999999904854" rpy="-1.570796326794896558 2.773339119917619081e-32 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+<material name="wj-wk00-0122topcabinetcase_95_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.7347234759768070944e-17 -0.029496000000000272001 -0.0095999999999999904854" rpy="-1.570796326794896558 2.773339119917619081e-32 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.7347234759768070944e-17 -0.029496000000000272001 -0.012500000000000004163" rpy="-1.570796326794896558 2.773339119917619081e-32 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+<material name="passive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.7347234759768070944e-17 -0.029496000000000272001 -0.012500000000000004163" rpy="-1.570796326794896558 2.773339119917619081e-32 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.3877787807814456755e-17 0.029495999999999730767 -0.0095999999999999939548" rpy="-1.570796326794896558 1.187766222804824057e-32 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+<material name="wj-wk00-0123middlecase_56_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.3877787807814456755e-17 0.029495999999999730767 -0.0095999999999999939548" rpy="-1.570796326794896558 1.187766222804824057e-32 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.3877787807814456755e-17 0.029495999999999730767 -0.0095999999999999939548" rpy="-1.570796326794896558 1.187766222804824057e-32 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+<material name="drive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.3877787807814456755e-17 0.029495999999999730767 -0.0095999999999999939548" rpy="-1.570796326794896558 1.187766222804824057e-32 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.3877787807814456755e-17 0.029495999999999730767 -0.0095999999999999939548" rpy="-1.570796326794896558 1.187766222804824057e-32 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+<material name="wj-wk00-0124bottomcase_45_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.3877787807814456755e-17 0.029495999999999730767 -0.0095999999999999939548" rpy="-1.570796326794896558 1.187766222804824057e-32 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.3877787807814456755e-17 0.029495999999999730767 -0.0095999999999999939548" rpy="-1.570796326794896558 1.187766222804824057e-32 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+<material name="wj-wk00-0122topcabinetcase_95_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.3877787807814456755e-17 0.029495999999999730767 -0.0095999999999999939548" rpy="-1.570796326794896558 1.187766222804824057e-32 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.3877787807814456755e-17 0.029495999999999772401 -0.012500000000000018041" rpy="-1.570796326794896558 1.187766222804824057e-32 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+<material name="passive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.3877787807814456755e-17 0.029495999999999772401 -0.012500000000000018041" rpy="-1.570796326794896558 1.187766222804824057e-32 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+</collision>
+<inertial>
+<origin xyz="9.4483859579795618017e-10 3.8754325760779396086e-10 -0.015050003761514271078" rpy="0 0 0"/>
+<mass value="0.22534624917253631704" />
+<inertia ixx="0.00047894304079883442916" ixy="4.5602595439693619779e-08"  ixz="8.613712852888471974e-12" iyy="0.00017530039015783836125" iyz="4.2299862453414331827e-12" izz="0.00034804222010098367565" />
+</inertial>
+</link>
+
+<link name="trunk">
+<inertial>
+<origin xyz="0 0 0" rpy="0 0 0" />
+<mass value="1e-9" />
+<inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+</inertial>
+</link>
+<joint name="trunk_frame" type="fixed">
+<origin xyz="0 -2.7235158572835871382e-16 0.022500000000000019984" rpy="0 -0 0" />
+<parent link="trunk_assembly" />
+<child link="trunk" />
+<axis xyz="0 0 0"/>
+</joint>
+
+<link name="left_hip_roll_assembly">
+<visual>
+<origin xyz="0 -0.054999999999999993339 0.019049999999999983613" rpy="2.3889659105794878179e-48 -0 5.4738221262688075676e-48" />
+<geometry>
+<mesh filename="package:///roll_motor_top.stl"/>
+</geometry>
+<material name="roll_motor_top_material">
+<color rgba="0.91764705882352937127 0.91764705882352937127 0.91764705882352937127 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 -0.054999999999999993339 0.019049999999999983613" rpy="2.3889659105794878179e-48 -0 5.4738221262688075676e-48" />
+<geometry>
+<mesh filename="package:///roll_motor_top.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.00010000000000002331514 -0.054923999999999938149 0.019049999999999921163" rpy="-3.5632986684148714862e-32 -7.8886090522101040411e-31 7.3955709864469780124e-32" />
+<geometry>
+<mesh filename="package:///left_roll_motor_bottom.stl"/>
+</geometry>
+<material name="left_roll_motor_bottom_material">
+<color rgba="0.64705882352941179736 0.64705882352941179736 0.64705882352941179736 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.00010000000000002331514 -0.054923999999999938149 0.019049999999999921163" rpy="-3.5632986684148714862e-32 -7.8886090522101040411e-31 7.3955709864469780124e-32" />
+<geometry>
+<mesh filename="package:///left_roll_motor_bottom.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.0096999999999999864109 -0.025439000000000027563 -0.016950000000000194078" rpy="-6.3080853671883912271e-16 1.3905728639164133494e-31 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+<material name="wj-wk00-0123middlecase_56_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.0096999999999999864109 -0.025439000000000027563 -0.016950000000000194078" rpy="-6.3080853671883912271e-16 1.3905728639164133494e-31 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.0096999999999999864109 -0.025439000000000027563 -0.016950000000000194078" rpy="-6.3080853671883912271e-16 1.3905728639164133494e-31 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+<material name="drive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.0096999999999999864109 -0.025439000000000027563 -0.016950000000000194078" rpy="-6.3080853671883912271e-16 1.3905728639164133494e-31 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.0096999999999999864109 -0.025439000000000027563 -0.016950000000000194078" rpy="-6.3080853671883912271e-16 1.3905728639164133494e-31 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+<material name="wj-wk00-0124bottomcase_45_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.0096999999999999864109 -0.025439000000000027563 -0.016950000000000194078" rpy="-6.3080853671883912271e-16 1.3905728639164133494e-31 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.0096999999999999864109 -0.025439000000000027563 -0.016950000000000194078" rpy="-6.3080853671883912271e-16 1.3905728639164133494e-31 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+<material name="wj-wk00-0122topcabinetcase_95_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.0096999999999999864109 -0.025439000000000027563 -0.016950000000000194078" rpy="-6.3080853671883912271e-16 1.3905728639164133494e-31 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.012599999999999974068 -0.025439000000000027563 -0.016950000000000194078" rpy="-6.3080853671883912271e-16 1.3905728639164133494e-31 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+<material name="passive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.012599999999999974068 -0.025439000000000027563 -0.016950000000000194078" rpy="-6.3080853671883912271e-16 1.3905728639164133494e-31 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+</collision>
+<inertial>
+<origin xyz="0.00089623637550239460253 -0.011750260288626182201 -0.018046685320981772221" rpy="0 0 0"/>
+<mass value="0.070922673075841519141" />
+<inertia ixx="2.2429945443896648702e-05" ixy="4.5605750443569444556e-07"  ixz="-7.7496684366289658047e-08" iyy="1.7163890244024035278e-05" iyz="7.419284739303242314e-07" izz="2.4321031125862036323e-05" />
+</inertial>
+</link>
+
+<link name="left_hip_pitch_assembly">
+<visual>
+<origin xyz="-0.05500000000000004885 -0.036000000000000170752 0.019150000000000014233" rpy="1.570796326794896558 1.570796326794896336 0" />
+<geometry>
+<mesh filename="package:///left_roll_to_pitch.stl"/>
+</geometry>
+<material name="left_roll_to_pitch_material">
+<color rgba="0.97254901960784312376 0.52941176470588235947 0.0039215686274509803377 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="-0.05500000000000004885 -0.036000000000000170752 0.019150000000000014233" rpy="1.570796326794896558 1.570796326794896336 0" />
+<geometry>
+<mesh filename="package:///left_roll_to_pitch.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.069699999999999817657 9.9999999997255062389e-06 0.013956000000000006595" rpy="1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+<material name="wj-wk00-0123middlecase_56_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.069699999999999817657 9.9999999997255062389e-06 0.013956000000000006595" rpy="1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.069699999999999817657 9.9999999997255062389e-06 0.013956000000000006595" rpy="1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+<material name="drive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.069699999999999817657 9.9999999997255062389e-06 0.013956000000000006595" rpy="1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.069699999999999817657 9.9999999997255062389e-06 0.013956000000000006595" rpy="1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+<material name="wj-wk00-0124bottomcase_45_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.069699999999999817657 9.9999999997255062389e-06 0.013956000000000006595" rpy="1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.069699999999999817657 9.9999999997255062389e-06 0.013956000000000006595" rpy="1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+<material name="wj-wk00-0122topcabinetcase_95_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.069699999999999817657 9.9999999997255062389e-06 0.013956000000000006595" rpy="1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.072599999999999831335 9.9999999997255062389e-06 0.013956000000000006595" rpy="1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+<material name="passive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.072599999999999831335 9.9999999997255062389e-06 0.013956000000000006595" rpy="1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+</collision>
+<inertial>
+<origin xyz="0.051765655496354513743 -0.00065142639181695798176 0.023421560487088440017" rpy="0 0 0"/>
+<mass value="0.086007848830237890181" />
+<inertia ixx="2.7703840576837643166e-05" ixy="1.3879166829353387105e-07"  ixz="-5.0151836153309122977e-06" iyy="5.4861983834717743184e-05" iyz="-8.3314712300153367093e-08" izz="4.1183437114265446591e-05" />
+</inertial>
+</link>
+
+<link name="left_knee_pitch_assembly">
+<visual>
+<origin xyz="0.020445000000000063817 0.036004000000000244142 0.13384999999999980247" rpy="-1.5707963267948983344 1.232595164407830946e-32 0" />
+<geometry>
+<mesh filename="package:///left_hip_pitch_to_knee_pitch_right_sheet.stl"/>
+</geometry>
+<material name="left_hip_pitch_to_knee_pitch_right_sheet_material">
+<color rgba="0.76862745098039220171 0.88627450980392152857 0.95294117647058818044 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.020445000000000063817 0.036004000000000244142 0.13384999999999980247" rpy="-1.5707963267948983344 1.232595164407830946e-32 0" />
+<geometry>
+<mesh filename="package:///left_hip_pitch_to_knee_pitch_right_sheet.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.020445000000000067286 0.03599999999999999728 0.13404999999999994698" rpy="-1.570796326794896558 -3.889384548663213567e-62 0" />
+<geometry>
+<mesh filename="package:///left_hip_pitch_to_knee_pitch_left_sheet.stl"/>
+</geometry>
+<material name="left_hip_pitch_to_knee_pitch_left_sheet_material">
+<color rgba="0.76862745098039220171 0.88627450980392152857 0.95294117647058818044 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.020445000000000067286 0.03599999999999999728 0.13404999999999994698" rpy="-1.570796326794896558 -3.889384548663213567e-62 0" />
+<geometry>
+<mesh filename="package:///left_hip_pitch_to_knee_pitch_left_sheet.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.020445000000000060347 0.036004000000000244142 0.13394999999999979146" rpy="-1.5707963267948983344 1.232595164407830946e-32 0" />
+<geometry>
+<mesh filename="package:///hip_pitch_to_knee_pitch_spacer.stl"/>
+</geometry>
+<material name="hip_pitch_to_knee_pitch_spacer_material">
+<color rgba="0.97254901960784312376 0.52941176470588235947 0.0039215686274509803377 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.020445000000000060347 0.036004000000000244142 0.13394999999999979146" rpy="-1.5707963267948983344 1.232595164407830946e-32 0" />
+<geometry>
+<mesh filename="package:///hip_pitch_to_knee_pitch_spacer.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.3877787807814456755e-17 -0.0868160000000001153 0.0093500000000000527134" rpy="-1.570796326794896558 1.7763568394002504647e-15 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+<material name="wj-wk00-0123middlecase_56_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.3877787807814456755e-17 -0.0868160000000001153 0.0093500000000000527134" rpy="-1.570796326794896558 1.7763568394002504647e-15 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.3877787807814456755e-17 -0.0868160000000001153 0.0093500000000000527134" rpy="-1.570796326794896558 1.7763568394002504647e-15 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+<material name="drive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.3877787807814456755e-17 -0.0868160000000001153 0.0093500000000000527134" rpy="-1.570796326794896558 1.7763568394002504647e-15 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.3877787807814456755e-17 -0.0868160000000001153 0.0093500000000000527134" rpy="-1.570796326794896558 1.7763568394002504647e-15 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+<material name="wj-wk00-0124bottomcase_45_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.3877787807814456755e-17 -0.0868160000000001153 0.0093500000000000527134" rpy="-1.570796326794896558 1.7763568394002504647e-15 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.3877787807814456755e-17 -0.0868160000000001153 0.0093500000000000527134" rpy="-1.570796326794896558 1.7763568394002504647e-15 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+<material name="wj-wk00-0122topcabinetcase_95_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.3877787807814456755e-17 -0.0868160000000001153 0.0093500000000000527134" rpy="-1.570796326794896558 1.7763568394002504647e-15 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.3877787807814456755e-17 -0.0868160000000001153 0.006450000000000066791" rpy="-1.570796326794896558 1.7763568394002504647e-15 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+<material name="passive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.3877787807814456755e-17 -0.0868160000000001153 0.006450000000000066791" rpy="-1.570796326794896558 1.7763568394002504647e-15 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+</collision>
+<inertial>
+<origin xyz="-0.00026344669619873589336 -0.074117667088380106977 0.017573870304018048699" rpy="0 0 0"/>
+<mass value="0.11035257970525365334" />
+<inertia ixx="0.00015145923026943101984" ixy="-5.4137222421490110356e-07"  ixz="-1.8488951851868666875e-07" iyy="3.2909196307933897229e-05" iyz="-6.0895884085219158531e-08" izz="0.00013471246524649179766" />
+</inertial>
+</link>
+
+<link name="left_ankle_pitch_assembly">
+<visual>
+<origin xyz="0.020445000000000129736 0.020239999999999563896 0.1341500000000001025" rpy="-1.57079632679489678 1.2325951644078325881e-32 1.0571416753509825153e-64" />
+<geometry>
+<mesh filename="package:///hip_pitch_to_knee_pitch_spacer.stl"/>
+</geometry>
+<material name="hip_pitch_to_knee_pitch_spacer_material">
+<color rgba="0.97254901960784312376 0.52941176470588235947 0.0039215686274509803377 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.020445000000000129736 0.020239999999999563896 0.1341500000000001025" rpy="-1.57079632679489678 1.2325951644078325881e-32 1.0571416753509825153e-64" />
+<geometry>
+<mesh filename="package:///hip_pitch_to_knee_pitch_spacer.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.020445000000000060347 0.14832000000000011841 0.13395000000000009677" rpy="-1.570796326794896558 1.2325951644078325881e-32 1.0571416753509825153e-64" />
+<geometry>
+<mesh filename="package:///left_knee_to_ankle_right_sheet.stl"/>
+</geometry>
+<material name="left_knee_to_ankle_right_sheet_material">
+<color rgba="0.49803921568627451677 0.49803921568627451677 0.49803921568627451677 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.020445000000000060347 0.14832000000000011841 0.13395000000000009677" rpy="-1.570796326794896558 1.2325951644078325881e-32 1.0571416753509825153e-64" />
+<geometry>
+<mesh filename="package:///left_knee_to_ankle_right_sheet.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.02044500000000023382 0.14832000000000017392 0.13414999999999999147" rpy="-1.570796326794896558 -0 0" />
+<geometry>
+<mesh filename="package:///left_knee_to_ankle_left_sheet.stl"/>
+</geometry>
+<material name="left_knee_to_ankle_left_sheet_material">
+<color rgba="0.49803921568627451677 0.49803921568627451677 0.49803921568627451677 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.02044500000000023382 0.14832000000000017392 0.13414999999999999147" rpy="-1.570796326794896558 -0 0" />
+<geometry>
+<mesh filename="package:///left_knee_to_ankle_left_sheet.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="-1.7347234759768070944e-17 -0.086685000000000123066 0.0094499999999999861888" rpy="-1.570796326794896558 8.5765521874236695453e-33 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+<material name="wj-wk00-0123middlecase_56_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="-1.7347234759768070944e-17 -0.086685000000000123066 0.0094499999999999861888" rpy="-1.570796326794896558 8.5765521874236695453e-33 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="-1.7347234759768070944e-17 -0.086685000000000123066 0.0094499999999999861888" rpy="-1.570796326794896558 8.5765521874236695453e-33 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+<material name="drive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="-1.7347234759768070944e-17 -0.086685000000000123066 0.0094499999999999861888" rpy="-1.570796326794896558 8.5765521874236695453e-33 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="-1.7347234759768070944e-17 -0.086685000000000123066 0.0094499999999999861888" rpy="-1.570796326794896558 8.5765521874236695453e-33 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+<material name="wj-wk00-0124bottomcase_45_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="-1.7347234759768070944e-17 -0.086685000000000123066 0.0094499999999999861888" rpy="-1.570796326794896558 8.5765521874236695453e-33 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="-1.7347234759768070944e-17 -0.086685000000000123066 0.0094499999999999861888" rpy="-1.570796326794896558 8.5765521874236695453e-33 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+<material name="wj-wk00-0122topcabinetcase_95_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="-1.7347234759768070944e-17 -0.086685000000000123066 0.0094499999999999861888" rpy="-1.570796326794896558 8.5765521874236695453e-33 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="-1.7347234759768070944e-17 -0.086685000000000123066 0.0065500000000000002665" rpy="-1.570796326794896558 8.5765521874236695453e-33 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+<material name="passive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="-1.7347234759768070944e-17 -0.086685000000000123066 0.0065500000000000002665" rpy="-1.570796326794896558 8.5765521874236695453e-33 1.570796326794896558" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+</collision>
+<inertial>
+<origin xyz="3.6916151356017613219e-06 -0.077759239194399629169 0.017795325171061610048" rpy="0 0 0"/>
+<mass value="0.098683220321384851337" />
+<inertia ixx="0.00012661988190139404978" ixy="1.5307817078699229123e-08"  ixz="2.172099036371371486e-09" iyy="2.939289970268145179e-05" iyz="4.2448318649327865286e-07" izz="0.00011164832555969188841" />
+</inertial>
+</link>
+
+<link name="left_foot_assembly">
+<visual>
+<origin xyz="0.02044500000000010892 0.26064000000000020485 0.13404999999999997473" rpy="-1.570796326794896558 -0 0" />
+<geometry>
+<mesh filename="package:///left_foot_main.stl"/>
+</geometry>
+<material name="left_foot_main_material">
+<color rgba="0.98039215686274505668 0.71372549019607844922 0.0039215686274509803377 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.02044500000000010892 0.26064000000000020485 0.13404999999999997473" rpy="-1.570796326794896558 -0 0" />
+<geometry>
+<mesh filename="package:///left_foot_main.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.065329244225666910362 -0.032181509971509925094 0.023749999999999965583" rpy="-3.141592653589793116 -1.570796326794896558 0" />
+<geometry>
+<mesh filename="package:///switch_ss-10.stl"/>
+</geometry>
+<material name="switch_ss-10_material">
+<color rgba="0.76862745098039220171 0.88627450980392152857 0.95294117647058818044 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.065329244225666910362 -0.032181509971509925094 0.023749999999999965583" rpy="-3.141592653589793116 -1.570796326794896558 0" />
+<geometry>
+<mesh filename="package:///switch_ss-10.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.020417751938514118459 0.2611400000000002608 0.13404999999999994698" rpy="-1.570796326794896558 2.9705808733109505824e-68 -1.9698832702909219349e-42" />
+<geometry>
+<mesh filename="package:///left_foot_bottom.stl"/>
+</geometry>
+<material name="left_foot_bottom_material">
+<color rgba="0.98039215686274505668 0.71372549019607844922 0.0039215686274509803377 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.020417751938514118459 0.2611400000000002608 0.13404999999999994698" rpy="-1.570796326794896558 2.9705808733109505824e-68 -1.9698832702909219349e-42" />
+<geometry>
+<mesh filename="package:///left_foot_bottom.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="-0.040793466784824983229 -0.032181509971509925094 0.023749999999999965583" rpy="-3.141592653589793116 -1.570796326794896558 0" />
+<geometry>
+<mesh filename="package:///switch_ss-10.stl"/>
+</geometry>
+<material name="switch_ss-10_material">
+<color rgba="0.76862745098039220171 0.88627450980392152857 0.95294117647058818044 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="-0.040793466784824983229 -0.032181509971509925094 0.023749999999999965583" rpy="-3.141592653589793116 -1.570796326794896558 0" />
+<geometry>
+<mesh filename="package:///switch_ss-10.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.02044500000000010892 0.26064000000000014934 0.13404999999999997473" rpy="-1.570796326794896558 -0 0" />
+<geometry>
+<mesh filename="package:///left_foot_side.stl"/>
+</geometry>
+<material name="left_foot_side_material">
+<color rgba="0.98039215686274505668 0.71372549019607844922 0.0039215686274509803377 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.02044500000000010892 0.26064000000000014934 0.13404999999999997473" rpy="-1.570796326794896558 -0 0" />
+<geometry>
+<mesh filename="package:///left_foot_side.stl"/>
+</geometry>
+</collision>
+<inertial>
+<origin xyz="0.013817214096141531773 -0.033916500810220288897 0.018419819614152552201" rpy="0 0 0"/>
+<mass value="0.29347216354256022708" />
+<inertia ixx="0.00010059038913296346608" ixy="1.3148524728030395249e-05"  ixz="-1.3513177330417942352e-07" iyy="0.00047914850693422342699" iyz="3.7290222767025292522e-07" izz="0.00047454464533545600083" />
+</inertial>
+</link>
+
+<link name="left_foot">
+<inertial>
+<origin xyz="0 0 0" rpy="0 0 0" />
+<mass value="1e-9" />
+<inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+</inertial>
+</link>
+<joint name="left_foot_frame" type="fixed">
+<origin xyz="-2.724806148598352129e-05 -0.053059999999999940545 0.019049999999999955858" rpy="-1.570796326794896558 2.9705808733109505824e-68 -1.9698832702909219349e-42" />
+<parent link="left_foot_assembly" />
+<child link="left_foot" />
+<axis xyz="0 0 0"/>
+</joint>
+
+<joint name="left_ankle" type="revolute">
+<origin xyz="-4.1633363423443370266e-17 -0.1121850000000000902 -5.5511151231257827021e-17" rpy="-8.5765521874236585977e-33 1.2325951644078325881e-32 1.0571416753509825153e-64" />
+<parent link="left_ankle_pitch_assembly" />
+<child link="left_foot_assembly" />
+<axis xyz="0 0 1"/>
+<limit effort="1" velocity="20" lower="-1.570796326794896558" upper="1.570796326794896558"/>
+<joint_properties friction="0.0"/>
+</joint>
+
+<joint name="left_knee" type="revolute">
+<origin xyz="2.4286128663675299322e-17 -0.1123160000000001657 -9.9999999999794697558e-05" rpy="-1.7763568394002528313e-15 -0 2.1895288505075266733e-47" />
+<parent link="left_knee_pitch_assembly" />
+<child link="left_ankle_pitch_assembly" />
+<axis xyz="0 0 1"/>
+<limit effort="1" velocity="20" lower="-0.52359877559829881566" upper="2.1816615649929120835"/>
+<joint_properties friction="0.0"/>
+</joint>
+
+<joint name="left_hip_pitch" type="revolute">
+<origin xyz="0.079149999999999831601 9.9999999997255062389e-06 0.039456000000000025774" rpy="-3.1415926535897913396 1.5707963267948958919 0" />
+<parent link="left_hip_pitch_assembly" />
+<child link="left_knee_pitch_assembly" />
+<axis xyz="0 0 1"/>
+<limit effort="1" velocity="20" lower="-1.570796326794896558" upper="0.52359877559829881566"/>
+<joint_properties friction="0.0"/>
+</joint>
+
+<joint name="left_hip_roll" type="revolute">
+<origin xyz="0.019149999999999948314 6.0999999999970799802e-05 -0.016950000000000201017" rpy="-1.5707963267948958919 -6.9295263485299483695e-30 1.570796326794896336" />
+<parent link="left_hip_roll_assembly" />
+<child link="left_hip_pitch_assembly" />
+<axis xyz="0 0 1"/>
+<limit effort="1" velocity="20" lower="-0.43633231299858238339" upper="0.43633231299858238339"/>
+<joint_properties friction="0.0"/>
+</joint>
+
+<joint name="left_hip_yaw" type="revolute">
+<origin xyz="1.3739009929736358287e-17 0.054995999999999753416 -0.019049999999999990552" rpy="3.5632986684149037817e-32 7.8886090522100865249e-31 -7.3955709864469561171e-32" />
+<parent link="trunk_assembly" />
+<child link="left_hip_roll_assembly" />
+<axis xyz="0 0 1"/>
+<limit effort="1" velocity="20" lower="-0.785398163397448279" upper="0.785398163397448279"/>
+<joint_properties friction="0.0"/>
+</joint>
+
+<link name="right_hip_roll_assembly">
+<visual>
+<origin xyz="9.9999999999996806396e-05 0.055000000000000000278 0.019049999999999921163" rpy="2.4959901615981649508e-31 -6.7382408621036042863e-28 -2.4613975722516362861e-19" />
+<geometry>
+<mesh filename="package:///right_roll_motor_bottom.stl"/>
+</geometry>
+<material name="right_roll_motor_bottom_material">
+<color rgba="0.64705882352941179736 0.64705882352941179736 0.64705882352941179736 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="9.9999999999996806396e-05 0.055000000000000000278 0.019049999999999921163" rpy="2.4959901615981649508e-31 -6.7382408621036042863e-28 -2.4613975722516362861e-19" />
+<geometry>
+<mesh filename="package:///right_roll_motor_bottom.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="3.3087224502121106995e-24 0.055000000000000000278 0.019049999999999983613" rpy="4.3790577010150533466e-47 -4.3790577010150523743e-47 -2.3746488600748753685e-23" />
+<geometry>
+<mesh filename="package:///right_roll_motor_top.stl"/>
+</geometry>
+<material name="right_roll_motor_top_material">
+<color rgba="0.91764705882352937127 0.91764705882352937127 0.91764705882352937127 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="3.3087224502121106995e-24 0.055000000000000000278 0.019049999999999983613" rpy="4.3790577010150533466e-47 -4.3790577010150523743e-47 -2.3746488600748753685e-23" />
+<geometry>
+<mesh filename="package:///right_roll_motor_top.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.0096999999999999395733 0.025439000000000006746 -0.01695000000000024612" rpy="-3.1415926535897926719 -8.5690411029296116299e-32 1.570796326794896336" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+<material name="wj-wk00-0123middlecase_56_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.0096999999999999395733 0.025439000000000006746 -0.01695000000000024612" rpy="-3.1415926535897926719 -8.5690411029296116299e-32 1.570796326794896336" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.0096999999999999395733 0.025439000000000006746 -0.01695000000000024612" rpy="-3.1415926535897926719 -8.5690411029296116299e-32 1.570796326794896336" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+<material name="drive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.0096999999999999395733 0.025439000000000006746 -0.01695000000000024612" rpy="-3.1415926535897926719 -8.5690411029296116299e-32 1.570796326794896336" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.0096999999999999395733 0.025439000000000006746 -0.01695000000000024612" rpy="-3.1415926535897926719 -8.5690411029296116299e-32 1.570796326794896336" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+<material name="wj-wk00-0124bottomcase_45_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.0096999999999999395733 0.025439000000000006746 -0.01695000000000024612" rpy="-3.1415926535897926719 -8.5690411029296116299e-32 1.570796326794896336" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.0096999999999999395733 0.025439000000000006746 -0.01695000000000024612" rpy="-3.1415926535897926719 -8.5690411029296116299e-32 1.570796326794896336" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+<material name="wj-wk00-0122topcabinetcase_95_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.0096999999999999395733 0.025439000000000006746 -0.01695000000000024612" rpy="-3.1415926535897926719 -8.5690411029296116299e-32 1.570796326794896336" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.01259999999999996019 0.025439000000000024093 -0.01695000000000024612" rpy="-3.1415926535897926719 -8.5690411029296116299e-32 1.570796326794896336" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+<material name="passive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.01259999999999996019 0.025439000000000024093 -0.01695000000000024612" rpy="-3.1415926535897926719 -8.5690411029296116299e-32 1.570796326794896336" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+</collision>
+<inertial>
+<origin xyz="0.00089623750820097558296 0.011761178841672081594 -0.018036412518273720745" rpy="0 0 0"/>
+<mass value="0.070922671395286338014" />
+<inertia ixx="2.2429643925309007289e-05" ixy="-4.5542575903349778783e-07"  ixz="-8.2176032022017169986e-08" iyy="1.7165479053827466011e-05" iyz="-7.1693807581985527777e-07" izz="2.4319137913455844767e-05" />
+</inertial>
+</link>
+
+<link name="right_hip_pitch_assembly">
+<visual>
+<origin xyz="0.055000000000000055789 -0.036000000000000177691 0.019150000000000007294" rpy="1.570796326794896558 1.570796326794896336 0" />
+<geometry>
+<mesh filename="package:///right_roll_to_pitch.stl"/>
+</geometry>
+<material name="right_roll_to_pitch_material">
+<color rgba="0.97254901960784312376 0.52941176470588235947 0.0039215686274509803377 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.055000000000000055789 -0.036000000000000177691 0.019150000000000007294" rpy="1.570796326794896558 1.570796326794896336 0" />
+<geometry>
+<mesh filename="package:///right_roll_to_pitch.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="-0.069700000000000206235 9.9999999994826449523e-06 0.013956000000000013533" rpy="-1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+<material name="wj-wk00-0123middlecase_56_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="-0.069700000000000206235 9.9999999994826449523e-06 0.013956000000000013533" rpy="-1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="-0.069700000000000206235 9.9999999994826449523e-06 0.013956000000000013533" rpy="-1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+<material name="drive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="-0.069700000000000206235 9.9999999994826449523e-06 0.013956000000000013533" rpy="-1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="-0.069700000000000206235 9.9999999994826449523e-06 0.013956000000000013533" rpy="-1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+<material name="wj-wk00-0124bottomcase_45_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="-0.069700000000000206235 9.9999999994826449523e-06 0.013956000000000013533" rpy="-1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="-0.069700000000000206235 9.9999999994826449523e-06 0.013956000000000013533" rpy="-1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+<material name="wj-wk00-0122topcabinetcase_95_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="-0.069700000000000206235 9.9999999994826449523e-06 0.013956000000000013533" rpy="-1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="-0.072600000000000164402 9.9999999994757060584e-06 0.013956000000000013533" rpy="-1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+<material name="passive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="-0.072600000000000164402 9.9999999994757060584e-06 0.013956000000000013533" rpy="-1.5707963267948983344 1.5707963267948958919 0" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+</collision>
+<inertial>
+<origin xyz="-0.051765659904148234038 -0.00065989920508579451644 0.023421553317729666699" rpy="0 0 0"/>
+<mass value="0.086007837974105827428" />
+<inertia ixx="2.7702861646150486752e-05" ixy="-1.5012025953235555868e-07"  ixz="5.0151973423770564606e-06" iyy="5.4861967827001960384e-05" iyz="-6.6097864069147902248e-08" izz="4.1182460236406121131e-05" />
+</inertial>
+</link>
+
+<link name="right_knee_pitch_assembly">
+<visual>
+<origin xyz="0.020445000000000070756 -0.03599999999999999728 0.13404999999999997473" rpy="1.570796326794896558 2.3746102807119178099e-23 4.7423015614997577825e-32" />
+<geometry>
+<mesh filename="package:///right_hip_pitch_to_knee_pitch_left_sheet.stl"/>
+</geometry>
+<material name="right_hip_pitch_to_knee_pitch_left_sheet_material">
+<color rgba="0.76862745098039220171 0.88627450980392152857 0.95294117647058818044 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.020445000000000070756 -0.03599999999999999728 0.13404999999999997473" rpy="1.570796326794896558 2.3746102807119178099e-23 4.7423015614997577825e-32" />
+<geometry>
+<mesh filename="package:///right_hip_pitch_to_knee_pitch_left_sheet.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.020445000000000067286 -0.035999999999999990341 -0.097249999999999947597" rpy="1.570796326794896558 7.6685662010509801905e-23 2.4463824192025057297e-31" />
+<geometry>
+<mesh filename="package:///hip_pitch_to_knee_pitch_spacer.stl"/>
+</geometry>
+<material name="hip_pitch_to_knee_pitch_spacer_material">
+<color rgba="0.97254901960784312376 0.52941176470588235947 0.0039215686274509803377 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.020445000000000067286 -0.035999999999999990341 -0.097249999999999947597" rpy="1.570796326794896558 7.6685662010509801905e-23 2.4463824192025057297e-31" />
+<geometry>
+<mesh filename="package:///hip_pitch_to_knee_pitch_spacer.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.020445000000000029122 -0.036003999999999973525 0.13385000000000005227" rpy="1.570796326794896558 2.1942680301461347071e-21 2.4463824192025057297e-31" />
+<geometry>
+<mesh filename="package:///right_hip_pitch_to_knee_pitch_right_sheet.stl"/>
+</geometry>
+<material name="right_hip_pitch_to_knee_pitch_right_sheet_material">
+<color rgba="0.76862745098039220171 0.88627450980392152857 0.95294117647058818044 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.020445000000000029122 -0.036003999999999973525 0.13385000000000005227" rpy="1.570796326794896558 2.1942680301461347071e-21 2.4463824192025057297e-31" />
+<geometry>
+<mesh filename="package:///right_hip_pitch_to_knee_pitch_right_sheet.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.3877787807814456755e-17 0.086816000000000143055 0.0093500000000000665912" rpy="-1.570796326794896558 4.2404241942000516658e-23 -1.5707963267948972241" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+<material name="wj-wk00-0123middlecase_56_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.3877787807814456755e-17 0.086816000000000143055 0.0093500000000000665912" rpy="-1.570796326794896558 4.2404241942000516658e-23 -1.5707963267948972241" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.3877787807814456755e-17 0.086816000000000143055 0.0093500000000000665912" rpy="-1.570796326794896558 4.2404241942000516658e-23 -1.5707963267948972241" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+<material name="drive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.3877787807814456755e-17 0.086816000000000143055 0.0093500000000000665912" rpy="-1.570796326794896558 4.2404241942000516658e-23 -1.5707963267948972241" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.3877787807814456755e-17 0.086816000000000143055 0.0093500000000000665912" rpy="-1.570796326794896558 4.2404241942000516658e-23 -1.5707963267948972241" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+<material name="wj-wk00-0124bottomcase_45_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.3877787807814456755e-17 0.086816000000000143055 0.0093500000000000665912" rpy="-1.570796326794896558 4.2404241942000516658e-23 -1.5707963267948972241" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="1.3877787807814456755e-17 0.086816000000000143055 0.0093500000000000665912" rpy="-1.570796326794896558 4.2404241942000516658e-23 -1.5707963267948972241" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+<material name="wj-wk00-0122topcabinetcase_95_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="1.3877787807814456755e-17 0.086816000000000143055 0.0093500000000000665912" rpy="-1.570796326794896558 4.2404241942000516658e-23 -1.5707963267948972241" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="-1.3877787807814456755e-17 0.086816000000000143055 0.0064500000000005386358" rpy="-1.570796326794896558 4.2404241942000516658e-23 -1.5707963267948972241" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+<material name="passive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="-1.3877787807814456755e-17 0.086816000000000143055 0.0064500000000005386358" rpy="-1.570796326794896558 4.2404241942000516658e-23 -1.5707963267948972241" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+</collision>
+<inertial>
+<origin xyz="-0.00027004914179342624607 0.074117976417122422017 0.017573870375609607769" rpy="0 0 0"/>
+<mass value="0.11035257931200090353" />
+<inertia ixx="0.00015145555355436320132" ixy="5.7472725638703853402e-07"  ixz="-1.8914514249530280995e-07" iyy="3.290880739862617828e-05" iyz="6.086924610813408519e-08" izz="0.00013470839994118085237" />
+</inertial>
+</link>
+
+<link name="right_ankle_pitch_assembly">
+<visual>
+<origin xyz="0.020445000000000278922 -0.020239999999999563896 -0.097250000000000114131" rpy="1.570796326794896558 -1.1267669755046962548e-20 -6.1052704361328411341e-18" />
+<geometry>
+<mesh filename="package:///hip_pitch_to_knee_pitch_spacer.stl"/>
+</geometry>
+<material name="hip_pitch_to_knee_pitch_spacer_material">
+<color rgba="0.97254901960784312376 0.52941176470588235947 0.0039215686274509803377 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.020445000000000278922 -0.020239999999999563896 -0.097250000000000114131" rpy="1.570796326794896558 -1.1267669755046962548e-20 -6.1052704361328411341e-18" />
+<geometry>
+<mesh filename="package:///hip_pitch_to_knee_pitch_spacer.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.02044500000000023382 -0.14831999999999989637 0.13395000000000023554" rpy="1.570796326794896558 1.9913730615759792774e-20 6.2817360817869258253e-18" />
+<geometry>
+<mesh filename="package:///right_knee_to_ankle_right_sheet.stl"/>
+</geometry>
+<material name="right_knee_to_ankle_right_sheet_material">
+<color rgba="0.49803921568627451677 0.49803921568627451677 0.49803921568627451677 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.02044500000000023382 -0.14831999999999989637 0.13395000000000023554" rpy="1.570796326794896558 1.9913730615759792774e-20 6.2817360817869258253e-18" />
+<geometry>
+<mesh filename="package:///right_knee_to_ankle_right_sheet.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.02044500000000023382 -0.14832000000000017392 0.13414999999999996372" rpy="1.570796326794896558 -4.4483203923387403886e-23 -1.1583686611688592927e-30" />
+<geometry>
+<mesh filename="package:///right_knee_to_ankle_left_sheet.stl"/>
+</geometry>
+<material name="right_knee_to_ankle_left_sheet_material">
+<color rgba="0.49803921568627451677 0.49803921568627451677 0.49803921568627451677 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.02044500000000023382 -0.14832000000000017392 0.13414999999999996372" rpy="1.570796326794896558 -4.4483203923387403886e-23 -1.1583686611688592927e-30" />
+<geometry>
+<mesh filename="package:///right_knee_to_ankle_left_sheet.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="8.396061623727746337e-16 0.086685000000000039799 0.0094500000000001110889" rpy="-1.570796326794896558 1.0544583344520548578e-16 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+<material name="wj-wk00-0123middlecase_56_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="8.396061623727746337e-16 0.086685000000000039799 0.0094500000000001110889" rpy="-1.570796326794896558 1.0544583344520548578e-16 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0123middlecase_56.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="8.396061623727746337e-16 0.086685000000000039799 0.0094500000000001110889" rpy="-1.570796326794896558 1.0544583344520548578e-16 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+<material name="drive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="8.396061623727746337e-16 0.086685000000000039799 0.0094500000000001110889" rpy="-1.570796326794896558 1.0544583344520548578e-16 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///drive_palonier.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="8.396061623727746337e-16 0.086685000000000039799 0.0094500000000001110889" rpy="-1.570796326794896558 1.0544583344520548578e-16 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+<material name="wj-wk00-0124bottomcase_45_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="8.396061623727746337e-16 0.086685000000000039799 0.0094500000000001110889" rpy="-1.570796326794896558 1.0544583344520548578e-16 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0124bottomcase_45.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="8.396061623727746337e-16 0.086685000000000039799 0.0094500000000001110889" rpy="-1.570796326794896558 1.0544583344520548578e-16 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+<material name="wj-wk00-0122topcabinetcase_95_material">
+<color rgba="0.24705882352941177516 0.24313725490196078094 0.24313725490196078094 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="8.396061623727746337e-16 0.086685000000000039799 0.0094500000000001110889" rpy="-1.570796326794896558 1.0544583344520548578e-16 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///wj-wk00-0122topcabinetcase_95.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="8.4654505627668186207e-16 0.086685000000000067555 0.0065499999999999169997" rpy="-1.570796326794896558 1.0544583344520548578e-16 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+<material name="passive_palonier_material">
+<color rgba="0.62352941176470588758 0.66666666666666662966 0.70196078431372543882 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="8.4654505627668186207e-16 0.086685000000000067555 0.0065499999999999169997" rpy="-1.570796326794896558 1.0544583344520548578e-16 -1.570796326794896558" />
+<geometry>
+<mesh filename="package:///passive_palonier.stl"/>
+</geometry>
+</collision>
+<inertial>
+<origin xyz="-3.6916151349955669466e-06 0.077759239194399726314 0.017778026390717082544" rpy="0 0 0"/>
+<mass value="0.098683220321384601537" />
+<inertia ixx="0.0001266176171807032022" ixy="1.5307817078084759659e-08"  ixz="-2.1657970825117446074e-09" iyy="2.9390634981992067883e-05" iyz="-4.957018588729207508e-07" izz="0.00011164832555969041118" />
+</inertial>
+</link>
+
+<link name="right_foot_assembly">
+<visual>
+<origin xyz="0.02094500000000013365 -0.2611400000000002608 0.13454999999999991966" rpy="1.570796326794896558 -4.4483193573663491162e-23 4.9409130870146903851e-32" />
+<geometry>
+<mesh filename="package:///right_foot_bottom.stl"/>
+</geometry>
+<material name="right_foot_bottom_material">
+<color rgba="0.98039215686274505668 0.71372549019607844922 0.0039215686274509803377 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.02094500000000013365 -0.2611400000000002608 0.13454999999999991966" rpy="1.570796326794896558 -4.4483193573663491162e-23 4.9409130870146903851e-32" />
+<geometry>
+<mesh filename="package:///right_foot_bottom.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.020446263802895884437 -0.26062437046785275063 0.13404999999999994698" rpy="1.570796326794896558 -4.4483193573663491162e-23 4.9409130870146903851e-32" />
+<geometry>
+<mesh filename="package:///right_foot_side.stl"/>
+</geometry>
+<material name="right_foot_side_material">
+<color rgba="0.98039215686274505668 0.71372549019607844922 0.0039215686274509803377 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.020446263802895884437 -0.26062437046785275063 0.13404999999999994698" rpy="1.570796326794896558 -4.4483193573663491162e-23 4.9409130870146903851e-32" />
+<geometry>
+<mesh filename="package:///right_foot_side.stl"/>
+</geometry>
+</collision>
+<visual>
+<origin xyz="0.020445000000000112389 -0.26064000000000020485 0.13404999999999997473" rpy="1.570796326794896558 -4.4483193573663491162e-23 4.9409130870146903851e-32" />
+<geometry>
+<mesh filename="package:///right_foot_main.stl"/>
+</geometry>
+<material name="right_foot_main_material">
+<color rgba="0.98039215686274505668 0.71372549019607844922 0.0039215686274509803377 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0.020445000000000112389 -0.26064000000000020485 0.13404999999999997473" rpy="1.570796326794896558 -4.4483193573663491162e-23 4.9409130870146903851e-32" />
+<geometry>
+<mesh filename="package:///right_foot_main.stl"/>
+</geometry>
+</collision>
+<inertial>
+<origin xyz="0.013991472455813037945 0.0339013336511617136 0.018580395431680298696" rpy="0 0 0"/>
+<mass value="0.29147217222111720947" />
+<inertia ixx="0.00010056711716468336561" ixy="-1.3794567928478849479e-05"  ixz="-2.9829868586507470802e-07" iyy="0.00047380940648318598104" iyz="-1.0041016141191533718e-06" izz="0.0004691425692073952769" />
+</inertial>
+</link>
+
+<link name="right_foot">
+<inertial>
+<origin xyz="0 0 0" rpy="0 0 0" />
+<mass value="1e-9" />
+<inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+</inertial>
+</link>
+<joint name="right_foot_frame" type="fixed">
+<origin xyz="0.00050000000000001779132 0.053059999999999940545 0.01954999999999990079" rpy="1.570796326794896558 -4.4483193573663491162e-23 4.9409130870146903851e-32" />
+<parent link="right_foot_assembly" />
+<child link="right_foot" />
+<axis xyz="0 0 0"/>
+</joint>
+
+<joint name="right_ankle" type="revolute">
+<origin xyz="1.3183898417423733918e-16 0.11218500000000031225 8.3266726846886740532e-17" rpy="1.4643357955393777909e-16 -1.4438978053469552301e-16 3.3321594868555283369e-16" />
+<parent link="right_ankle_pitch_assembly" />
+<child link="right_foot_assembly" />
+<axis xyz="0 0 1"/>
+<limit effort="1" velocity="20" lower="-1.570796326794896558" upper="1.570796326794896558"/>
+<joint_properties friction="0.0"/>
+</joint>
+
+<joint name="right_knee" type="revolute">
+<origin xyz="4.5102810375396984455e-17 0.11231600000000015183 -9.9999999999933475436e-05" rpy="8.6413837281558197907e-18 3.2674690263357178969e-17 9.42818147085318761e-15" />
+<parent link="right_knee_pitch_assembly" />
+<child link="right_ankle_pitch_assembly" />
+<axis xyz="0 0 1"/>
+<limit effort="1" velocity="20" lower="-2.1816615649929120835" upper="0.52359877559829881566"/>
+<joint_properties friction="0.0"/>
+</joint>
+
+<joint name="right_hip_pitch" type="revolute">
+<origin xyz="-0.079149999999999859357 9.9999999996144839365e-06 0.039455999999999782912" rpy="-1.7282771299945109835e-15 1.5707963267948958919 0" />
+<parent link="right_hip_pitch_assembly" />
+<child link="right_knee_pitch_assembly" />
+<axis xyz="0 0 1"/>
+<limit effort="1" velocity="20" lower="-0.52359877559829881566" upper="1.570796326794896558"/>
+<joint_properties friction="0.0"/>
+</joint>
+
+<joint name="right_hip_roll" type="revolute">
+<origin xyz="0.019150000000000055866 -6.099999999998467759e-05 -0.016950000000000447348" rpy="-1.5707963267948943376 -2.4982621091609909182e-15 1.5707963267948898967" />
+<parent link="right_hip_roll_assembly" />
+<child link="right_hip_pitch_assembly" />
+<axis xyz="0 0 1"/>
+<limit effort="1" velocity="20" lower="-0.43633231299858238339" upper="0.43633231299858238339"/>
+<joint_properties friction="0.0"/>
+</joint>
+
+<joint name="right_hip_yaw" type="revolute">
+<origin xyz="1.6736441286736465097e-17 -0.05499600000000029465 -0.019049999999999987083" rpy="-2.4960052079258594172e-31 3.3280069439011422404e-31 -3.4615137454088894957e-07" />
+<parent link="trunk_assembly" />
+<child link="right_hip_roll_assembly" />
+<axis xyz="0 0 1"/>
+<limit effort="1" velocity="20" lower="-0.785398163397448279" upper="0.785398163397448279"/>
+<joint_properties friction="0.0"/>
+</joint>
+
+
+</robot>
