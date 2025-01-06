@@ -1,13 +1,13 @@
 {
     "configuration": "default",
     "documentId": "64074dfcfa379b37d8a47762",
-    "documentMicroversion": "08c2eb824263fac24233f42c",
-    "elementId": "3a1b6be5fc3f5d0808311889",
+    "documentMicroversion": "d7fb2b26a8874fba5a664e93",
+    "elementId": "560456e30aa4a28c1f2fba59",
     "fullConfiguration": "default",
-    "id": "MaNG0+YSwZdViigaJ",
+    "id": "MpGyeI6xwk8KzwRHD",
     "isStandardContent": false,
     "name": "roll_bearing <1>",
-    "partId": "RQBD",
+    "partId": "RQFD",
     "suppressed": false,
     "type": "Part"
 }

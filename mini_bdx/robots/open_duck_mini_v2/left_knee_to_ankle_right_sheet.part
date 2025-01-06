@@ -1,13 +1,13 @@
 {
     "configuration": "default",
     "documentId": "64074dfcfa379b37d8a47762",
-    "documentMicroversion": "08c2eb824263fac24233f42c",
-    "elementId": "3a1b6be5fc3f5d0808311889",
+    "documentMicroversion": "d7fb2b26a8874fba5a664e93",
+    "elementId": "560456e30aa4a28c1f2fba59",
     "fullConfiguration": "default",
-    "id": "MOywAmU9LJDT8kgTm",
+    "id": "MFSYykuSOyFPl8MEE",
     "isStandardContent": false,
     "name": "left_knee_to_ankle_right_sheet <1>",
-    "partId": "RYED",
+    "partId": "R+BH",
     "suppressed": false,
     "type": "Part"
 }

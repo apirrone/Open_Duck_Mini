@@ -4,10 +4,10 @@
     "documentMicroversion": "d7fb2b26a8874fba5a664e93",
     "elementId": "560456e30aa4a28c1f2fba59",
     "fullConfiguration": "default",
-    "id": "Mg7gXWiWLFdTkX/WZ",
+    "id": "Myaob+U7t7V85ye7W",
     "isStandardContent": false,
-    "name": "left_roll_to_pitch <1>",
-    "partId": "RZDD",
+    "name": "head_pitch_to_yaw <1>",
+    "partId": "RcJD",
     "suppressed": false,
     "type": "Part"
 }
