@@ -1,0 +1,14 @@
+{
+    "configuration": "default",
+    "documentId": "a18ff8cc622a533762a3a6f5",
+    "documentMicroversion": "fec7274eed93bbb2ddfa3f9a",
+    "documentVersion": "e7b56d4e8d68901c7607c0e3",
+    "elementId": "1a4a827101fb7d1d1b3cc8de",
+    "fullConfiguration": "default",
+    "id": "MXjBB69uv3FCgauqS",
+    "isStandardContent": false,
+    "name": "usb_c_charger <1>",
+    "partId": "JHD",
+    "suppressed": false,
+    "type": "Part"
+}

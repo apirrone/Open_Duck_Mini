@@ -1,13 +1,13 @@
 {
     "configuration": "default",
     "documentId": "64074dfcfa379b37d8a47762",
-    "documentMicroversion": "d7fb2b26a8874fba5a664e93",
+    "documentMicroversion": "66c3cd0d85faecb62e2bf585",
     "elementId": "560456e30aa4a28c1f2fba59",
     "fullConfiguration": "default",
-    "id": "MpGyeI6xwk8KzwRHD",
+    "id": "Ma27pDNdkzSRCakAZ",
     "isStandardContent": false,
     "name": "roll_bearing <1>",
-    "partId": "RQFD",
+    "partId": "RpHD",
     "suppressed": false,
     "type": "Part"
 }

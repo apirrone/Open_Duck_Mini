@@ -1,0 +1,13 @@
+{
+    "configuration": "default",
+    "documentId": "64074dfcfa379b37d8a47762",
+    "documentMicroversion": "66c3cd0d85faecb62e2bf585",
+    "elementId": "560456e30aa4a28c1f2fba59",
+    "fullConfiguration": "default",
+    "id": "MvOQ01tQlVV+zSv63",
+    "isStandardContent": false,
+    "name": "battery_pack_lid <1>",
+    "partId": "RqOD",
+    "suppressed": false,
+    "type": "Part"
+}
