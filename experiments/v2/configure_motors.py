@@ -32,25 +32,28 @@ io = FeetechSTS3215IO(
 )
 
 
-id = 33
-try:
-    io.get_present_position([id])
-except Exception:
-    print(
-        "Didn't find motor with id 1, motor has probably been configured before. scanning for other motors"
-    )
-    print("Scanning... ")
-    found_ids = io.scan()
-    print("Found ids: ", found_ids)
-    if len(found_ids) > 1:
-        print("More than one motor found, please connect only one motor")
-        exit()
-    elif len(found_ids) == 0:
-        print("No motor found")
-        exit()
+id = 200
+SKIP_SCAN = False
+if not SKIP_SCAN:
+    try:
+        io.get_present_position([id])
+    except Exception:
+        print(
+            "Didn't find motor with id 1, motor has probably been configured before. scanning for other motors"
+        )
+        print("Scanning... ")
+        found_ids = io.scan()
+        print("Found ids: ", found_ids)
+        if len(found_ids) > 1:
+            print("More than one motor found, please connect only one motor")
+            exit()
+        elif len(found_ids) == 0:
+            print("No motor found")
+            exit()
 
-    id = found_ids[0]
+        id = found_ids[0]
 
+exit()
 print("Select the dof you want to configure : ")
 for i, key in enumerate(joints.keys()):
     print(f"{i}: {key}")
@@ -76,6 +79,9 @@ io.change_id({id: dof_id})
 id = dof_id
 print("- setting new baudrate")
 io.change_baudrate({id: 0})  # 1 000 000
+
+exit()
+# WARNING offset management is not understood yet.
 
 print("")
 print("The motor will now move to the zero position.")
