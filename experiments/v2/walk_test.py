@@ -9,7 +9,7 @@ DT = 0.01
 pwe = PlacoWalkEngine("/home/antoine/MISC/mini_BDX/mini_bdx/robots/open_duck_mini_v2", model_filename="robot.urdf", init_params=json.load(open("placo_defaults.json")))
 viz = robot_viz(pwe.robot)
 
-pwe.set_traj(0.1, 0, 0.1)
+pwe.set_traj(0.0, 0, 0.0)
 while True:
     pwe.tick(DT)
     viz.display(pwe.robot.state.q)

@@ -1,17 +1,17 @@
 {
-  "dx": 0.1,
+  "dx": 0.0,
   "dy": 0.0,
   "dtheta": 0.0,
   "duration": 8,
   "hardware": true,
-  "double_support_ratio": 0.18,
+  "double_support_ratio": 0.2,
   "startend_double_support_ratio": 1.5,
   "planned_timesteps": 48,
   "replan_timesteps": 10,
   "walk_com_height": 0.2,
-  "walk_foot_height": 0.05,
-  "walk_trunk_pitch": -3,
-  "walk_foot_rise_ratio": 0.2,
+  "walk_foot_height": 0.02,
+  "walk_trunk_pitch": 0,
+  "walk_foot_rise_ratio": 0.3,
   "single_support_duration": 0.17,
   "single_support_timesteps": 10,
   "foot_length": 0.06,
@@ -19,7 +19,7 @@
   "zmp_margin": 0.0,
   "foot_zmp_target_x": 0.0,
   "foot_zmp_target_y": 0.0,
-  "walk_max_dtheta": 1.0,
+  "walk_max_dtheta": 0.3,
   "walk_max_dy": 0.1,
   "walk_max_dx_forward": 0.08,
   "walk_max_dx_backward": 0.03,
@@ -36,11 +36,13 @@
     "right_ankle",
     "neck_pitch",
     "head_pitch", 
-    "head_yaw"
+    "head_yaw",
+    "head_roll"
   ],
   "joint_angles": {
+    "neck_pitch": 0,
     "head_pitch": 0,
     "head_yaw": 0,
-    "neck_pitch": 0
+    "head_roll": 0
   }
 }
