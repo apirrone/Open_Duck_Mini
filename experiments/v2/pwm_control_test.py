@@ -5,6 +5,18 @@ from threading import Thread
 import pickle
 
 
+io = FeetechSTS3215IO(
+    "/dev/ttyACM0",
+    baudrate=1000000,
+    use_sync_read=True,
+)
+# io.disable_torque([1])
+# input()
+# io.enable_torque([1])
+# input()
+# io.disable_torque([1])
+# exit()
+
 class FeetechPWMControl:
     def __init__(self):
         self.io = FeetechSTS3215IO(
@@ -12,7 +24,7 @@ class FeetechPWMControl:
             baudrate=1000000,
             use_sync_read=True,
         )
-        self.id = 24
+        self.id = 1
 
         # TODO zero first
         self.io.enable_torque([self.id])
@@ -29,13 +41,22 @@ class FeetechPWMControl:
         self.present_position = 0
         Thread(target=self.update, daemon=True).start()
 
+    def disable_torque(self):
+        self.io.set_mode({self.id: 0})
+        self.io.disable_torque([self.id])
+
+    def enable_torque(self):
+        self.io.enable_torque([self.id])
+        self.io.set_mode({self.id: 2})
+
+
     def update(self):
         while True:
             self.present_position = self.io.get_present_position([self.id])[0]
             error = self.goal_position - self.present_position
 
             pwm = self.kp * error
-            # pwm *= 0.1
+            # pwm *= 10
             pwm = np.int16(pwm)
 
             pwm_magnitude = abs(pwm)
@@ -53,11 +74,19 @@ class FeetechPWMControl:
 
 motor = FeetechPWMControl()
 
+s = time.time()
 while True:
 
-    target = 25 * np.sin(2 * np.pi * 3.0 * time.time())
+    target = 20 * np.sin(2 * np.pi * 0.5 * time.time())
     motor.goal_position = target
 
+    if time.time() - s > 3 and time.time() - s < 6:
+        motor.disable_torque()
+        print("disbale")
+
+    if time.time() - s > 6:
+        motor.enable_torque()
+        print("enable")
     time.sleep(1 / 60)
 
 
