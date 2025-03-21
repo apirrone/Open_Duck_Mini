@@ -65,6 +65,10 @@ We used Rhoban's [BAM](https://github.com/Rhoban/bam)
 
 https://docs.google.com/spreadsheets/d/1gq4iWWHEJVgAA_eemkTEsshXqrYlFxXAPwO515KpCJc/edit?usp=sharing
 
+## BOM for Chinese Taobao
+
+https://docs.google.com/spreadsheets/d/13O1BSdV3yDxIHN2xSvWhlGm0d4rU0Y4x1Pkh8teHhc0
+
 # Build Guide
 
 ## Print Guide
