@@ -79,6 +79,7 @@ Chinese: https://zihao-ai.feishu.cn/wiki/AfAtw69vRigXaRk5UkbcrAiLnJw?from=from_c
 > New : you can now use the Tnkr guide ! https://tnkr.ai/explore/docs/open-duck-mini/open-duck-mini-v2#home
 
 Chinese: https://zihao-ai.feishu.cn/wiki/space/7488517034406625281
+Chinese: https://www.ncnynl.com/category/OpenDuckMini/  (Step-by-step guide)
 
 ## Print Guide
 
@@ -87,6 +88,7 @@ See [print_guide](docs/print_guide.md).
 ## Assembly Guide
 
 See [assembly guide (incomplete)](docs/assembly_guide.md).
+Chinese：https://www.ncnynl.com/archives/202506/6739.html
 
 # Embedded runtime
 
