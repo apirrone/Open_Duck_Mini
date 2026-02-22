@@ -38,3 +38,6 @@ The motors ids are :
     "right_ankle": 14,
 }
 ```
+
+You can also see which motor corresponds to which id in the photo below :
+![ServoInfo](Servo_Info_update.png)
